@@ -1,0 +1,32 @@
+{
+  "name": "mineaid",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node mineaid-app.js",
+    "dev": "browser-sync start --proxy http://localhost:3000 --files 'public/css/**/*.css, public/js/**/*.js, views/**/*.ejs' --port 3003"
+  },
+  "keywords": [],
+  "author": "Numan Usman",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.0",
+    "node": "^20.18.0",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "sqlite3": "^5.1.7",
+    "uuid": "^10.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "browser-sync": "^3.0.3",
+    "nodemon": "^3.1.7"
+  },
+  "description": "**MineAid - A Portal for Managing the First Aid Posts**"
+}

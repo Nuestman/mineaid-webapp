@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>First Aid Portal - Home</title>
+  <link rel="stylesheet" href="/css/mineaid-styles.css">
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+</head>
+<body id="home">
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="/"><img src="/images/first-aid-kit.png" alt=""></a>
+            </div>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/form">Add New Record</a>
+            </nav>
+            <nav>
+                <ul>
+                  <li><a href="/">Home</a></li>
+                  <li><a href="/admin/admin-users.ejs">Admin Users</a></li>
+                  <li><a href="/records">View Records</a></li>
+                  <li><a href="/dashboard">Go to Dashboard</a></li>
+                    <!-- Show login/register links if not logged in -->
+                </ul>
+              </nav>
+        </div>
+        <h1>Welcome to the First Aid Portal</h1>
+    </header>
+
+    <main class="home-main">
+        <div class="container">
+            <div class="logo-large">
+                <img src="/images/mineaid-orange.svg" alt="">
+            </div>
+            <section class="intro">
+                <p>This portal is designed to help manage first aid post data effectively. You can enter patient data, view records, and export reports for analysis. Follow the instructions below to navigate through the portal:</p>
+                <ul>
+                    <li><strong>Submit New Record:</strong> Fill out the daily form to submit patient data.</li>
+                    <li><strong>View Records:</strong> Check all submitted records and export them to Excel for monthly reporting.</li>
+                </ul>
+            </section>
+            <section class="qlinks">
+                <h2>Quick Links</h2>
+                <div class="btn-grp">
+                    <a href="/form" class="btn">Submit New Record</a>
+                    <a href="/records" class="btn">View Records</a>
+                    <a href="/admin" class="btn">View Admin Panel</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+  <footer>
+    <p>&copy; 2024 First Aid Portal. All Rights Reserved.</p>
+    <p>Designed and Developed by <a href="mailto:nuestman@icloud.com" class="dev">Numan Usman</a></p>
+  </footer>
+
+  
+<script src="/js/script.js"></script>
+</body>
+</html>

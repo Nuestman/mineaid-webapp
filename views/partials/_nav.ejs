@@ -1,0 +1,23 @@
+<nav>
+    <a href="/">Home</a>
+    <a href="/form">Add New Record</a>
+</nav>
+<nav>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/admin/admin-users.ejs">Admin Users</a></li>
+        <li><a href="/records">View Records</a></li>
+        <li><a href="/dashboard">Go to Dashboard</a></li>
+    
+        <% if (!user) { %>
+        <!-- Show login/register links if not logged in -->
+        <li><a href="/login">Login</a></li>
+        <li><a href="/register">Register</a></li>
+        <% } else { %>
+        <!-- Show dashboard/logout links if logged in -->
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li>Welcome, <%= user.role %></li>
+        <li><a href="/logout">Logout</a></li>
+        <% } %>
+    </ul>
+</nav>

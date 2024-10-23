@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logout - First Aid Portal</title>
+  <link rel="stylesheet" href="/css/mineaid-styles.css">
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+</head>
+<body id="home">
+    <header>
+        <h1>LOGOUT:</h1>
+    </header>
+    
+    <main class="login-main">
+        <div class="container">
+            <h2>You need to leave?</h2>
+            <h2>Logout</h2>
+            <form action="/logout" method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Logout</button>
+            </form>
+            <% if (error_msg) { %>
+            <p><%= error_msg %></p>
+            <% } %>
+
+        </div>
+    </main>
+
+  <footer>
+    <p>&copy; 2024 First Aid Portal. All Rights Reserved.</p>
+    <p>Designed and Developed by <a href="mailto:nuestman@icloud.com" class="dev">Numan Usman</a></p>
+  </footer>
+</body>
+</html>

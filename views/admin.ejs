@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - First Aid Portal</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+</head>
+<body id="admin">
+    <div class="admin-container">
+        <header>
+            <div class="container">
+                <div class="logo">
+                    <a href="/"><img src="/images/first-aid-kit.png" alt=""></a>
+                </div>
+                <nav>
+                    <ul>
+                      <li><a href="/form">+ Record</a></li>
+                      <li><a href="/admin/users">Users</a></li>
+                      <li><a href="/records">Records</a></li>
+                      <li><a href="/dashboard">Dashboard</a></li>
+                  
+                      <% if (!user) { %>
+                        <!-- Show login/register links if not logged in -->
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Register</a></li>
+                      <% } else { %>
+                        <!-- Show dashboard/logout links if logged in -->
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/logout">Logout</a></li>
+                      <% } %>
+                    </ul>
+                  </nav>
+            </div>
+            <h2>Admin Dashboard - Manage Records</h2>
+        </header>
+
+        <main>
+            <div class="container">
+                <section class="dashboard">
+                    <!-- Filter Section -->
+                    <div class="filter-section">
+                        <h3>Filter Records</h3>
+                        <form id="filter-form" method="GET" action="/filter-records">
+                            <label for="post">Select Post:</label>
+                            <select name="post" id="post">
+                                <option value="all">All Posts</option>
+                                <option value="ODD">ODD</option>
+                                <option value="STP">STP</option>
+                                <option value="KMS">KMS</option>
+                                <option value="GCS">GCS</option>
+                            </select>
+                            <label for="date-from">From:</label>
+                            <input type="date" id="date-from" name="date-from">
+                
+                            <label for="date-to">To:</label>
+                            <input type="date" id="date-to" name="date-to">
+                            <button type="submit">Filter</button>
+                        </form>
+                    </div>
+                    <!-- Table of Records -->
+                    <div class="records-section">
+                        <h3>Record List</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Company</th>
+                                    <th>Badge Number</th>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Gender</th>
+                                    <th>Incident?</th>
+                                    <th>Complaint</th>
+                                    <th>Mobility</th>
+                                    <th>Resp. Rate</th>
+                                    <th>Heart Rate</th>
+                                    <th>Blood Pressure</th>
+                                    <th>Temperature</th>
+                                    <th>AVPU</th>
+                                    <th>SpO2</th>
+                                    <th>Glucose</th>
+                                    <th>Pain Score</th>
+                                    <th>Final Triage</th>
+                                    <th>Detained?</th>
+                                    <th>Treatment Given</th>
+                                    <th>Disposition</th>
+                                    <th>Disposition Time</th>
+                                    <th>Reporting</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Records will be dynamically inserted here -->
+                                <% if (records.length > 0) { %>
+                                    <% records.forEach(record => { %>
+                                        <tr>
+                                            <td><%= record.id %></td>
+                                            <td><%= record.date %></td>
+                                            <td><%= record.time_of_arrival %></td>
+                                            <td><%= record.company %></td>
+                                            <td><%= record.badge %></td>
+                                            <td><%= record.name %></td>
+                                            <td><%= record.age %></td>
+                                            <td><%= record.gender %></td>
+                                            <td><%= record.incident %></td>
+                                            <td><%= record.complaints %></td>
+                                            <td><%= record.mobility %></td>
+                                            <td><%= record.respiratory_rate %></td>
+                                            <td><%= record.pulse %></td>
+                                            <td><%= record.blood_pressure %></td>
+                                            <td><%= record.temperature %></td>
+                                            <td><%= record.avpu %></td>
+                                            <td><%= record.oxygen_saturation %></td>
+                                            <td><%= record.glucose %></td>
+                                            <td><%= record.pain_score %></td>
+                                            <td><%= record.final_triage %></td>
+                                            <td><%= record.detained %></td>
+                                            <td><%= record.treatment_given %></td>
+                                            <td><%= record.disposition %></td>
+                                            <td><%= record.disposition_time %></td>
+                                            <td><%= record.reporting %></td>
+                                        </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="14">No records found.</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Export Records Section -->
+                    <div class="export-section">
+                        <h3>Export Records</h3>
+                        <form id="export-form" action="/export" method="get">
+                            <label for="export-format">Choose Format:</label>
+                            <select name="export-format" id="export-format">
+                                <option value="excel">Excel</option>
+                                <option value="csv">CSV</option>
+                            </select>
+                            <button class="btn" type="submit">Export</button>
+                        </form>
+                    </div>
+                </section>
+                
+            </div>
+        </main>
+    </div>
+    
+    <footer>
+        <p>&copy; 2024 First Aid Portal. All Rights Reserved.</p>
+    </footer>
+
+    
+<script src="/js/script.js"></script>
+</body>
+</html>

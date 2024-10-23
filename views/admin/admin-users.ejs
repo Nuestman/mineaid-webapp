@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Manage Users</title>
+  <link rel="stylesheet" href="/css/mineaid-styles.css">
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon"><!-- Link to your stylesheets -->
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    .success {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+    
+<header>
+    <div class="container">
+        <div class="logo">
+            <a href="/"><img src="/images/first-aid-kit.png" alt=""></a>
+        </div>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/form">Add New Record</a>
+        </nav>
+        <nav>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/form">Submit Form</a></li>
+              <li><a href="/records">View Records</a></li>
+          
+              <% if (!user) { %>
+                <!-- Show login/register links if not logged in -->
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+              <% } else { %>
+                <!-- Show dashboard/logout links if logged in -->
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/logout">Logout</a></li>
+              <% } %>
+            </ul>
+          </nav>
+    </div>
+    <h1>Admin - Manage Users</h1>
+</header>
+
+  <main class="admin-users">
+      <!-- Success/Error Messages -->
+      <% if (successMessage) { %>
+        <p class="success"><%= successMessage %></p>
+      <% } %>
+      <% if (errorMessage) { %>
+        <p class="error"><%= errorMessage %></p>
+      <% } %>
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(user => { %>
+            <tr>
+              <td><%= user.username %></td>
+              <td><%= user.status %></td>
+              <td>
+                <% if (user.status === 'pending') { %>
+                  <a href="/admin/approve/<%= user.id %>">Approve</a>
+                <% } %>
+                <% if (user.status !== 'blocked') { %>
+                  <a href="/admin/block/<%= user.id %>">Block</a>
+                <% } else { %>
+                  <a href="/admin/unblock/<%= user.id %>">Unblock</a>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 First Aid Portal. All Rights Reserved.</p>
+    <p>Designed and Developed by <a href="mailto:nuestman@icloud.com" class="dev">Numan Usman</a></p>
+  </footer>
+
+</body>
+</html>

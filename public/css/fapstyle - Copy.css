@@ -1,0 +1,623 @@
+/* Load local font files */
+/* Light Weight */
+@font-face {
+    font-family: 'Congenial_Black';
+    src: url('/fonts/Congenial_Light.otf') format('otf');
+    font-weight: 200;
+    font-style: normal;
+}
+/* Regular weight */
+@font-face {
+    font-family: 'Congenial';
+    src: url('/fonts/Congenial_Regular.otf') format('otf');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  /* Medium weight */
+  @font-face {
+    font-family: 'Congenial';
+    src: url('/fonts/Congenial_Medium.otf') format('otf');
+    font-weight: 500;
+    font-style: normal;
+  }
+  
+  /* Bold weight */
+  @font-face {
+    font-family: 'Congenial';
+    src: url('/fonts/Congenial_Bold.otf') format('woff');
+    font-weight: bold;
+    font-style: normal;
+  }
+
+  /* Black Weight */
+    @font-face {
+        font-family: 'Congenial_Black';
+        src: url('/fonts/Congenial_Black.otf') format('otf');
+        font-weight: 900;
+        font-style: normal;
+    }
+  
+
+/* Define reusable variables */
+:root {
+    /* Colors */
+    /* --primary-color: #008080;
+    --primary-color-hover: #005757;
+    --secondary-color: #333;
+    --accent-color: #007bff;
+    --accent-color-hover: #0056b3;
+    --accent-color-hover-2: #003f7f; */
+    --primary-color: #203764;
+    --primary-color-hover: #16294e;
+    --primary-color-light: #B4C6E7;
+    --primary-color-bg: #D9E1F2; 
+    --secondary-color: #333;
+    --accent-color: #ED7D31;
+    --accent-color-hover: #bd6327;
+    --accent-color-hover-2: #9b501e;
+    --error-color: #ff4d4d;
+    --success-color: #28a745;
+    --text-color: #203764;
+    --text-light-color: var(--primary-color-bg);
+    --background-color: var(--primary-color-bg);
+    --button-background-color: var(--accent-color);
+    --button-background-color-hover: var(--accent-color-hover);
+    --white-color: #fff;
+  
+    /* Spacing */
+    --padding-small: 12px;
+    --padding-medium: 24px;
+    --padding-large: 32px;
+    --padding-y-small: 16px;
+    --padding-y-medium: 32px;
+    --padding-y-large: 56px;
+    --margin-y-small: 16px;
+    --margin-y-normal: 24px;
+    --margin-y-medium: 32px;
+    --margin-y-large: 56px;
+    
+    /* Border radius */
+    --border-radius: 4px;
+    --border-radius-large: 8px;
+    
+    /* Font family and sizes */
+    --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-heading: 'Congenial', var(--font-family);
+    --font-size-small: 14px;
+    --font-size-medium: 16px;
+    --font-size-large: 32px;
+    --font-size-xlarge: 48px;
+    --font-size-xxlarge: 56px;
+  
+    /* Box shadow */
+    --box-shadow-light: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --box-shadow-medium: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+    /* Buttons */
+    --button-padding: var(--padding-small) var(--padding-medium);
+    --button-font-size: inherit;
+    --button-font-family: var(--font-heading);
+    --button-border-radius: var(--border-radius);
+  }
+  
+
+/* Modern CSS Reset */
+
+/* Box sizing: more intuitive box-sizing model */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin and padding from all elements */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+main, menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+/* Set up the base font size and family */
+html {
+  font-size: 100%; /* Use the browser's default font size */
+  -webkit-text-size-adjust: 100%; /* Prevent font scaling in landscape on mobile */
+  scroll-behavior: smooth; /* Enable smooth scrolling */
+}
+
+/* Base styling */
+body {
+    font-family: var(--font-heading);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+/* Ensure images, videos, and other media fit their containers */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Remove default list styles */
+ul, ol {
+  list-style: none;
+}
+
+/* Remove default link styling */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Set a consistent border style */
+hr {
+  border: none;
+  height: 1px;
+  background-color: #eaeaea;
+}
+
+/* Form reset - Remove default form styling */
+input, button, textarea, select {
+  font: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+
+
+/* Make buttons and inputs clickable */
+button, select, option {
+  cursor: pointer;
+  background-color: transparent;
+}
+
+/* Make sure that form elements don't shrink in flex layouts */
+button, input, select, textarea {
+  max-width: 100%;
+  overflow: visible;
+}
+
+/* Set consistent style for form inputs */
+input[type="text"], textarea {
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 4px;
+  width: 100%;
+  outline: none;
+}
+
+/* Remove animations from media queries (for people who prefer reduced motion) */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* STYLING FOR THE  APP */
+.container {
+    max-width: 1200px;
+    margin-inline: auto;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: var(--padding-medium);
+    text-align: center;
+  }
+header .container, #submit-page header, #success_page header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    color: var(--white-color);
+}
+
+.logo {
+    width: 48px;
+    /* display: flex;
+    align-items: center;
+    font-size: 32px;
+    font-weight: 700; */
+}
+.logo-large {
+    width: 30%;
+    margin-inline: auto;
+}
+
+header nav a {
+    margin-right: var(--padding-small);
+    color: var(--white-color);
+  }
+  
+  header nav a:hover {
+    color: var(--accent-color);
+  }
+
+p, ul, li {
+    max-width: 60ch;
+    margin-inline: auto;
+}
+  
+h1 {
+    font-size: var(--font-size-xxlarge);
+    line-height: 1;
+}
+h2 {
+    font-size: var(--font-size-xlarge);
+}
+h3 {
+    font-size: var(--font-size-large);
+}
+
+  section.intro {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .qlinks {
+    padding: var(--padding-medium);
+    text-align: center;
+  }
+  
+  .btn-grp {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: var(--margin-y-small);
+  }
+  
+ /* Button styles */
+.btn {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: var(--white-color);
+    padding: var(--padding-small) var(--padding-medium);
+    text-decoration: none;
+    text-align: center;
+    border-radius: var(--border-radius);
+  }
+  
+  .btn:hover {
+    background-color: var(--accent-color-hover);
+  }
+  
+  footer {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+    text-align: center;
+    padding: var(--padding-medium);
+    width: 100%;
+  }
+  footer p {
+    font-size: var(--font-size-small);
+  }
+  .dev {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+  }
+
+
+/* Homepage Styling */
+#home, #success_page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    header {
+        margin-bottom: 0;
+    }
+}
+
+#home main, #success_page main {
+    display: flex;
+    place-items: center;
+    flex-grow: 1;
+}
+
+
+/* Index page styling */
+/* Form container */
+#submit-page .container {
+    max-width: var(--form-max-width, 600px);
+    margin: 0 auto;
+    padding: var(--form-padding, 20px);
+    background-color: var(--background-color, #f9f9f9);
+    border-radius: var(--border-radius, 8px);
+    box-shadow: var(--box-shadow, 0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+/* Form headings */
+#submit-page h1, h3 {
+    color: var(--accent-color);
+    text-align: center;
+    margin-bottom: var(--heading-margin, 20px);
+}
+
+/* Form input groups */
+.input-grp {
+    margin-bottom: var(--input-margin, 15px);
+    display: flex;
+    flex-direction: column;
+}
+
+.input-grp label {
+    font-weight: bold;
+    color: var(--label-color, #555);
+    margin-bottom: var(--label-margin, 5px);
+}
+
+.input-grp input,
+.input-grp select,
+.input-grp textarea {
+    padding: var(--input-padding, 10px);
+    border: 1px solid var(--input-border-color, #ccc);
+    border-radius: var(--input-border-radius, 4px);
+    font-size: var(--input-font-size, 16px);
+    font-family: var(--body-font-family, 'Arial', sans-serif);
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* Two-column layout for vital signs */
+h3 {
+    margin-top: 30px;
+}
+
+/* .tews {
+    display: flex;
+    justify-content: space-between;
+} */
+
+.tews .input-grp {
+    flex: 1;
+    margin-right: 10px;
+}
+form > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+.date-time, .company-badge {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+/* Ensure the last item doesn't have extra margin */
+.tews .input-grp:last-child {
+    margin-right: 0;
+}
+
+/* Radio buttons */
+.input-grp input[type="radio"],
+.input-grp input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.input-grp label[for="disposition"] {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* Submit button */
+#submit-page button[type="submit"] {
+    background-color: var(--button-background-color);
+    color: var(--button-text-color, #fff);
+    padding: var(--button-padding, 12px 20px);
+    font-size: var(--button-font-size, 18px);
+    font-family: var(--body-font-family, 'Arial', sans-serif);
+    border: none;
+    border-radius: var(--button-border-radius, 4px);
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#submit-page  button[type="submit"]:hover {
+    background-color: var(--button-hover-background-color, #0056b3);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 500px) {
+    /* .tews {
+        flex-direction: column;
+    } */
+
+    .tews .input-grp {
+        margin-right: 0;
+    }
+
+    .container {
+        padding: var(--mobile-form-padding, 10px);
+    }
+
+    form > div {
+        grid-template-columns: 1fr;
+    }
+}
+
+  
+
+  /* Error page container */
+.error-body {
+    display: grid;
+    place-items: center;
+    height: 100%;
+}
+  .error-container {
+    text-align: center;
+    background-color: var(--white-color);
+    padding: var(--padding-large);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-light);
+    max-width: 900px;
+    width: 100%;
+}
+
+/* Error header */
+.error-container h1 {
+    color: var(--error-color);
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+/* Error message */
+.error-container p {
+    color: #666;
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+/* Back to home button */
+.error-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--accent-color);
+    color: var(--white-color);
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.error-btn:hover {
+    background-color: var(--accent-color-hover);
+}
+
+
+
+/* Admin Page Styles */
+#admin .container {
+    max-width: 100%;
+}
+.dashboard, #records_page .container{
+    overflow: scroll;
+}
+
+#admin .admin-container {
+    margin: 0 auto;
+    padding: var(--padding-medium);
+    background-color: var(--white-color);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-medium);
+  }
+
+/* #home footer {
+    position: fixed;
+    bottom: 0;
+} */
+
+#admin h1 {
+    font-size: var(--font-size-large);
+  }
+
+/* Filter Section */
+#admin .filter-section h3,
+.records-section h3,
+.export-section h3 {
+    color: var(--secondary-color);
+}
+
+#admin .filter-section form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: fit-content;
+    margin-inline: auto;
+    margin-bottom: 20px;
+}
+
+#admin .filter-section label {
+    margin-right: 10px;
+}
+
+#admin .filter-section input,
+.filter-section select,
+.filter-section button {
+    margin-right: 10px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+/* Records Table */
+#admin table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#admin table thead {
+    background-color: var(--background-color);
+}
+
+#admin table th,
+table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+#admin table th {
+    color: #555;
+}
+
+#admin table td {
+    color: var(--secondary-color);
+}
+
+/* Export Section */
+#admin .export-section h3 {
+    text-align: left;
+}
+#admin .export-section form {
+    display: flex;
+    align-items: center;
+}
+
+#admin .export-section label {
+    margin-right: 10px;
+}
+
+#admin .export-section select,
+.export-section button {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+#admin .export-section button {
+    background-color: #28a745;
+    color: #fff;
+    margin-left: 10px;
+}
+
+#admin .export-section button:hover {
+    background-color: #218838;
+}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>401 Unauthorized</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css"> <!-- Link to your CSS -->
+</head>
+<body>
+    <header>
+        <%- include ('partials/_header') %>
+    </header>
+
+    <main>
+        <h1>401 - Unauthorized</h1>
+        <p>You need to log in to access this page.</p>
+        <btn-grp>
+            <a class="btn" href="/auth/login">Log in</a>
+            <a class="btn btn-outline" href="#">Go back</a>
+        </btn-grp>
+    </main>
+
+    <footer>
+        <%- include ('partials/_footer') %>
+    </footer>
+</body>
+</html>

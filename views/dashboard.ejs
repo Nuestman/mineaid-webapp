@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - First Aid Portal</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            padding: 20px;
+        }
+        .sidebar {
+            position: sticky;
+            top: 0;
+            overflow: hidden;
+            width: 250px;
+            background-color: #203764;
+            color: white;
+            padding: 15px;
+            height: 100vh;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #304266;
+            border: 1px solid transparent;
+            border-radius: 5px;
+        }
+        .sidebar a:hover {
+            background-color: #203764;
+            border: 1px solid #304266;
+        }
+        .main-content {
+            flex: 1;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .card h3 {
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .stats, .operations {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .stats .card, .operations .card {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .stats .card:last-child, .operations .card:last-child {
+            margin-right: 0;
+        }
+        .dashboard-page form > div {
+            display: block;
+        }
+    </style>
+    <link rel="stylesheet" href="/css/fapstyle.css">
+</head>
+<body class="dashboard-page">
+
+<header>
+    <div class="container">
+        <div class="logo">
+            <a href="/"><img src="/images/first-aid-kit.png" alt=""></a>
+        </div>
+        <nav>
+            <a href="/">Home</a>
+        </nav>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/users">Users</a>
+                    <ul class="nav-links">
+                        <li><a href="/admin/admins">Admins</a></li>
+                        <li><a href="/admin/block">Blocked</a></li>
+                        <li><a href="/admin/unblock">Unblocked</a></li>
+                        <li><a href="/admin/approve">Approved</a></li>
+                    </ul>
+            </li>
+          
+          
+            <% if (!user) { %>
+                <!-- Show login/register links if not logged in -->
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+              <% } else { %>
+                <!-- Show dashboard/logout links if logged in -->
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li>Welcome, <%= user.role %></li>
+                <li><a href="/logout">Logout</a></li>
+              <% } %>
+            </ul>
+          </nav>
+    </div>
+    <h1>FAP Supervision &amp; Reporting Tool</h1>
+</header>
+<header>
+    <div class="container">
+        <div class="logo">
+            <a href="/"><img src="/images/first-aid-kit.png" alt=""></a>
+        </div>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/form">Add New Record</a>
+        </nav>
+        <nav>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/admin/users">Users</a></li>
+              <li><a href="/records">View Records</a></li>
+          
+              <% if (!user) { %>
+                <!-- Show login/register links if not logged in -->
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+              <% } else { %>
+                <!-- Show dashboard/logout links if logged in -->
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li>Welcome, <%= user.role %></li>
+                <li><a href="/logout">Logout</a></li>
+              <% } %>
+            </ul>
+          </nav>
+    </div>
+    <h1>FAP Supervision &amp; Reporting Tool</h1>
+</header>
+
+<main>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Navigation</h2>
+            <a href="index.html">Dashboard</a>
+            <a href="incident-report.html">Incident Reporting</a>
+            <a href="operations.html">FAP Operations</a>
+            <a href="reports.html">Analytics &amp; Reports</a>
+            <a href="compliance.html">Compliance Tracking</a>
+            <a href="inventory.html">Inventory Management</a>
+            <a href="training.html">Training &amp; Resources</a>
+            <a href="settings.html">Settings</a>
+        </aside>
+    
+        <div class="main-content">
+            <!-- Dashboard -->
+            <div class="card">
+                <h3>Dashboard Overview</h3>
+                <div class="stats">
+                    <div class="card">
+                        <h4>Total Incidents</h4>
+                        <p>45</p>
+                    </div>
+                    <div class="card">
+                        <h4>Referrals Made</h4>
+                        <p>12</p>
+                    </div>
+                    <div class="card">
+                        <h4>Compliance Status</h4>
+                        <p>85%</p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Incident Reporting -->
+            <div class="card">
+                <h3>Incident Reporting</h3>
+                <form>
+                    <div class="form-group">
+                        <label for="patient-name">Patient Name</label>
+                        <input type="text" id="patient-name" placeholder="Enter patient name">
+                    </div>
+                    <div class="form-group">
+                        <label for="incident-date">Incident Date</label>
+                        <input type="date" id="incident-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="incident-type">Incident Type</label>
+                        <select id="incident-type">
+                            <option value="injury">Injury</option>
+                            <option value="illness">Illness</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="incident-details">Incident Details</label>
+                        <textarea id="incident-details" rows="4" placeholder="Describe the incident"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="treatment-provided">Treatment Provided</label>
+                        <textarea id="treatment-provided" rows="4" placeholder="Describe the treatment provided"></textarea>
+                    </div>
+                    <a href="#" class="btn">Submit Incident</a>
+                </form>
+            </div>
+    
+            <!-- FAP Operations Management -->
+            <div class="card">
+                <h3>FAP Operations Management</h3>
+                <div class="operations">
+                    <div class="card">
+                        <h4>Shift Logs</h4>
+                        <p>View and update logs for each shift.</p>
+                    </div>
+                    <div class="card">
+                        <h4>Task Assignments</h4>
+                        <p>Assign and track tasks for FAP staff.</p>
+                    </div>
+                    <div class="card">
+                        <h4>Compliance Tracking</h4>
+                        <p>Monitor adherence to protocols and standards.</p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Analytics & Reports -->
+            <div class="card">
+                <h3>Analytics &amp; Reports</h3>
+                <p>Generate detailed reports on incidents, referrals, compliance, and more.</p>
+            </div>
+    
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2024 First Aid Portal. All Rights Reserved.</p>
+    <p>Designed and Developed by <a href="mailto:nuestman@icloud.com" class="dev">Numan Usman</a></p>
+  </footer>
+</body>
+
+
+<script src="/js/script.js"></script>
+</html>

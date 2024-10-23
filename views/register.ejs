@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - First Aid Portal</title>
+  <link rel="stylesheet" href="/css/mineaid-styles.css">
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+</head>
+<body id="home">
+      
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="/"><img src="/images/first-aid-kit.png" alt=""></a>
+            </div>
+            <li><a href="/admin/block">Block These</a></li>
+            <li><a href="/admin/unblock">Unblock These</a></li>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/admin/admins">Admins</a>
+            </nav>
+            <nav>
+                <ul>
+                  <li><a href="/">Home</a></li>
+                  <li><a href="/admin/users">Users</a></li>
+                  <li><a href="/admin/approve">Approval List</a></li>
+              
+                  <% if (!user) { %>
+                    <!-- Show login/register links if not logged in -->
+                    <li><a href="/admin/block">Block These</a></li>
+                    <li><a href="/admin/unblock">Unblock These</a></li>
+                  <% } else { %>
+                    <!-- Show dashboard/logout links if logged in -->
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                  <% } %>
+                </ul>
+              </nav>
+        </div>
+        <h1>REGISTER:</h1>
+    </header>
+    
+    <main class="login-main">
+        <div class="container">
+            <h2>Don't have an account yet? Register below.</h2>
+            <h2>Register</h2>
+            
+            <form action="/register" method="POST">
+                <!-- <% if (errors.length > 0) { %>
+                    <ul class="alert alert-danger">
+                        <% errors.forEach(error => { %>
+                            <li><%= error.msg %></li>
+                        <% }) %>
+                    </ul>
+                <% } %> -->
+                
+                <!-- <% if (success_msg) { %>
+                    <div class="alert alert-success"><%= success_msg %></div>
+                <% } %>
+                
+                <% if (error_msg) { %>
+                    <div class="alert alert-danger"><%= error_msg %></div>
+                <% } %>
+                
+                <% if (error) { %>
+                    <div class="alert alert-danger"><%= error %></div>
+                <% } %> -->
+                
+                <div class="input-grp">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="input-grp">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-grp">
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" required>
+                </div>
+                
+                <div class="input-grp">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" required>
+                </div>
+
+                <div class="input-grp">
+                    <label for="password2">Confirm Password:</label>
+                    <input type="password" name="password2" required>
+                </div>
+
+                <button type="submit" class="btn">Register</button>
+            </form>
+
+
+        </div>
+    </main>
+
+  <footer>
+    <p>&copy; 2024 First Aid Portal. All Rights Reserved.</p>
+    <p>Designed and Developed by <a href="mailto:nuestman@icloud.com" class="dev">Numan Usman</a></p>
+  </footer>
+  
+<script src="/js/script.js"></script>
+</body>
+</html>
