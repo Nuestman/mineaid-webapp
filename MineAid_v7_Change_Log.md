@@ -6,11 +6,8 @@ Version 3 @ 1300Hrs 26-10-24
 
 
 Problems
-
-6. Styling issues
+1. Make it responsive
 11. user redirection after link requiring login
-
-
 
 
 Solved
@@ -30,17 +27,16 @@ Solved
 after it loads    -     Done. That is normal behavior. Style well.
 8. Add flash messages for other pages    -     Done
 3. Error messages persist not clearing with flash as expected, except with frontend js.    -    Done with css (caused by css .alert: display block)
-1. Fix profile page   -   Done
-2. Fix admin routes with ensureAdmin   -     Done
-4. Session not working well: opened admin route pages are left open after user is automatically logged out and is accessible via "back and forward" browser buttons. should default back to login on forward/back.     -    Done. Acceptable
-5. flash messages are not disappearing after being displayed on redirect. only disappear after redirected page reloads again.     -    Normal behavior to show on redirected page.     Disappearing issues Done with frontend JS
-6. Token not clearing from DB solved with work around in DB file      -     Done
+5. flash messages are not disappearing after being displayed on redirect. only disappear after redirected page reloads again.    -    Done   -   Cleared with frontend JS.
+2. Fix admin routes with ensureAuthenticated, and Senior Admin with seniorAdmin   -   Done. Working.
+1. Fix profile page    -     Done
+2. Fix incident book page    -    Done
+6. Styling issues   -   Done. Acceptable
+3. tokens are not clearing from db. reduce expiry time to 30mins. add functionality to clear db of tokens automatically after expiry even when email link was not accessed.      -       Done with a db function that clears expired tokens at server restart.
+4. Session not working well: opened admin route pages are left open after user is automatically logged out and is accessible via "back and forward" browser buttons. should default back to login on forward/back.   -   Acceptable.
 7. Upload profile pic done with Multer
 8. More appealing table view.
 
-
-3. tokens are not clearing from db. reduce expiry time to 30mins. add functionality to clear db of tokens automatically after expiry even when email link was not accessed.
-2. Fix incident book page
 
 Future functions
 1. Ticketing for user problems with status check
@@ -49,3 +45,40 @@ Future functions
 4. SMTP for Email setup   -   done
 5. Relational/Interrelational DB
 6. Make nav more ux friendly by limiting number of links
+
+
+
+
+
+db.run('ALTER TABLE users ADD COLUMN lastLogin TEXT', (err) => {
+    if (err) {
+        console.error('Error adding notifications column:', err.message);
+    } else {
+        console.log('notifications column added successfully.');
+    }
+});
+db.run('ALTER TABLE users ADD COLUMN theme TEXT DEFAULT 'light' ', (err) => {
+    if (err) {
+        console.error('Error adding notifications column:', err.message);
+    } else {
+        console.log('notifications column added successfully.');
+    }
+});
+
+-- Create a new table for recent activities
+db.run(`CREATE TABLE IF NOT EXISTS recentActivities (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER,
+    activity TEXT,
+    timestamp TEXT DEFAULT (datetime('now', 'localtime')),
+    FOREIGN KEY (userId) REFERENCES users(id)
+)`);
+
+-- Create a new table for connected social accounts
+db.run(`CREATE TABLE IF NOT EXISTS connectedAccounts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER,
+    platform TEXT,
+    linkedAt TEXT DEFAULT (datetime('now', 'localtime')),
+    FOREIGN KEY (userId) REFERENCES users(id)
+)`);
