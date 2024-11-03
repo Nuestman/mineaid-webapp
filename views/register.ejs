@@ -10,89 +10,84 @@
 <body id="home">
       
     <header>
-        <div class="container">
-            <div class="logo">
-                <a href="/"><img src="/images/first-aid-kit.png" alt=""></a>
-            </div>
-            <li><a href="/admin/block">Block These</a></li>
-            <li><a href="/admin/unblock">Unblock These</a></li>
-            <nav>
-                <a href="/">Home</a>
-                <a href="/admin/admins">Admins</a>
-            </nav>
-            <nav>
-                <ul>
-                  <li><a href="/">Home</a></li>
-                  <li><a href="/admin/users">Users</a></li>
-                  <li><a href="/admin/approve">Approval List</a></li>
-              
-                  <% if (!user) { %>
-                    <!-- Show login/register links if not logged in -->
-                    <li><a href="/admin/block">Block These</a></li>
-                    <li><a href="/admin/unblock">Unblock These</a></li>
-                  <% } else { %>
-                    <!-- Show dashboard/logout links if logged in -->
-                    <li><a href="/dashboard">Dashboard</a></li>
-                    <li><a href="/logout">Logout</a></li>
-                  <% } %>
-                </ul>
-              </nav>
-        </div>
+        <%- include('partials/_nav') %>
         <h1>REGISTER:</h1>
     </header>
     
     <main class="login-main">
         <div class="container">
-            <h2>Don't have an account yet? Register below.</h2>
-            <h2>Register</h2>
+            <div class="form-container">
+                <h2>Don't have an account yet? <br>Provide your details.</h2>
+                <div class="form-itself alert-parent">
+    
+                    <!-- Display flash messages if there are any -->
+                    <% if (success_msg) { %>
+                        <div class="alert alert-success"><%= success_msg %></div>
+                    <% } %>
+                    
+                    <% if (error_msg) { %>
+                        <div class="alert alert-danger"><%= error_msg %></div>
+                    <% } %>
+                    
+                    <% if (error) { %>
+                        <div class="alert alert-danger"><%= error %></div>
+                    <% } %>
+                    
+                    <form action="/register" method="POST">
+                        <div class="input-grp">
+                            <label for="firstname">First Name:</label>
+                            <input type="text" id="firstname" name="firstname" required minlength="2">
+                        </div>
+                    
+                        <div class="input-grp">
+                            <label for="surname">Surname:</label>
+                            <input type="text" id="surname" name="surname" required minlength="2">
+                        </div>
+                    
+                        <div class="input-grp">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                    
+                        <div class="input-grp">
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" name="username" required minlength="4" maxlength="20" pattern="^[a-zA-Z0-9_]+$"
+                                   title="Username can only contain letters, numbers, and underscores.">
+                        </div>
+                    
+                        <div class="input-grp">
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" name="password" required minlength="6" oninput="checkPasswordsMatch()">
+                        </div>
+                    
+                        <div class="input-grp">
+                            <label for="confirm_password">Confirm Password:</label>
+                            <input type="password" id="confirm_password" name="confirm_password" required minlength="6" oninput="checkPasswordsMatch()">
+                            <small id="passwordMatchMessage" style="color: red; display: none;">Passwords do not match.</small>
+                        </div>
+                    
+                        <div class="alert-btn-grp">
+                            <button type="submit" class="btn">Register</button>
+                            <button type="button" onclick="window.location.href='/login'" >Have an Account? Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
             
-            <form action="/register" method="POST">
-                <!-- <% if (errors.length > 0) { %>
-                    <ul class="alert alert-danger">
-                        <% errors.forEach(error => { %>
-                            <li><%= error.msg %></li>
-                        <% }) %>
-                    </ul>
-                <% } %> -->
-                
-                <!-- <% if (success_msg) { %>
-                    <div class="alert alert-success"><%= success_msg %></div>
-                <% } %>
-                
-                <% if (error_msg) { %>
-                    <div class="alert alert-danger"><%= error_msg %></div>
-                <% } %>
-                
-                <% if (error) { %>
-                    <div class="alert alert-danger"><%= error %></div>
-                <% } %> -->
-                
-                <div class="input-grp">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="input-grp">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="input-grp">
-                    <label for="username">Username:</label>
-                    <input type="text" name="username" required>
-                </div>
-                
-                <div class="input-grp">
-                    <label for="password">Password:</label>
-                    <input type="password" name="password" required>
-                </div>
-
-                <div class="input-grp">
-                    <label for="password2">Confirm Password:</label>
-                    <input type="password" name="password2" required>
-                </div>
-
-                <button type="submit" class="btn">Register</button>
-            </form>
-
+            <script>
+                function checkPasswordsMatch() {
+                    const password = document.getElementById("password").value;
+                    const confirmPassword = document.getElementById("confirm_password").value;
+                    const message = document.getElementById("passwordMatchMessage");
+            
+                    if (confirmPassword && password !== confirmPassword) {
+                        message.style.display = "inline"; // Show warning if passwords don't match
+                    } else {
+                        message.style.display = "none"; // Hide warning if passwords match
+                    }
+                }
+            </script>
+            
 
         </div>
     </main>
@@ -102,6 +97,6 @@
     <p>Designed and Developed by <a href="mailto:nuestman@icloud.com" class="dev">Numan Usman</a></p>
   </footer>
   
-<script src="/js/script.js"></script>
+<script src="/js/mineaid-scripts.js"></script>
 </body>
 </html>

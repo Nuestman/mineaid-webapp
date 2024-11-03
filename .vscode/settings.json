@@ -1,0 +1,17 @@
+{
+    "autoReloadBackend.websocketPort": 3000,
+    "autoReloadBackend.fileTypes": [
+        
+        ".js",
+        ".ts",
+        ".html",
+        ".css",
+        ".ejs"
+    ],
+    "autoReloadBackend.watchFolders": [
+        "views",
+        "src",
+        "public"
+    ],
+    "livePreview.defaultPreviewPath": "/views/index.ejs"
+}

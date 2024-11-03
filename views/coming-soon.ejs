@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon</title>
+    <link rel="stylesheet" href="css/mineaid-styles.css">
+</head>
+<body id="soon">
+    <header>
+        <!-- Include the navigation partial -->
+        <%- include('partials/_nav') %>
+    </header>
+
+    <main>
+        <div class="inner-flex">
+            <div class="container">
+                <section class="message-container coming-soon-container">
+                    <div class="logo-large">
+                        <!-- Optional icon or illustration -->
+                        <img src="../images/mine-aid-logo.svg" alt="Under Construction">
+                    </div>
+                    <h1>We're Building Something Great!</h1>
+                    <div class="error-text">
+                        <p>This feature is under development. Please check back soon.</p>
+                    </div>
+                    <div class="btn-grp ">
+                        <a class="btn btn-outline" href="javascript:history.back()">Go back</a>
+                        <a class="btn" href="/">Go Home</a>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Include the footer partial -->
+    <%- include('partials/_footer') %>
+
+    <script src="js/mineaid-scripts.js"></script>
+</body>
+</html>

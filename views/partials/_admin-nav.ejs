@@ -9,6 +9,8 @@
         <nav>
             <ul>
                 <li><a href="/">Home</a></li>
+                <li><a href="/form">Add Incident</a></li>
+                <li><a href="/triage">Triage</a></li>
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/users">Users</a>
                     <ul class="nav-links">
@@ -18,20 +20,9 @@
                         <li><a href="/admin/approve">Approved</a></li>
                     </ul>
                 </li>
-          
-          
-            <% if (!user) { %>
-                <!-- Show login/register links if not logged in -->
-                <li><a href="/login">Login</a></li>
-                <li><a href="/register">Register</a></li>
-              <% } else { %>
-                <!-- Show dashboard/logout links if logged in -->
-                <li><a href="/dashboard">Dashboard</a></li>
-                <li>Welcome, <%= user.role %></li>
-                <li><a href="/logout">Logout</a></li>
-              <% } %>
             </ul>
-          </nav>
+        </nav>
+        <%- include('../partials/_login-toggler') %>
     </div>
     <h1>FAP Supervision &amp; Reporting Tool</h1>
 </header>

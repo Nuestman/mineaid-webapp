@@ -27,13 +27,25 @@
             </nav>
         </div>
     </header> -->
-    <%- include('partials/_header') %>
+    <header><%- include('partials/_header') %></header>
 
 <main>
     <!-- Page content goes here -->
+                <!-- Display flash messages if there are any -->
+                <% if (success_msg) { %>
+                    <div class="alert alert-success"><%= success_msg %></div>
+                <% } %>
+                
+                <% if (error_msg) { %>
+                    <div class="alert alert-danger"><%= error_msg %></div>
+                <% } %>
+                
+                <% if (error) { %>
+                    <div class="alert alert-danger"><%= error %></div>
+                <% } %>
 </main>
 
-<%- include('partials/_footer') %>
+<footer><%- include('partials/_footer') %></footer>
     <!-- <main>
         <h1>Testing templating with ejs partials.</h1>
     </main>

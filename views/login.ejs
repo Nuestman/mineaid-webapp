@@ -14,7 +14,7 @@
     </header>
     
     <main class="login-main">
-        <div class="">
+        <div class="login-main-container">
             <div class="login-container">
                 <div class="intro-container">
                     <div class="intro-content">
@@ -38,27 +38,44 @@
                 <div class="form-container">
                     <div class="form-content">
                         <h2>Login to access the First Aid Portal</h2>
-                        <form action="/login" method="POST">
-                            <div class="input-grp">
-                                <label for="username">Username:</label>
-                                <input type="text" name="username" required>
-                            </div>
-                            <div class="input-grp">
-                                <label for="password">Password:</label>
-                                <input type="password" name="password" required>
-                            </div>
-                            <button type="submit" class="btn">Login</button>
-                            <a href="/" class="btn btn-outline">Cancel</a>
-                        </form>
-                        <% if (error_msg) { %>
-                        <p><%= error_msg %></p>
-                        <% } %>
+                        <div class="form-itself alert-parent">
+                            <form action="/login" method="POST">
+                            
+                            <!-- Display flash messages if there are any -->
+                                <% if (success_msg) { %>
+                                    <div class="alert alert-success"><%= success_msg %></div>
+                                <% } %>
+                            
+                                <% if (error_msg) { %>
+                                    <div class="alert alert-danger"><%= error_msg %></div>
+                                <% } %>
+                            
+                                <% if (error) { %>
+                                    <div class="alert alert-danger"><%= error %></div>
+                                <% } %>
+                            
+                                <div class="input-grp">
+                                    <label for="username">Username:</label>
+                                    <input type="text" name="username" required>
+                                </div>
+                                <div class="input-grp">
+                                    <label for="password">Password:</label>
+                                    <input type="password" name="password" required>
+                                </div>
+                                <div class="v-flex">
+                                    <button type="submit" class="btn">Login</button>
+                                    <a href="/" class="btn btn-outline">Cancel</a>
+                                    <a href="/reset-request" class="btn btn-outline">Forgot password</a>
+                                </div>
+                            </form>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
         </div>
     </main>
     
-<script src="/js/script.js"></script>
+<script src="/js/mineaid-scripts.js"></script>
 </body>
 </html>

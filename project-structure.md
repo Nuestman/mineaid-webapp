@@ -3,13 +3,7 @@ project-root/
 ├── mineaid-app.js                       # Main application file (imports routes, sets up middleware)
 ├── package.json                  # Project metadata and dependencies
 ├── package-lock.json             # Dependency lock file
-│
-├── routes/                       # Folder for route handler files
-│   ├── index.js                  # General page routes
-│   ├── admin.js                  # Admin-related routes
-│   ├── users.js                  # User-related routes
-│   └── auth.js                   # Authentication-related routes
-│
+││
 ├── views/                        # Folder for view files (ejs templates)
 │   ├── index.ejs                 # Home page view
 │   ├── login.ejs                 # Login page view
@@ -23,8 +17,7 @@ project-root/
 │   ├── testpage.ejs              # Test page page view
 │   ├── admin/                    # Admin-specific views
 │   │   ├── admin-users.ejs       # Admin users page view
-│   │   ├── admin-home.ejs        # Admin homepage user view
-│   │   ├── users.ejs             # General user view
+│   │   ├── users.ejs        # Admin homepage user view
 │   ├── error/                    # Admin-specific views
 │   │   ├── 401.ejs               # 401 errors page view
 │   │   ├── 404.ejs               # 404 errors page view

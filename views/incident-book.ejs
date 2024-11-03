@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Book</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+</head>
+<body id="records_page">
+    <header>
+        <%- include('partials/_nav') %>
+    </header>
+    <header class="prim-header">
+        <h1>INCIDENT BOOK:</h1>
+        <h2>First Aid Post Incidents</h2>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="wide-table">
+                <div class="alert-parent">
+                    <table > <!-- Optional: Add border for better visibility -->
+                        <!-- Display flash messages if there are any -->
+                        <% if (success_msg) { %>
+                            <div class="alert alert-success"><%= success_msg %></div>
+                        <% } %>
+                
+                        <% if (error_msg) { %>
+                            <div class="alert alert-danger"><%= error_msg %></div>
+                        <% } %>
+                
+                        <% if (error) { %>
+                            <div class="alert alert-danger"><%= error %></div>
+                        <% } %>
+                        <thead class="accent">
+                            <tr>
+                            <th>ID</th>
+                            <th>Post</th>
+                            <th>Incident Date</th>
+                            <th>Time of Incident</th>
+                            <th>Company</th>
+                            <th>Badge</th>
+                            <th>Name</th>
+                            <th>Incident Type</th>
+                            <th>Incident Location</th>
+                            <th>Incident Details</th>
+                            <th>First Aid on Site?</th>
+                            <th>Detained?</th>
+                            <th>Treatment Given</th>
+                            <th>Disposition</th>
+                            <th>Disposition Time</th>
+                            <th>Reporting</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% incidents.forEach(incident => { %>
+                            <tr>
+                                <td><%= incident.id %></td>
+                                <td><%= incident.post %></td>
+                                <td><%= incident.incident_date %></td>
+                                <td><%= incident.incident_time %></td>
+                                <td><%= incident.company %></td>
+                                <td><%= incident.badge %></td>
+                                <td><%= incident.name %></td>
+                                <td><%= incident.incident_type %></td>
+                                <td><%= incident.incident_location %></td>
+                                <td><%= incident.incident_details %></td>
+                                <td><%= incident.first_aid %></td>
+                                <td><%= incident.detained %></td>
+                                <td><%= incident.treatment_given %></td>
+                                <td><%= incident.disposition %></td>
+                                <td><%= incident.disposition_time %></td>
+                                <td><%= incident.reporting %></td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Add download button -->
+            <div class="qlinks btn-grp">
+                <a href="/export" class="btn">Download as Excel</a>
+                
+                <a href="/" class="btn btn-outline">Home</a>
+            </div>
+            
+        </div>
+    </main>
+
+    <%- include('partials/_footer') %>
+</body>
+</html>

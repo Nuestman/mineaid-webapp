@@ -1,26 +1,17 @@
 
-<nav>
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li class="nav-item">
-            <a class="nav-link" href="/admin/users">Users</a>
-            <ul class="nav-links">
-                <li><a href="/admin/admins">Admins</a></li>
-                <li><a href="/admin/block">Blocked</a></li>
-                <li><a href="/admin/unblock">Unblocked</a></li>
-                <li><a href="/admin/approve">Approved</a></li>
-            </ul>
-    </li>
-  
-    <% if (!user) { %>
-        <!-- Show login/register links if not logged in -->
-        <li><a href="/login">Login</a></li>
-        <li><a href="/register">Register</a></li>
-      <% } else { %>
+<nav class="toggler">  
+    <% if (loggedIn === true) { %>
         <!-- Show dashboard/logout links if logged in -->
+        <li><a href="/admin/admin-users">Admin Users</a></li>
+        <li><a href="/admin/users">Users</a></li>
+        <li><a href="/records">View Records</a></li>
         <li><a href="/dashboard">Dashboard</a></li>
-        <li>Welcome, <%= user.role %></li>
         <li><a href="/logout">Logout</a></li>
-      <% } %>
-    </ul>
+        <li><a class="user-profile-icon" href="/users/user-profile"><img src="<%= user.profilePicUrl %>" alt="User Profile Picture" ></a> </li>
+        <% } else { %>
+            <!-- Show login/register links if not logged in -->
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
+        <% } 
+    %>
 </nav>

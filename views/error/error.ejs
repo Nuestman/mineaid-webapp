@@ -9,9 +9,23 @@
 </head>
 <body class="error-body">
     <div class="error-container">
+        <!-- Display flash messages if there are any -->
+        <% if (success_msg) { %>
+            <div class="alert alert-success"><%= success_msg %></div>
+        <% } %>
+        
+        <% if (error_msg) { %>
+            <div class="alert alert-danger"><%= error_msg %></div>
+        <% } %>
+        
+        <% if (error) { %>
+            <div class="alert alert-danger"><%= error %></div>
+        <% } %>
         <h1>Oops! Something went wrong.</h1>
         <p>We're sorry, but the page you're looking for doesn't exist or an error occurred.</p>
-        <a href="/" class="btn error-btn">Go Back to Home</a>
+        
+        <a class="btn btn-outline" href="javascript:history.back()">Go back</a>
+
     </div>
 </body>
 </html>

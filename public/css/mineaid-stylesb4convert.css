@@ -1,0 +1,847 @@
+/* Load local font files */
+/* Grouped by 'Congenial' font family */
+@font-face {
+    font-family: 'Congenial';
+    src: url('/fonts/Congenial_Light.otf') format('otf');
+    font-weight: 200;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Congenial';
+    src: url('/fonts/Congenial_Regular.otf') format('otf');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Congenial';
+    src: url('/fonts/Congenial_Medium.otf') format('otf');
+    font-weight: 500;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Congenial';
+    src: url('/fonts/Congenial_Bold.otf') format('woff');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Congenial_Black';
+    src: url('/fonts/Congenial_Black.otf') format('otf');
+    font-weight: 900;
+    font-style: normal;
+  }
+  
+  /* Define reusable variables */
+  :root {
+    /* Colors */
+    --primary-color: #69b1ff;
+    --primary-color-hover: #0072ec;
+    --primary-color-light: #69b1ff;
+    --primary-color-bg: #eaf6ff;
+    --secondary-color: #0072ec;
+    --dark-color: #203764;
+    --dark-color-light: #304266;
+    --accent-color: #f7941c;
+    --accent-color-hover: #ed7d31;
+    --accent-color-hover-2: #9b501e;
+    --danger-color: #721c24;
+    --error-color: #ff4d4d;
+    --error-bg-color: #f8d7da;
+    --error-border-color: #f5c6cb;
+    --success-color: #28a745;
+    --success-bg-color: #d4edda;
+    --success-border-color: #c3e6cb;
+    --text-color: var(--dark-color);
+    --text-light-color: var(--primary-color-bg);
+    --background-color: var(--primary-color-bg);
+    --button-background-color: var(--accent-color);
+    --button-background-color-hover: var(--accent-color-hover);
+    --white-color: #fff;
+  
+    /* Spacing */
+    --padding-small: 12px;
+    --padding-medium: 24px;
+    --padding-large: 32px;
+    --padding-xlarge: 48px;
+    --padding-y-small: 16px 0;
+    --padding-y-medium: 32px 0;
+    --padding-y-large: 56px 0;
+    --padding-hor-small: 0 16px;
+    --padding-hor-medium: 0 24px;
+    --padding-hor-large: 0 32px;
+    --padding-hor-xlarge: 0 56px;
+    --margin-y-small: 16px 0;
+    --margin-y-normal: 24px 0;
+    --margin-y-medium: 32px 0;
+    --margin-y-large: 56px 0;
+    --margin-hor-small: 0 16px;
+    --margin-hor-medium: 0 24px;
+    --margin-hor-large: 0 32px;
+    --margin-hor-xl: 0 56px;
+  
+    /* Border radius */
+    --border-radius: 4px;
+    --border-radius-large: 8px;
+  
+    /* Font family and sizes */
+    --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-heading: 'Congenial', var(--font-family);
+    --font-size-small: 14px;
+    --font-size-regular: 16px;
+    --font-size-medium: 24px;
+    --font-size-large: 32px;
+    --font-size-xlarge: 48px;
+    --font-size-xxlarge: 56px;
+  
+    /* Box shadow */
+    --box-shadow-light: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --box-shadow-medium: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+    /* Transitions */
+    --transition-bg: background-color 0.3s ease-in-out;
+    --transition-normal: all 0.3s ease-in-out;
+    --transition-slow: all 0.3s ease-in-out;
+    
+    /* Buttons */
+    --button-padding: var(--padding-small) var(--padding-medium);
+    --button-font-size: inherit;
+    --button-font-family: var(--font-heading);
+    --button-border-radius: var(--border-radius);
+    --button-box-shadow: var(--box-shadow-light);
+    --button-transition: var(--transition-normal);
+  }
+
+  
+/* Modern CSS Reset */
+
+/* Box sizing: more intuitive box-sizing model */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+/* Remove default margin and padding from all elements */
+/* html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+main, menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+} */
+
+/* Set up the base font size and family */ 
+  html {
+    font-size: 100%; /* Use the browser's default font size */
+    -webkit-text-size-adjust: 100%; /* Prevent font scaling in landscape on mobile */
+    scroll-behavior: smooth; /* Enable smooth scrolling */
+  }
+  
+  body {
+    font-family: var(--font-heading);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Media & form resets */
+  /* Ensure images, videos, and other media fit their containers */
+  img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+  }
+
+
+/* Remove default list styles */
+ul, ol {
+  list-style: none;
+}
+
+/* Remove default link styling */
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition-normal);
+}
+
+/* Set a consistent border style */
+hr {
+  border: none;
+  height: 1px;
+  background-color: #eaeaea;
+}
+
+/* Form reset - Remove default form styling */
+  input, button, textarea, select {
+    font: inherit;
+    border: none;
+    background: none;
+  }
+  
+  /* Make buttons and inputs clickable */
+  button, select, option {
+    cursor: pointer;
+    background-color: transparent;
+  }
+  
+  /* Make sure that form elements don't shrink in flex layouts */
+  button, input, select, textarea {
+    max-width: 100%;
+    overflow: visible;
+  }
+  
+  /* Input styling */
+  input[type="text"], textarea {
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 4px;
+    width: 100%;
+    /* outline: none; */
+  }
+  
+  /* Responsive motion */
+  /* Remove animations from media queries (for people who prefer reduced motion) */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  
+  /* General layout */
+  .container {
+    max-width: 1200px;
+    padding: var(--padding-hor-large);
+    margin-inline: auto;
+  }
+
+  /* Header */
+  header {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: var(--padding-medium);
+    text-align: center;
+  }
+  
+  header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  header nav a {
+    margin-right: var(--padding-small);
+    color: var(--white-color);
+    font-weight: 700;
+  }
+  header nav a:hover {
+    color: var(--text-color);
+  }
+
+  header li {
+    display: inline;
+  }
+  .nav-item {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .nav-link {
+    padding: 10px 20px;
+  }
+  
+  .nav-links {
+    display: none; /* Initially hide the sub-menu */
+    position: absolute;
+    top: 100%; /* Ensure it shows up beneath the parent */
+    left: 0;
+    background-color: #203764d0;
+    text-align: left;
+  }
+  
+  .nav-links li {
+    margin: 0;
+  }
+  
+  .nav-links li a {
+    padding: 10px 20px;
+    width: 100%;
+    display: block;
+    transition: var(--transition-normal);
+  }
+  
+  .nav-links li a:hover {
+    background-color: #274277;
+    color: #0072ec;
+  }
+  
+  /* Show sub-menu when hovering over the parent .nav-item */
+  .nav-item:hover > .nav-links {
+    display: block;
+  }
+  
+  .logo {
+    width: 48px;
+  }
+  .logo-large {
+    width: 30%;
+    margin-inline: auto;
+  }
+  
+  .prim-header {
+      background-color: var(--primary-color-light);
+      a {
+          color: var(--white-color);
+        }
+    }
+    
+    #records_page .sec-header {
+        background-color: var(--primary-color);
+    }
+    
+    /* Text styling */
+    /* p, ul, li {
+        max-width: 60ch;
+        margin-inline: auto;
+    } */
+    
+    h1 {
+        font-size: var(--font-size-xxlarge);
+        line-height: 1;
+    }
+    h2 {
+        font-size: var(--font-size-xlarge);
+        line-height: 1.2;
+        margin-bottom: 24px;
+    }
+    h3 {
+        font-size: var(--font-size-large);
+    }
+    
+    /* Section */
+    section.intro, .qlinks {
+    padding: var(--padding-medium);
+    text-align: center;
+  }
+  
+  /* Button styles */
+  .btn-grp {
+    /* display: flex;
+    justify-content: center;
+    gap: 20px; */
+    margin-top: var(--margin-y-small);
+  }
+  .btn {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: var(--white-color);
+    font-weight: bold;
+    letter-spacing: 1px;
+    padding: var(--padding-small) var(--padding-medium);
+    text-decoration: none;
+    text-align: center;
+    border-radius: var(--border-radius);
+    border: 1px solid transparent;
+    transition: var(--transition-normal);
+  }
+  .btn:hover {
+    background-color: var(--accent-color-hover);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    margin-top: 20px;
+    width: 100%;
+}
+.btn-outline:hover {
+    background-color: unset ;
+    opacity: .7;
+}
+
+/* Footer */
+footer {
+    background-color: var(--primary-color-light);
+    color: var(--white-color);
+    text-align: center;
+    padding: var(--padding-medium);
+}
+footer p {
+    font-size: var(--font-size-small);
+}
+.dev {
+    color: var(--primary-color-hover);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+}
+
+/* Page-specific styling */
+
+#login-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  height: 100vh;
+
+  header {
+    display: none;
+  }
+  footer {
+    background-color: transparent;
+    margin-inline: auto;
+    padding: 0;
+  }
+}
+.login-main {
+  flex-grow: 1;
+  div {
+      height: 100%;
+  }
+}
+
+.login-container {
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+  flex-grow: 1;
+  position: relative;
+}
+.intro-container {
+  padding: var(--padding-large);
+  background-color: var(--text-color);
+  background-image: url(/images/mathurin-napoly-matnapo-pcP1HwNrSLQ-unsplash.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  color: var(--white-color);
+  width: 80%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.intro-content {
+  margin-inline: auto;
+  padding: var(--padding-hor-large);
+  h1 {
+      margin-bottom: 32px;
+  }
+  ul, li, p {
+      font-size: 20px;
+    }
+}
+.intro-content p {
+    margin-bottom: 24px;
+}
+.intro-content li {
+    margin-left: 32px;
+    position: relative;
+}
+.intro-content li::before {
+    display: inline-block;
+    position: absolute;
+    content:" ";
+    background: url(/images/mineaid-orange.svg);
+    background-size: contain;
+    width: 24px;
+    height: 24px;
+    left: -32px;
+    bottom: 4px;
+}
+.icon {
+    display: flex;
+
+}
+.icon-small {
+    width: 32px;
+    margin-right: 1rem;
+}
+.form-container {
+    padding: var(--padding-xlarge);
+    max-width: 400px;
+    h2 {
+        font-size: var(--font-size-medium);
+    }
+}
+
+/* Homepage Styling */
+  #home, #success_page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    header {
+        margin-bottom: 0;
+    }
+  }
+  
+#home main, #success_page main {
+    display: flex;
+    place-items: center;
+    flex-grow: 1;
+}
+
+
+/* Index page styling */
+/* Form container */
+  #submit-page main {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: var(--padding-medium);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-light);
+  }
+  /* Form headings */
+#submit-page h1, h3 {
+    color: var(--accent-color);
+    text-align: center;
+    margin-bottom: var(--heading-margin, 20px);
+}
+
+/* Form input groups */  
+  /* Form elements */
+  .input-grp {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .input-grp label {
+    font-family: var(--font-heading);
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 6px;
+  }
+  
+.input-grp input,
+.input-grp select,
+.input-grp textarea {
+    padding: var(--input-padding, 10px);
+    border: 1px solid var(--input-border-color, #ccc);
+    border-radius: var(--input-border-radius, 4px);
+    font-size: var(--input-font-size, 16px);
+    font-family: var(--body-font-family, 'Arial', sans-serif);
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* Two-column layout for vital signs */
+h3 {
+    margin-top: 30px;
+}
+
+/* .tews {
+    display: flex;
+    justify-content: space-between;
+} */
+
+.tews .input-grp {
+    flex: 1;
+    margin-right: 10px;
+}
+form > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+.date-time, .company-badge {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+/* Ensure the last item doesn't have extra margin */
+.tews .input-grp:last-child {
+    margin-right: 0;
+}
+
+/* Radio buttons */
+.input-grp input[type="radio"],
+.input-grp input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.input-grp label[for="disposition"] {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 10px;
+}
+
+  /* Buttons */
+  button[type="submit"] {
+    /* background-color: var(--button-background-color);
+    color: var(--white-color);
+    padding: var(--button-padding);
+    font-size: var(--button-font-size);
+    border-radius: var(--button-border-radius);
+    cursor: pointer; */
+    width: 100%;
+    margin-top: 20px;
+  }
+  /* #submit-page button[type="submit"]:hover {
+    background-color: var(--button-background-color-hover);
+  } */
+
+
+   /* Error page container */
+.error-body {
+    display: grid;
+    place-items: center;
+    height: 100%;
+}
+  .error-container {
+    text-align: center;
+    background-color: var(--white-color);
+    padding: var(--padding-large);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-light);
+    max-width: 900px;
+    width: 100%;
+}
+
+/* Error header */
+.error-container h1 {
+    color: var(--error-color);
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+/* Error message */
+.error-container p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+/* Back to home button */
+.error-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--accent-color);
+    color: var(--white-color);
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.error-btn:hover {
+    background-color: var(--accent-color-hover);
+}
+
+
+
+/* Admin Page Styles */
+#admin .container {
+    max-width: 100%;
+}
+.dashboard, #records_page .container{
+    overflow: scroll;
+}
+
+#admin .admin-container {
+    margin: 0 auto;
+    padding: var(--padding-medium);
+    background-color: var(--white-color);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-medium);
+  }
+
+/* #home footer {
+    position: fixed;
+    bottom: 0;
+} */
+
+#admin h1 {
+    font-size: var(--font-size-large);
+  }
+
+/* Filter Section */
+#admin .filter-section h3,
+.records-section h3,
+.export-section h3 {
+    color: var(--secondary-color);
+}
+
+#admin .filter-section form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: fit-content;
+    margin-inline: auto;
+    margin-bottom: 20px;
+}
+
+#admin .filter-section label {
+    margin-right: 10px;
+}
+
+#admin .filter-section input,
+.filter-section select,
+.filter-section button {
+    margin-right: 10px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+/* Records Table */
+table {
+    border-collapse: collapse;
+    margin-top: 56px;
+}
+tr:nth-child(odd) {
+  background-color: var(--primary-color-light);
+}
+thead.accent tr {
+    background-color: var(--accent-color);
+    text-transform: uppercase;
+}
+thead th {
+    padding: var(--padding-small);
+    font-size: var(--font-size-medium);
+    font-weight: 700;
+    color: var(--white-color);
+}
+
+#admin table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+/* #admin table thead {
+    background-color: var(--background-color);
+} */
+
+#admin table th,
+table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+#admin table th {
+    color: var(--primary-color);
+}
+
+#admin table td {
+    color: var(--secondary-color);
+}
+
+/* Export Section */
+#admin .export-section h3 {
+    text-align: left;
+}
+#admin .export-section form {
+    display: flex;
+    align-items: center;
+}
+
+#admin .export-section label {
+    margin-right: 10px;
+}
+
+#admin .export-section select,
+.export-section button {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+#admin .export-section button {
+    background-color: #28a745;
+    color: #fff;
+    margin-left: 10px;
+}
+
+#admin .export-section button:hover {
+    background-color: #218838;
+}
+
+
+/* Flash Alerts */
+
+/* .login-main .alert {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    height: 30px;
+    position: relative;
+
+} */
+.login-main form, .user-table-container {
+    position: relative;
+}
+.alert {
+    display: block;
+    padding: 8px 16px;
+    border-radius: 5px;
+    width: 50%;  /* Set a width so it doesn't take the whole page */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    right: 0;
+    top: -20px;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;  /* For fading it out later */
+}
+
+.user-table-container .alert {
+    top: -40px;
+}
+.alert-danger {
+    background-color: var(--error-bg-color);
+    color: var(--danger-color);
+    border: 1px solid var(--error-border-color);
+}
+
+.alert-success {
+    background-color: var(--success-bg-color);
+    color: var(--success-color);
+    border: 1px solid var(--success-border-color);
+}
+
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #555;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+
+
+  
+  /* Responsive layout */
+  @media (max-width: 500px) {
+    .container {
+      padding: var(--padding-hor-medium);
+    }
+    form > div {
+      grid-template-columns: 1fr;
+    }
+  }
+  

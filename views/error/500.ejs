@@ -7,15 +7,36 @@
     <link rel="stylesheet" href="/css/mineaid-styles.css"> <!-- Link to your CSS -->
     <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 </head>
-<body>
-    <header><%- include('../partials/_header') %></header>  <!-- Root-relative to 'views/partials/_header.ejs' -->
-
+<body class="full-height">
+      <!-- Root-relative to 'views/partials/_header.ejs' -->
+<header><%- include('../partials/_nav') %></header>
 <main>
-    <div class="container">
-        <h1>500 - Internal Server Error</h1>
-        <p>Oops! Something went wrong on our end.</p>
-        <p>Please try again later or contact support if the problem persists.</p>
-        <a href="/">Go back to Home</a>
+    <div class="inner-flex">
+        <div class="container">
+            <div class="message-container">
+                <!-- Display flash messages if there are any -->
+                <% if (success_msg) { %>
+                    <div class="alert alert-success"><%= success_msg %></div>
+                <% } %>
+        
+                <% if (error_msg) { %>
+                    <div class="alert alert-danger"><%= error_msg %></div>
+                <% } %>
+        
+                <% if (error) { %>
+                    <div class="alert alert-danger"><%= error %></div>
+                <% } %>
+                <h1>500 - Internal Server Error</h1>
+                <div class="error-text">
+                    <p>Oops! Something went wrong on our end.</p>
+                    <p>Please try again later or contact support if the problem persists.</p>
+                </div>
+                <div class="btn-grp">
+                    <a class="btn" href="javascript:history.back()">Go back</a>
+                    <a class="btn btn-outline" href="/">Go Home</a>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 

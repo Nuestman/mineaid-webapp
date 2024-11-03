@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - First Aid Portal</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+</head>
+<body class="error-body full-height">
+    <header><%- include('../partials/_nav') %></header>
+    <main>
+            <div class="container">
+                <div class="message-container">
+                    <div class="alert-parent">
+                        <!-- Display flash messages if there are any -->
+                        <% if (success_msg) { %>
+                            <div class="alert alert-success"><%= success_msg %></div>
+                        <% } %>
+            
+                        <% if (error_msg) { %>
+                            <div class="alert alert-danger"><%= error_msg %></div>
+                        <% } %>
+            
+                        <% if (error) { %>
+                            <div class="alert alert-danger"><%= error %></div>
+                        <% } %>
+                        <h1>Registration Error.</h1>
+                        <div class="error-text">
+                            <p>We're sorry, but there's something wrong with the data you provided.</p>
+                            <p>Ensure your passwords match.</p>
+                            <p>If your email or username already exist, contact Admin for password reset.</p>
+                        </div>
+            
+                        <div class="btn-grp">
+                            <a class="btn btn-outline" href="javascript:history.back()">Go back</a>
+                            <a class="btn btn-outline" href="/">Go Home</a>
+                            <a class="btn" href="mailto:nuestman@icloud.com">Request Password Reset</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <%- include('../partials/_footer') %>
+</body>
+</html>

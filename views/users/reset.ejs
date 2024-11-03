@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+</head>
+<body class="full-height">
+    <header>
+        <%- include('../partials/_nav') %>
+        <h1>User Profile - Password Reset</h1>
+    </header>
+    
+    <main>
+        <div class="inner-flex">
+            <div class="container">
+                <div class="form-container">
+                    <h2>Reset Your Password</h2>
+                    <!-- Display flash messages if there are any -->
+            
+                    <div class="alert-parent">
+                        <% if (success_msg) { %>
+                            <div class="alert alert-success"><%= success_msg %></div>
+                        <% } %>
+            
+                        <% if (error_msg) { %>
+                            <div class="alert alert-danger"><%= error_msg %></div>
+                        <% } %>
+            
+                        <% if (error) { %>
+                            <div class="alert alert-danger"><%= error %></div>
+                        <% } %>
+                        <form action="/reset/<%= token %>" method="POST">
+                            <div class="input-grp">
+                                <label for="password">New Password</label>
+                                <input type="password" name="password" id="password" class="form-control" placeholder="Enter new password" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="confirm_password">Confirm New Password</label>
+                                <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Confirm new password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Reset Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer> <%- include('../partials/_footer') %></footer>
+
+    <script src="js/mineaid-scripts.js"></script>
+</body>
+</html>

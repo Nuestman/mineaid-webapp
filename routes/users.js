@@ -1,6 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database/mineaid-db');  // Import the database connection
+const path = require('path');  // Add this line to import the path module
+const app = express();
+const passport = require('passport');  // If you use Passport.js for authentication
+const session = require('express-session'); // Import express-session
+// Make user available in all templates.
+app.use((req, res, next) => {
+    res.locals.user = req.user || null;  // Make user available in all templates
+    next();
+});
+
 
 // Middleware to ensure only authenticated users access these routes
 const ensureAuthenticated = (req, res, next) => {

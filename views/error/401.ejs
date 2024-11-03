@@ -6,22 +6,42 @@
     <title>401 Unauthorized</title>
     <link rel="stylesheet" href="/css/mineaid-styles.css"> <!-- Link to your CSS -->
 </head>
-<body>
+<body class="full-height">
     <header>
-        <%- include ('partials/_header') %>
+        <%- include ('../partials/_nav') %>
     </header>
 
     <main>
-        <h1>401 - Unauthorized</h1>
-        <p>You need to log in to access this page.</p>
-        <btn-grp>
-            <a class="btn" href="/auth/login">Log in</a>
-            <a class="btn btn-outline" href="#">Go back</a>
-        </btn-grp>
+        <div class="inner-flex">
+            <div class="container">
+                <div class="mmessage-container">
+                    <!-- Display flash messages if there are any -->
+                    <% if (success_msg) { %>
+                        <div class="alert alert-success"><%= success_msg %></div>
+                    <% } %>
+            
+                    <% if (error_msg) { %>
+                        <div class="alert alert-danger"><%= error_msg %></div>
+                    <% } %>
+            
+                    <% if (error) { %>
+                        <div class="alert alert-danger"><%= error %></div>
+                    <% } %>
+                    <h1>401 - Unauthorized</h1>
+                    <div class="error-text">
+                        <p>You need to log in to access this page.</p>
+                    </div>
+                    <div class="btn-grp">
+                        <a class="btn" href="/auth/login">Log in</a>
+                        <a class="btn btn-outline" href="javascript:history.back()">Go back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <footer>
-        <%- include ('partials/_footer') %>
+        <%- include ('../partials/_footer') %>
     </footer>
 </body>
 </html>

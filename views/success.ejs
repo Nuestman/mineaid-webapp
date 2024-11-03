@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/css/mineaid-styles.css">
     <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 </head>
-<body id="success_page">
+<body id="success_page" class="full-height">
     <header>
         <div class="container">
             <div class="logo">
@@ -15,13 +15,26 @@
             </div>
             <nav>
                 <a href="/">Home</a>
-                <a href="/form">Add New Record</a>
+                <a href="/triage">Add New Record</a>
+                <a href="/form">Add Incident</a>
             </nav>
         </div>
     </header>
     
     <main>
         <div class="container">
+            <!-- Display flash messages if there are any -->
+            <% if (success_msg) { %>
+                <div class="alert alert-success"><%= success_msg %></div>
+            <% } %>
+            
+            <% if (error_msg) { %>
+                <div class="alert alert-danger"><%= error_msg %></div>
+            <% } %>
+            
+            <% if (error) { %>
+                <div class="alert alert-danger"><%= error %></div>
+            <% } %>
             <div class="logo-large">
                 <img src="/images/first-aid-kit.png" alt="">
             </div>
@@ -32,7 +45,8 @@
             <!-- Button Section -->
             <div class="qlinks btn-grp">
                 <a href="/" class="btn">Go Home</a>
-                <a href="/form" class="btn">Add Another Record</a>
+                <a href="/triage" class="btn">Add Another Record</a>
+                <a href="/form" class="btn">Add Incident</a>
                 <a href="/records" class="btn">View Records</a>
             </div>
         </div>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile - MineAid</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+</head>
+<body class="full-height">
+    <header>
+        <%- include('../partials/_nav') %>
+        <h1>Update Your Profile</h1>
+    </header>
+    
+    <main>
+        <div class="container">
+            <h2>Update Profile</h2>
+            <div class="form-container">
+    
+                <!-- Display flash messages if there are any -->
+                <% if (success_msg) { %>
+                    <div class="alert alert-success"><%= success_msg %></div>
+                <% } %>
+                <% if (error_msg) { %>
+                    <div class="alert alert-danger"><%= error_msg %></div>
+                <% } %>
+    
+                <!-- Profile Picture Upload Form -->
+                <h4>Update Profile Picture</h4>
+                <form action="/profile/upload-pic" method="POST" enctype="multipart/form-data">
+                    <div class="input-grp input-grp-hor">
+                        <input type="file" name="profilePic" accept="image/*" required>
+                        <button class="btn" type="submit">Upload</button>
+                    </div>
+                </form>
+    
+                <!-- Contact Number Update Form -->
+                <h4>Update Contact Number</h4>
+                <form action="/profile/update-contact" method="POST">
+                    <div class="input-grp input-grp-hor">
+                        <input type="text" name="contactNumber" placeholder="Enter new contact number" value="<%= user.contactNumber || '' %>" required>
+                        <button class="btn" type="submit">Update</button>
+                    </div>
+                </form>
+    
+                <!-- Password Update Form -->
+                <h4>Change Password</h4>
+                <form action="/profile/update-password" method="POST">
+                    <div class="input-grp input-grp-hor">
+                        <label for="newPassword">New Password:</label>
+                        <input type="password" name="newPassword" id="newPassword" required>
+                    </div>
+                    <div class="input-grp input-grp-hor">
+                        <label for="confirmPassword">Confirm Password:</label>
+                        <input type="password" name="confirmPassword" id="confirmPassword" required>
+                    </div>
+                    <button class="btn" type="submit">Change Password</button>
+                </form>
+    
+                <!-- Notification Preferences -->
+                <h4>Notification Settings</h4>
+                <form action="/profile/update-notifications" method="POST">
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" name="notifications" <% if (user.notifications) { %> checked <% } %> >
+                            Receive notifications via email
+                        </label>
+                    </div>
+                    <button class="btn" type="submit">Update Preferences</button>
+                </form>
+
+                <!-- Connected Accounts Section -->
+                <div class="connected-accounts">
+                    <h4>Connect Your Social Accounts</h4>
+                    
+                    <form action="/profile/update-social" method="POST">
+                        <div class="input-grp">
+                            <label for="linkedInAccount">LinkedIn Account URL:</label>
+                            <input type="url" name="linkedInAccount" id="linkedInAccount" placeholder="Enter linkedIn profile URL"
+                                value="<%= user.connectedAccounts?.find(account => account.platform === 'linkedIn')?.url || '' %>">
+                        </div>
+                        
+                        <div class="input-grp">
+                            <label for="githubAccount">GitHub Account URL:</label>
+                            <input type="url" name="githubAccount" id="githubAccount" placeholder="Enter GitHub profile URL"
+                                value="<%= user.connectedAccounts?.find(account => account.platform === 'GitHub')?.url || '' %>">
+                        </div>
+                        <button class="btn" type="submit">Save Changes</button>
+                    </form>
+                </div>
+                 
+            </div>
+        </div>
+    </main>
+    
+    <footer> <%- include('../partials/_footer') %></footer>
+    
+</body>
+</html>

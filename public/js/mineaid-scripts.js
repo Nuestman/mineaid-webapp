@@ -69,3 +69,54 @@ function fadeOutAlerts() {
 
 // Call the fadeOutAlerts function after the page loads
 document.addEventListener('DOMContentLoaded', fadeOutAlerts);
+
+document.querySelectorAll('.btn-approve').forEach(button => {
+    button.addEventListener('click', function() {
+        const userId = this.getAttribute('data-user-id');
+        fetch('/admin/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId })
+        }).then(response => {
+            if (response.ok) {
+                // Handle successful approval (e.g., update UI)
+                alert('User approved!');
+            } else {
+                alert('Failed to approve user');
+            }
+        });
+    });
+});
+
+
+// COMING SOON
+// Example: Fade-in effect for the coming-soon message
+document.addEventListener("DOMContentLoaded", function () {
+    const comingSoonContainer = document.querySelector('.coming-soon-container');
+    if (comingSoonContainer) {
+        comingSoonContainer.style.opacity = 0;
+        setTimeout(() => comingSoonContainer.style.opacity = 1, 200);
+    }
+});
+
+
+/* FRONTEND IDLE WARNING PROMPT */
+// Example: Display a warning prompt when the user is idle for a certain period
+let idleTime = 0;
+
+const resetIdleTimer = () => { idleTime = 0; };
+
+// Increment idle time every minute
+setInterval(() => {
+    idleTime++;
+    if (idleTime > 25) { // Show warning at 25 minutes
+        if (confirm("You will be logged out soon due to inactivity. Continue session?")) {
+            fetch('/keep-session-alive'); // Optional endpoint to keep session alive
+            resetIdleTimer();
+        }
+    }
+}, 60000); // 1-minute intervals
+
+// Reset idle time on activity
+window.onload = resetIdleTimer;
+window.onmousemove = resetIdleTimer;
