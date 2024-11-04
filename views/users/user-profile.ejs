@@ -15,96 +15,96 @@
     
     <main class="alert-parent">
         <div class="container">
-            <h2>Profile Information</h2>
-            <div class="profile-container grid-2">
-    
-                <!-- Display flash messages if there are any -->
-                <% if (success_msg) { %>
-                    <div class="alert alert-success"><%= success_msg %></div>
-                <% } %>
-                <% if (error_msg) { %>
-                    <div class="alert alert-danger"><%= error_msg %></div>
-                <% } %>
-    
-                <!-- Profile Picture -->
-                <section class="profile-pic">
-                    <img src="<%= user.profilePicUrl || '/path/to/default-pic.jpg' %>" alt="Profile Picture" id="profile-pic-preview">
-                </section>
-    
-                <div class="personal-container">
-                    <!-- Personal Information -->
-                    <section class="personal-info">
-                        <h2 class="profile-title"><%= user.firstname %> <%= user.surname %></h2>
-                        <p class="bold"><%= user.role %></p>
-                        <p><%= user.username %></p>
-                        <p><%= user.email %></p>
-                        <p><%= user.contactNumber || 'Not provided' %></p>
+            <div class="content-centered">
+                <h2>Profile Information</h2>
+                <div class="profile-container grid-2">
+                    <!-- Display flash messages if there are any -->
+                    <% if (success_msg) { %>
+                        <div class="alert alert-success"><%= success_msg %></div>
+                    <% } %>
+                    <% if (error_msg) { %>
+                        <div class="alert alert-danger"><%= error_msg %></div>
+                    <% } %>
+                    <!-- Profile Picture -->
+                    <section class="profile-pic">
+                        <img src="<%= user.profilePicUrl || '/path/to/default-pic.jpg' %>" alt="Profile Picture" id="profile-pic-preview">
                     </section>
-                     <!-- Account Creation Date & Last Login -->
-                    <section class="personal-info">
-                        <p><strong>Account Created:</strong> <%= user.created_at %></p>
-                        <p><strong>Last Login:</strong> <%= user.lastLogin %></p>
-                        <p><strong>Role:</strong> <%= user.role %></p>
-                        <p><strong>Status:</strong> <%= user.status %></p>
+                    <div class="personal-container">
+                        <!-- Personal Information -->
+                        <section class="personal-info">
+                            <h2 class="profile-title"><%= user.firstname %> <%= user.surname %></h2>
+                            <p class="bold"><%= user.role %></p>
+                            <p><%= user.username %></p>
+                            <p><%= user.email %></p>
+                            <p><%= user.contactNumber || 'Not provided' %></p>
+                        </section>
+                         <!-- Account Creation Date & Last Login -->
+                        <section class="personal-info">
+                            <p><strong>Account Created:</strong> <%= user.created_at %></p>
+                            <p><strong>Last Login:</strong> <%= user.lastLogin %></p>
+                            <p><strong>Role:</strong> <%= user.role %></p>
+                            <p><strong>Status:</strong> <%= user.status %></p>
+                        </section>
+                    </div>
+                    <!-- Recent Activity -->
+                    <section class="profile-card recent-activity">
+                        <h3>Recent Activity</h3>
+                        <% if (recentActivity.length > 0) { %>
+                            <ul>
+                                <% recentActivity.forEach(activity => { %>
+                                    <li><%= activity.activity %> on <%= activity.timestamp %></li>
+                                <% }) %>
+                            </ul>
+                        <% } else { %>
+                            <p>No recent activity.</p>
+                        <% } %>
+                    </section>
+                    <!-- Theme Selection -->
+                    <section class="theme-preference">
+                        <h3>Theme Preference</h3>
+                        <p>Current theme: <%= user.theme === 'dark' ? 'Dark Mode' : 'Light Mode' %></p>
+                        <form action="/profile/update-theme" method="POST">
+                            <div class="btn-grp">
+                                <button name="theme" value="light" class="btn" type="submit">Light Mode</button>
+                                <button name="theme" value="dark" class="btn" type="submit">Dark Mode</button>
+                            </div>
+                        </form>
+                    </section>
+                    <!-- Connected Accounts -->
+                    <section class="connected-accounts">
+                        <h3>Connected Accounts</h3>
+                        <% if (connectedAccounts.length > 0) { %>
+                            <ul>
+                                <% connectedAccounts.forEach(account => { %>
+                                    <li>
+                                        <a href="<%= account.url %>" target="_blank"><%= account.platform %> Profile</a>
+                                        (Linked on <%= account.linkedAt %>)
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        <% } else { %>
+                            <p>No connected accounts.</p>
+                        <% } %>
+                    </section>
+                
+                    <!-- Support Information -->
+                    <section class="support-info">
+                        <h3>Help and Support</h3>
+                        <p>If you have any issues, please contact our <a href="/support">Support Team</a>.</p>
+                    </section>
+                    <!-- Action Links -->
+                    <section class="btn-grp">
+                        <a href="/users/user-update" class="btn">Edit Profile</a>
+                        <a href="/support" class="btn">Help and Support</a>
                     </section>
                 </div>
-
-                <!-- Recent Activity -->
-                <section class="profile-card recent-activity">
-                    <h3>Recent Activity</h3>
-                    <% if (recentActivity.length > 0) { %>
-                        <ul>
-                            <% recentActivity.forEach(activity => { %>
-                                <li><%= activity.activity %> on <%= activity.timestamp %></li>
-                            <% }) %>
-                        </ul>
-                    <% } else { %>
-                        <p>No recent activity.</p>
-                    <% } %>
-                </section>
-
-                <!-- Theme Selection -->
-                <section class="theme-preference">
-                    <h3>Theme Preference</h3>
-                    <p>Current theme: <%= user.theme === 'dark' ? 'Dark Mode' : 'Light Mode' %></p>
-                    <form action="/profile/update-theme" method="POST">
-                        <div class="btn-grp">
-                            <button name="theme" value="light" class="btn" type="submit">Light Mode</button>
-                            <button name="theme" value="dark" class="btn" type="submit">Dark Mode</button>
-                        </div>
-                    </form>
-                </section>
-
-                <!-- Connected Accounts -->
-                <section class="connected-accounts">
-                    <h3>Connected Accounts</h3>
-                    <% if (connectedAccounts.length > 0) { %>
-                        <ul>
-                            <% connectedAccounts.forEach(account => { %>
-                                <li>
-                                    <a href="<%= account.url %>" target="_blank"><%= account.platform %> Profile</a> 
-                                    (Linked on <%= account.linkedAt %>)
-                                </li>
-                            <% }) %>
-                        </ul>
-                    <% } else { %>
-                        <p>No connected accounts.</p>
-                    <% } %>
-                </section>
-                
-
-                <!-- Support Information -->
-                <section class="support-info">
-                    <h3>Help and Support</h3>
-                    <p>If you have any issues, please contact our <a href="/support">Support Team</a>.</p>
-                </section>
-    
-                <!-- Action Links -->
-                <section class="btn-grp">
-                    <a href="/users/user-update" class="btn">Edit Profile</a>
-                    <a href="/support" class="btn">Help and Support</a>
-                </section>
             </div>
+        </div>
+        <!-- Floating Feedback Button -->
+        <div id="feedback-float" class="feedback-float">
+            <button onclick="window.location.href='/user-survey'" aria-label="Give Feedback">
+                📝 Feedback
+            </button>
         </div>
     </main>
     

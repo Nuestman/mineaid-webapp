@@ -120,3 +120,76 @@ setInterval(() => {
 // Reset idle time on activity
 window.onload = resetIdleTimer;
 window.onmousemove = resetIdleTimer;
+
+/* USING MODALS */
+// let idleTime = 0;
+// let idleWarningTime = 25 * 60 * 1000; // 25 minutes
+// let logoutTime = 30 * 60 * 1000; // 30 minutes
+// let idleModal = document.getElementById("idleModal");
+
+// // Show the idle modal after warning time
+// const showIdleModal = () => {
+//     idleModal.style.display = "flex";
+// };
+
+// // Hide the modal and reset idle timer
+// const resetIdleTimer = () => {
+//     idleTime = 0;
+//     idleModal.style.display = "none";
+// };
+
+// // Log out and refresh the page
+// const logoutUser = () => {
+//     window.location.href = "/logout"; // Adjust this to your logout route
+//     location.reload(); // Clears the session and any sensitive data from the page
+// };
+
+// // Reset idle time on user activity
+// const resetUserActivity = () => {
+//     resetIdleTimer();
+//     fetch('/keep-session-alive'); // Optional: Endpoint to refresh session on backend
+// };
+
+// // Event listeners to detect user activity
+// ['mousemove', 'keydown', 'click'].forEach(event => {
+//     window.addEventListener(event, resetUserActivity);
+// });
+
+// // Check for idle state every second
+// setInterval(() => {
+//     idleTime += 1000;
+
+//     if (idleTime >= idleWarningTime && idleModal.style.display === "none") {
+//         showIdleModal(); // Show warning modal after 25 minutes
+//     }
+
+//     if (idleTime >= logoutTime) {
+//         logoutUser(); // Log out after 30 minutes
+//     }
+// }, 1000);
+
+// // Continue session button
+// document.getElementById("continueSessionBtn").addEventListener("click", () => {
+//     resetUserActivity();
+//     resetIdleTimer();
+// });
+
+
+
+/* Floating Feedback Button*/
+// Show the feedback button after a 10-second delay
+setTimeout(() => {
+    document.getElementById('feedback-float').style.display = 'block';
+}, 10000); // Adjust delay as needed
+
+// Detect exit intent (mouse moves towards the top of the page)
+document.addEventListener('mouseout', (e) => {
+    if (e.clientY < 10) { // Mouse is near the top edge
+        document.getElementById('feedback-float').style.display = 'block';
+    }
+});
+
+// Optional: Hide button after submitting feedback
+if (window.location.pathname === '/feedback/submit') {
+    document.getElementById('feedback-float').style.display = 'none';
+}

@@ -1,3 +1,10 @@
+Few minor fixes
+BG color to white
+Profile page width fixes
+Added a feedback button, linked to a feedback form, to feedback record in db rendered in user feedback.
+
+
+
 Version 3 @ 1300Hrs 26-10-24
 1. Registration working. issue was with password input names (password2/confirm_password) 
 2. admin pages open.

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/css/mineaid-styles.css">
     <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 </head>
-<body id="submit-page">
+<body class="submit-page">
     <header>
         <div class="container">
             <div class="logo">
@@ -83,20 +83,22 @@
                         <label for="name">Name:</label>
                         <input type="text" id="name" name="name" required>
                     </div>
-                    <!-- Age (Text) -->
-                    <div class="input-grp">
-                        <label for="age">Age:</label>
-                        <input type="number" id="age" name="age" required>
-                    </div>
-                    <!-- Gender (Select) -->
-                    <div class="input-grp">
-                        <label for="gender">Gender:</label>
-                        <select id="gender" name="gender" required>
-                            <option value="">--Select Gender--</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
+                    <div class="grid-2">
+                        <!-- Age (Text) -->
+                        <div class="input-grp">
+                            <label for="age">Age:</label>
+                            <input type="number" id="age" name="age" required>
+                        </div>
+                        <!-- Gender (Select) -->
+                        <div class="input-grp">
+                            <label for="gender">Gender:</label>
+                            <select id="gender" name="gender" required>
+                                <option value="">--Select Gender--</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
                     </div>
                     <!-- Presenting Complaints (Textarea) -->
                      <div class="input-grp">
@@ -115,8 +117,7 @@
                         <textarea id="complaints" name="complaints" rows="4" cols="50" required></textarea>
                     </div>
                     <!-- Vital Signs -->
-                        <h2>Triage</h2>
-                        <h3>Adult TEWS:</h3>
+                        <h3>Triage: Adult TEWS:</h3>
                         <div class="tews">
                             <div class="input-grp">
                                 <label for="mobility">Mobility:</label>
@@ -168,16 +169,22 @@
                             </div>
                         </div>
                         <!-- Final Triage -->
-                        <div class="input-grp">
-                            <label for="final_triage">Final Triage:</label>
-                            <select id="final_triage" name="final_triage" required>
-                                <option value="">--Select Final Triage--</option>
-                                <option value="Red">Red</option>
-                                <option value="Orange">Orange</option>
-                                <option value="Yellow">Yellow</option>
-                                <option value="Green">Green</option>
-                                <option value="Blue">Blue</option>
-                            </select>
+                        <div class="grid-2">
+                            <div class="input-grp">
+                                <label for="tews_score">Total TEWS:</label>
+                                <input type="text" id="tews_score" name="tews_score">
+                            </div>
+                            <div class="input-grp">
+                                <label for="final_triage">Final Triage:</label>
+                                <select id="final_triage" name="final_triage" required>
+                                    <option value="">--Select Final Triage--</option>
+                                    <option value="Red">Red</option>
+                                    <option value="Orange">Orange</option>
+                                    <option value="Yellow">Yellow</option>
+                                    <option value="Green">Green</option>
+                                    <option value="Blue">Blue</option>
+                                </select>
+                            </div>
                         </div>
             
                     <!-- Treatment Given / Procedure -->

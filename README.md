@@ -7,8 +7,7 @@ A web application for managing client data entry, user approvals, and administra
 ---
 
 ### 2. Description
-This project is designed to manage data entry and administrative functions for multiple first aid posts. It allows users to input client information, incident logging, store records, and manage user access levels (pending, approved, blocked). Users in addition can access Inventory Management
-Training & Resources after logging in. Admins can approve users, block or unblock users, and filter users based on status. And also access more management functions such as Dashboard, Incident Reports, FAP Operations Analytics & Reports, Compliance Tracking, Settings etc.
+This project is designed to manage data entry and administrative functions for multiple first aid posts. It allows users to input client information, incident logging, store records, and manage user access levels (pending, approved, blocked). Users in addition can access Inventory Management, Training & Resources after logging in. Admins can approve users, block or unblock users, and filter users based on status. And also access more management functions such as Dashboard, Incident Reports, FAP Operations Analytics & Reports, Compliance Tracking, Settings etc.
 
 ---
 
@@ -18,6 +17,7 @@ Training & Resources after logging in. Admins can approve users, block or unbloc
 - **Data Filtering**: Admins can filter users by status (Pending, Approved, Blocked).
 - **User Authentication**: Login and logout functionality.
 - **Admin Dashboard**: Separate interface for administrative tasks.
+- **Profile management**: Users can update their profiles with the necessary info, like profile pictures, contact, etc.
   
 ---
 
@@ -32,7 +32,7 @@ Before running the application, ensure you have the following installed:
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-username/mineaid-webapp.git
+    git clone https://github.com/nuestman/mineaid-webapp.git
     ```
 
 2. Navigate to the project directory:

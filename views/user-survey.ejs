@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Manage Users</title>
+  <link rel="stylesheet" href="/css/mineaid-styles.css">
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon"><!-- Link to your stylesheets -->
+</head>
+<body class="full-height">
+
+    
+<header>
+    <%- include('partials/_nav') %>
+    <h1>User Feedback Survey</h1>
+</header>
+
+<main >
+    <div class="container">
+        <div class="form-container contact-form-container">
+            <div class="alert-parent">
+                <!-- Display flash messages if there are any -->
+                <% if (success_msg) { %>
+                    <div class="alert alert-success"><%= success_msg %></div>
+                <% } %>
+                
+                <% if (error_msg) { %>
+                    <div class="alert alert-danger"><%= error_msg %></div>
+                <% } %>
+                
+                <% if (error) { %>
+                    <div class="alert alert-danger"><%= error %></div>
+                <% } %>
+                <h2>Please share your thoughts with us.</h2>
+                <p>Your feedback is invaluable to help better serve you.</p>
+                <form action="/feedback/submit" method="POST">
+                    <div class="input-grp">
+                        <label for="onboarding_rating">How was the onboarding experience? (1 = Very Confusing, 5 = Very Clear):</label>
+                        <input type="number" name="onboarding_rating" id="onboarding_rating" min="1" max="5" required>
+                    </div>
+
+                    <div class="input-grp">
+                        <label for="ease_of_use">How easy is it to navigate the app overall? (1 = Very Difficult, 5 = Very Easy):</label>
+                        <input type="number" name="ease_of_use" id="ease_of_use" min="1" max="5" required>
+                    </div>
+
+                    <div class="input-grp">
+                        <label for="forms_ease">Are the forms easy to complete and understand? (1 = Very Difficult, 5 = Very Easy):</label>
+                        <input type="number" name="forms_ease" id="forms_ease" min="1" max="5" required>
+                    </div>
+
+                    <div class="input-grp">
+                        <label for="feature_usefulness">How useful are the app's features for work at FAPs? (1 = Not Useful, 5 = Very Useful):</label>
+                        <input type="number" name="feature_usefulness" id="feature_usefulness" min="1" max="5" required>
+                    </div>
+
+                    <div class="input-grp">
+                        <label for="security_confidence">How secure does the app feel when entering and storing sensitive data? (1 = Not Secure, 5 = Very Secure):</label>
+                        <input type="number" name="security_confidence" id="security_confidence" min="1" max="5" required>
+                    </div>
+
+                    <div class="input-grp">
+                        <label for="fap_relevance">Does the app fit the needs of First Aid Post (FAP) work? Please share any specifics:</label>
+                        <textarea name="fap_relevance" id="fap_relevance"></textarea>
+                    </div>
+
+                    <div class="input-grp">
+                        <label for="performance_rating">Rate the app's performance (1 = Slow, 5 = Excellent):</label>
+                        <input type="number" name="performance_rating" id="performance_rating" min="1" max="5" required>
+                    </div>
+
+                    <div class="input-grp">
+                        <label for="design_feedback">Do you have any feedback on the app's design or layout?</label>
+                        <textarea name="design_feedback" id="design_feedback"></textarea>
+                    </div>
+
+                    <div class="input-grp">
+                        <label for="feature_request">Are there any features you’d like added or improved?</label>
+                        <textarea name="feature_request" id="feature_request"></textarea>
+                    </div>
+
+                    <div class="input-grp">
+                        <label for="overall_experience">Any additional feedback on your overall experience?</label>
+                        <textarea name="overall_experience" id="overall_experience"></textarea>
+                    </div>
+
+                    <button class="btn" type="submit">Submit Feedback</button>
+                </form>
+
+            </div>
+        </div>        
+    </div>
+</main>
+
+  <footer>
+    <p>&copy; 2024 First Aid Portal. All Rights Reserved.</p>
+    <p>Designed and Developed by <a href="mailto:nuestman@icloud.com" class="dev">Numan Usman</a></p>
+  </footer>
+
+  <script src="/js/mineaid-scripts.js"></script>
+</body>
+</html>

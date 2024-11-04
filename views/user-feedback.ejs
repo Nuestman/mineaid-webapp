@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Manage Users</title>
+  <link rel="stylesheet" href="/css/mineaid-styles.css">
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon"><!-- Link to your stylesheets -->
+</head>
+<body class="full-height">
+
+    
+<header>
+    <%- include('partials/_nav') %>
+    <h1>User Survey Results</h1>
+</header>
+
+<main >
+    <div class="container">
+        <div class="user-table-container wide-table">
+            <div class="alert-parent">
+                <!-- Display flash messages if there are any -->
+                <% if (success_msg) { %>
+                    <div class="alert alert-success"><%= success_msg %></div>
+                <% } %>
+                
+                <% if (error_msg) { %>
+                    <div class="alert alert-danger"><%= error_msg %></div>
+                <% } %>
+                
+                <% if (error) { %>
+                    <div class="alert alert-danger"><%= error %></div>
+                <% } %>
+                <p>User feedback for consideration.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Onboarding</th>
+                            <th>Ease of Use</th>
+                            <th>Forms Ease</th>
+                            <th>Feature Usefulness</th>
+                            <th>Security</th>
+                            <th>FAP Relevance</th>
+                            <th>Performance</th>
+                            <th>Design Feedback</th>
+                            <th>Feature Requests</th>
+                            <th>Overall Experience</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (feedback && feedback.length > 0) { %>
+                            <% feedback.forEach(entry => { %>
+                                <tr>
+                                    <td><%= entry.timestamp %></td>
+                                    <td><%= entry.onboarding_rating %></td>
+                                    <td><%= entry.ease_of_use %></td>
+                                    <td><%= entry.forms_ease %></td>
+                                    <td><%= entry.feature_usefulness %></td>
+                                    <td><%= entry.security_confidence %></td>
+                                    <td><%= entry.fap_relevance %></td>
+                                    <td><%= entry.performance_rating %></td>
+                                    <td><%= entry.design_feedback %></td>
+                                    <td><%= entry.feature_request %></td>
+                                    <td><%= entry.overall_experience %></td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="11">No feedback submitted yet.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                    
+                </table>
+
+
+            </div>
+        </div>        
+    </div>
+</main>
+
+  <footer>
+    <p>&copy; 2024 First Aid Portal. All Rights Reserved.</p>
+    <p>Designed and Developed by <a href="mailto:nuestman@icloud.com" class="dev">Numan Usman</a></p>
+  </footer>
+
+  <script src="/js/mineaid-scripts.js"></script>
+</body>
+</html>

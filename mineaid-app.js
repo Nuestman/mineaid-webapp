@@ -1052,9 +1052,6 @@ app.get('/export', ensureAuthenticated, (req, res) => {
 app.get('/about', (req, res) => {
     res.render('about'); // about.ejs
 });
-// app.get('/users/reset-password', (req, res) => {
-//     res.render('users/reset-password'); // about.ejs
-// });
 
 
 // CONTACT PAGE ROUTES
@@ -1100,6 +1097,48 @@ app.post('/contact', (req, res) => {
         });
     });
 });
+
+
+// GET Route to Display Survey Form
+app.get('/user-survey', (req, res) => {
+    res.render('user-survey', { title: 'User Feedback Survey' });
+});
+
+// POST Route to Handle Form Submission
+app.post('/feedback/submit', (req, res) => {
+    const { onboarding_rating, ease_of_use, forms_ease, feature_usefulness, security_confidence, fap_relevance, performance_rating, design_feedback, feature_request, overall_experience } = req.body;
+    const query = `
+        INSERT INTO user_feedback 
+        (onboarding_rating, ease_of_use, forms_ease, feature_usefulness, security_confidence, fap_relevance, performance_rating, design_feedback, feature_request, overall_experience) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    
+    db.run(query, [onboarding_rating, ease_of_use, forms_ease, feature_usefulness, security_confidence, fap_relevance, performance_rating, design_feedback, feature_request, overall_experience], function(err) {
+        if (err) {
+            console.error('Error submitting feedback:', err.message);
+            res.status(500).render('error', { message: 'Feedback submission failed' });
+        } else {
+        
+            console.log('success_msg', 'Thank You for Your Feedback!');
+            res.redirect('/feedback/results');
+        }
+    });
+});
+
+// GET Route to View Feedback Responses
+app.get('/feedback/results', (req, res) => {
+    const query = 'SELECT * FROM user_feedback ORDER BY timestamp DESC';
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            console.error('Error retrieving feedback:', err.message);
+            res.status(500).render('error', { message: 'Error retrieving feedback' });
+        } else {
+            res.render('user-feedback', { title: 'Survey Results', feedback: rows }); // Ensure feedback is passed as rows
+        }
+    });
+});
+
 
 
 // Route: Help/Support (GET)

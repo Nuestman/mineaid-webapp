@@ -86,14 +86,7 @@ const db = new sqlite3.Database(path.join(__dirname, 'mineaid.db'), (err) => {
 //     created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
 // )`);
 
-// Close the database connection when done
-// db.close((err) => {
-//     if (err) {
-//         console.error('Error closing the database:', err.message);
-//     } else {
-//         console.log('Database connection closed.');
-//     }
-// });
+
 // db.run('ALTER TABLE users ADD COLUMN resetPasswordToken TEXT', (err) => {
 //     if (err) {
 //         console.error('Error adding resetPasswordToken column:', err.message);
@@ -228,6 +221,40 @@ const db = new sqlite3.Database(path.join(__dirname, 'mineaid.db'), (err) => {
 //         });
 //     }
 // });
+// Drop the user_feedback table if it exists
+db.serialize(() => {
+    db.run(`DROP TABLE IF EXISTS user_feedback`, (err) => {
+        if (err) {
+            console.error("Error dropping user_feedback table:", err);
+        } else {
+            console.log("user_feedback table dropped.");
+
+            // Create the user_feedback table
+            db.run(`CREATE TABLE user_feedback (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    onboarding_rating INTEGER,
+                    ease_of_use INTEGER,
+                    forms_ease INTEGER,
+                    feature_usefulness INTEGER,
+                    security_confidence INTEGER,
+                    fap_relevance TEXT,
+                    performance_rating INTEGER,
+                    design_feedback TEXT,
+                    feature_request TEXT,
+                    overall_experience TEXT
+                )`, (err) => {
+                if (err) {
+                    console.error("Error creating user_feedback table:", err.message);
+                } else {
+                    console.log("user_feedback table created successfully.");
+                }
+            });
+        }
+    });
+});
+
+
 
 // Clear expired tokens on server start
 const clearExpiredTokens = () => {
@@ -249,5 +276,16 @@ const clearExpiredTokens = () => {
 
 // Call the function to clear expired tokens
 clearExpiredTokens();
+
+
+// Close the database connection when done
+// db.close((err) => {
+//     if (err) {
+//         console.error('Error closing the database:', err.message);
+//     } else {
+//         console.log('Database connection closed.');
+//     }
+// });
+
 
 module.exports = db;
