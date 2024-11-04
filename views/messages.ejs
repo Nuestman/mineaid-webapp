@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Messages</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+</head>
+<body>
+    <header><%- include('partials/_nav') %></header>
+    <main>
+        <div class="container">
+            <div class="alert-parent">
+                <div class="messages">
+                    <!-- Display flash messages if there are any -->
+                    <% if (success_msg) { %>
+                        <div class="alert alert-success"><%= success_msg %></div>
+                    <% } %>
+                    <% if (error_msg) { %>
+                        <div class="alert alert-danger"><%= error_msg %></div>
+                    <% } %>
+                    <% if (error) { %>
+                        <div class="alert alert-danger"><%= error %></div>
+                    <% } %>
+                    <h1>Contact Messages</h1>
+                    <div class="message-list grid-3">
+                        <% if (messages.length > 0) { %>
+                            <% messages.forEach(message => { %>
+                                <div class="message-item">
+                                    <h2><%= message.name %></h2>
+                                    <p><strong>Email:</strong> <%= message.email %></p>
+                                    <p><strong>Message:</strong> <%= message.message %></p>
+                                    <p><em>Sent on: <%= new Date(message.submitted_at).toLocaleString() %></em></p>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <p>No messages to display.</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

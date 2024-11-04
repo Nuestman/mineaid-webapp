@@ -502,6 +502,26 @@ footer p {
 }
 
 
+/*MESSAGES PAGE*/
+.messages {
+    margin: var(--margin-y-large);
+    h2, h3 {
+        color: var(--accent-color);
+        font-size: var(--font-size-large);
+        margin-bottom: 24px;
+    }
+    h1 {
+        margin-bottom: 32px;
+    }
+}
+.message-item {
+    background-color: #f9f9f9;
+    padding: var(--padding-medium);
+    margin-bottom: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-medium);
+}
+
 /*USER PROFILE PAGE*/
 // Show Profile Icon in place of firstname
 .user-profile-icon img {
@@ -1071,6 +1091,14 @@ th, td {
 
   
   /* Responsive layout */
+@media (max-width: 768px) {
+    .container {
+      padding: var(--padding-hor-medium);
+    }
+    .grid-3 {
+        grid-template-columns: 1fr 1fr;
+    }
+}
 @media (max-width: 500px) {
     .container {
       padding: var(--padding-hor-medium);
@@ -1080,6 +1108,9 @@ th, td {
     }
 
     .grid-2 {
+        grid-template-columns: unset;
+    }
+    .grid-3 {
         grid-template-columns: unset;
     }
 }

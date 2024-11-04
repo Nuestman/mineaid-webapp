@@ -1098,6 +1098,21 @@ app.post('/contact', (req, res) => {
     });
 });
 
+// Route to fetch and display contact messages
+app.get('/messages', (req, res) => {
+    const sql = 'SELECT * FROM contact_messages';
+
+    db.all(sql, [], (err, rows) => {
+        if (err) {
+            console.error('Error fetching messages:', err);
+            req.flash('error_msg', 'Could not retrieve messages. Please try again.');
+            return res.redirect('/'); // Redirect to a default route if needed
+        }
+        res.render('messages', { messages: rows });
+    });
+});
+
+
 
 // GET Route to Display Survey Form
 app.get('/user-survey', (req, res) => {
@@ -1145,11 +1160,15 @@ app.get('/feedback/results', (req, res) => {
 app.get('/help', (req, res) => {
     res.render('help'); // help.ejs
 });
+// Route: Messages page (GET)
+app.get('/messages', (req, res) => {
+    res.render('messages'); // help.ejs
+});
 // Route: Success page (GET)
 app.get('/success', (req, res) => {
     res.render('success'); // help.ejs
 });
-// Route: Success page (GET)
+// Route: User reset page (GET)
 app.get('/users/reset', (req, res) => {
     res.render('users/reset'); // help.ejs
 });
