@@ -1,7 +1,17 @@
+Issues
+DB dropped on deploy
+Duplicated navbar on some pages (User profile)
+Annoying prompt issue
+Body copy review
+Lift shadows unintended effects on old dashboard
+Colors - tone down to grays, make it look pro
+Migrate to postgreSQL for DB persistence
+
 Version 9. 
 Fixed the nev with logical grouping and showing on hover.
 Improved feedback survey questionnaire
 improved navbar styling and responsiveness
+Deployed
 
 
 Version 8.1 Fixes with a feature

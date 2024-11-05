@@ -1,1 +1,65 @@
-<%- include('../partials/_login-toggler') %>
+
+
+<div class="container">
+    <div class="nav-container">
+        <div class="logo">
+            <a href="/"><img src="/images/first-aid-kit.png" alt=""></a>
+        </div>
+
+        <!-- Hamburger icon for smaller screens -->
+        <div class="hamburger-menu" id="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav class="toggler" id="navbar">
+            <!-- Existing nav structure -->
+            <ul>
+                <li class="nav-item"><a href="" class="nav-link">User Actions</a>
+                    <ul class="nav-links">
+                        <li><a href="/triage">Triage</a></li>
+                        <li><a href="/form">Add Incident</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/user-survey">Give Feedback</a></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a href="" class="nav-link">Admin</a>
+                    <ul class="nav-links">
+                        <li><a href="/admin/admin-users">Admin Users</a></li>
+                        <li><a href="/admin/users">Users</a></li>
+                        <li><a href="/messages">Messages</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a href="" class="nav-link">Records</a>
+                    <ul class="nav-links">
+                        <li><a href="/records">Triage Book</a></li>
+                        <li><a href="/incident-book">Incident Book</a></li>
+                        <li><a href="/feedback/results">User Feedback</a></li>
+                    </ul>
+                </li>
+                <!-- Show dashboard/logout links if logged in -->
+                <% if (loggedIn === true) { %>
+                <li class="nav-item"><a href="" class="nav-link">Accounts</a>
+                    <ul class="nav-links">
+                        <li><a class="user-profile-icon" href="/users/user-profile"><img src="<%= user.profilePicUrl %>" alt="User Profile Picture" ></a></li>
+                        <li><a href="/logout">Logout</a></li>
+                        <li><a href="/about">About</a></li>        
+                    </ul>
+                    <!-- Show login/register links if not logged in -->
+                </li>
+                <% } else { %>
+                        <li class="nav-item"><a href="" class="nav-link">Accounts</a>
+                            <ul class="nav-links">
+                                <li><a href="/login">Login</a></li>
+                                <li><a href="/register">Register</a></li>
+                            </ul>
+                        </li>
+                    <% }
+                %>        
+            </ul>
+        </nav>
+    </div>
+</div>

@@ -735,7 +735,10 @@ app.get('/admin/admin-users', ensureAuthenticated,  (req, res) => {
             console.error('Error fetching users:', err.message);
             res.status(500).render('error/error', { message: 'Error fetching users' });
         } else {
-            res.render('admin/admin-users', { title: 'Manage Users', users: rows }); 
+            
+            req.flash('success_msg', 'Under development. Page is inaccessible! Youve been redirected! Check back later.');
+            res.redirect('/admin'); // Redirect here after handling email
+            // res.render('admin/admin-users', { title: 'Manage Users', users: rows });  COME BACK TO THIS
             console.log('Users fetched successfully.')
         }
     });

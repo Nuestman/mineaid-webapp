@@ -94,7 +94,7 @@
     --font-size-medium: clamp(18px, 2vw + 14px, 24px);      /* Scales between 18px and 24px */
     --font-size-large: clamp(24px, 3vw + 16px, 32px);       /* Scales between 24px and 32px */
     --font-size-xlarge: clamp(32px, 4vw + 18px, 48px);      /* Scales between 32px and 48px */
-    --font-size-xxlarge: clamp(32px, 5vw + 20px, 56px);     /* Scales between 40px and 56px */
+    --font-size-xxlarge: clamp(40px, 5vw + 20px, 56px);     /* Scales between 40px and 56px */
 
   
     /* Box shadow */
@@ -115,8 +115,8 @@
     --button-transition: var(--transition-normal);
 
     /* Layout */
-    --2-cols: repeat(2, 1fr);
-    --3-cols: repeat(3, 1fr);
+    --2-cols: 1fr 1fr;
+    --3-cols: 1fr 1fr 1fr;
 }
 
   
@@ -269,7 +269,7 @@ hr {
     gap: 16px;
   }
   
-  header nav a, .nav-item {
+  header nav a {
     // margin-right: var(--padding-medium);
     color: var(--white-color);
     font-weight: 700;
@@ -282,9 +282,7 @@ hr {
   .nav-item {
     position: relative;
     display: inline-block;
-    z-index: 100;
-    cursor: pointer;
-    margin-bottom: 1rem;
+    z-index: 3;
   }
     
   .nav-links {
@@ -295,7 +293,6 @@ hr {
     text-align: left;
     width: max-content;
     box-shadow: var(--box-shadow-medium);
-    padding-top: .5rem;
   }
   
   .nav-links li {
@@ -335,48 +332,61 @@ hr {
 
 
   
-.logo {
+  .logo {
     width: 48px;
-}
-.logo-large {
+  }
+  .logo-large {
     width: 30%;
     margin-inline: auto;
-}
-
+  }
+  
+  .prim-header {
+      background-color: var(--primary-color-light);
+      a {
+          color: var(--white-color);
+        }
+    }
     
-/* Text styling */
-p, ul, li {
-    max-width: 60ch;
-    margin-inline: auto;
-}
-    h1, h2, h3, h4 {
-    font-family: var(--font-heading);
+    #records_page .sec-header {
+        background-color: var(--primary-color);
     }
 
-h1 {
-    font-size: var(--font-size-xxlarge);
-    line-height: 1;
-    margin: var(--margin-y-normal);
-    margin-inline: auto;
-}
-h2 {
-    font-size: var(--font-size-xlarge);
-    line-height: 1.2;
-    margin-bottom: 24px;
-}
-h3 {
-    font-size: var(--font-size-large);
-}
-h4 {
-    font-size: var(--font-size-medium);
-}
 
 
-/* Section */
-section.intro, .qlinks {
-padding: var(--padding-medium);
-text-align: center;
-}
+    
+    /* Text styling */
+    p, ul, li {
+        max-width: 60ch;
+        margin-inline: auto;
+    }
+     h1, h2, h3, h4 {
+        font-family: var(--font-heading);
+     }
+    
+    h1 {
+        font-size: var(--font-size-xxlarge);
+        line-height: 1;
+        margin: var(--margin-y-normal);
+        margin-inline: auto;
+    }
+    h2 {
+        font-size: var(--font-size-xlarge);
+        line-height: 1.2;
+        margin-bottom: 24px;
+    }
+    h3 {
+        font-size: var(--font-size-large);
+    }
+    h4 {
+        font-size: var(--font-size-medium);
+    }
+
+    
+    /* Section */
+    section.intro, .qlinks {
+    padding: var(--padding-medium);
+    text-align: center;
+  }
   
   /* Button styles */
 // .alert-btn-grp {
@@ -831,6 +841,9 @@ form > div {
 #admin .container {
     max-width: 100%;
 }
+.dashboard, #records_page .container{
+    overflow: scroll;
+}
 .dashboard-page h1 {
     text-align: center;
     margin-bottom: 32px;
@@ -852,7 +865,7 @@ form > div {
 #admin .filter-section h3,
 .records-section h3,
 .export-section h3 {
-    color: var(--text-color);
+    color: var(--secondary-color);
 }
 
 #admin .filter-section form {
@@ -877,22 +890,6 @@ form > div {
     border: 1px solid #ddd;
 }
 
-/* Records Table */
-table {
-    border-collapse: collapse;
-    margin-top: 56px;
-    box-shadow: var(--box-shadow-medium);
-}
-tr:nth-child(odd) {
-  background-color: var(--primary-color-subtle);
-}
-thead th {
-    background-color: var(--accent-color);
-    // text-transform: uppercase;
-    // font-size: var(--font-size-medium);
-    font-weight: 700;
-    color: var(--white-color);
-}
 
 th, td {
     padding: var(--padding-small);
@@ -913,9 +910,21 @@ th, td {
     margin-right: 10px;
 }
 
+#admin .export-section select,
+.export-section button {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
 #admin .export-section button {
+    background-color: #28a745;
+    color: #fff;
     margin-left: 10px;
-    height: 100%;
+}
+
+#admin .export-section button:hover {
+    background-color: #218838;
 }
 
 
@@ -1118,6 +1127,10 @@ th, td {
 
 
     @media (max-width: 650px) {
+        h1 {
+            font-size: var(--font-size-large);
+            max-width: 450px;
+        }
         .nav-container {
             flex-direction: column;
         }
