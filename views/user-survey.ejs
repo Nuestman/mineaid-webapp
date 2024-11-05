@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Manage Users</title>
+  <title>User Feedback Survey</title>
   <link rel="stylesheet" href="/css/mineaid-styles.css">
   <link rel="shortcut icon" href="favicon.png" type="image/x-icon"><!-- Link to your stylesheets -->
 </head>
@@ -32,54 +32,72 @@
                     <div class="alert alert-danger"><%= error %></div>
                 <% } %>
                 <h2>Please share your thoughts with us.</h2>
-                <p>Your feedback is invaluable to help better serve you.</p>
+                <p>Your feedback is invaluable to help improve the service.</p>
                 <form action="/feedback/submit" method="POST">
                     <div class="input-grp">
-                        <label for="onboarding_rating">How was the onboarding experience? (1 = Very Confusing, 5 = Very Clear):</label>
+                        <h3>1. ONBOARDING</h3>
+                        <label for="onboarding_rating">How was the onboarding experience (i.e, welcome, registration, login.)? <br> (1 = Very Confusing, 5 = Very Clear):</label>
                         <input type="number" name="onboarding_rating" id="onboarding_rating" min="1" max="5" required>
+                        <label for="onboarding_extra">Did you encounter any issues? Please explain.<br></label>
+                        <input type="text" name="onboarding_extra" id="onboarding_extra_text" required>
                     </div>
 
                     <div class="input-grp">
-                        <label for="ease_of_use">How easy is it to navigate the app overall? (1 = Very Difficult, 5 = Very Easy):</label>
+                        <h3>2. NAVIGATION</h3>
+                        <label for="ease_of_use">How easy is it to navigate the app overall? <br> (1 = Very Difficult, 5 = Very Easy):</label>
+                        <input type="number" name="ease_of_use" id="ease_of_use" min="1" max="5" required>
+                        <label for="ease_of_use">What are your thoughts on the links, arrangement and grouping? <br> (1 = Very Difficult, 5 = Very Easy):</label>
+                        <input type="text" name="ease_of_use" id="ease_of_use" min="1" max="5" required>
+                        <label for="ease_of_use">Were there any broken links? (Errors, or wrong pages etc.):</label>
+                        <input type="text" name="ease_of_use" id="ease_of_use" min="1" max="5" required>
+                        <label for="ease_of_use">Were the links self-explanatory? <br> (1 = Very Confusing, 5 = Very Easy):</label>
                         <input type="number" name="ease_of_use" id="ease_of_use" min="1" max="5" required>
                     </div>
 
                     <div class="input-grp">
-                        <label for="forms_ease">Are the forms easy to complete and understand? (1 = Very Difficult, 5 = Very Easy):</label>
+                        <h3>3. FORMS</h3>
+                        <label for="forms_ease">Are the forms easy to complete and understand? <br> (1 = Very Difficult, 5 = Very Easy):</label>
                         <input type="number" name="forms_ease" id="forms_ease" min="1" max="5" required>
                     </div>
 
                     <div class="input-grp">
-                        <label for="feature_usefulness">How useful are the app's features for work at FAPs? (1 = Not Useful, 5 = Very Useful):</label>
+                        <h3>4. FEATURES</h3>
+                        <label for="feature_usefulness">How useful are the app's features for work at posts? <br> (1 = Not Useful, 5 = Very Useful):</label>
                         <input type="number" name="feature_usefulness" id="feature_usefulness" min="1" max="5" required>
                     </div>
 
                     <div class="input-grp">
-                        <label for="security_confidence">How secure does the app feel when entering and storing sensitive data? (1 = Not Secure, 5 = Very Secure):</label>
+                        <h3>5. SECURITY</h3>
+                        <label for="security_confidence">How secure does the app feel when entering and storing sensitive data? <br> (1 = Not Secure, 5 = Very Secure):</label>
                         <input type="number" name="security_confidence" id="security_confidence" min="1" max="5" required>
                     </div>
 
                     <div class="input-grp">
-                        <label for="fap_relevance">Does the app fit the needs of First Aid Post (FAP) work? Please share any specifics:</label>
+                        <h3>6. RELEVANCE</h3>
+                        <label for="fap_relevance">Does the app fit the needs of First Aid Post (FAP) work? <br> Please share any specifics:</label>
                         <textarea name="fap_relevance" id="fap_relevance"></textarea>
                     </div>
 
                     <div class="input-grp">
-                        <label for="performance_rating">Rate the app's performance (1 = Slow, 5 = Excellent):</label>
+                        <h3>7. PERFORMANCE</h3>
+                        <label for="performance_rating">Rate the app's performance: (How fast, buggy, freezing etc) <br> (1 = Slow, 5 = Excellent):</label>
                         <input type="number" name="performance_rating" id="performance_rating" min="1" max="5" required>
                     </div>
 
                     <div class="input-grp">
+                        <h3>8. UI DESIGN</h3>
                         <label for="design_feedback">Do you have any feedback on the app's design or layout?</label>
                         <textarea name="design_feedback" id="design_feedback"></textarea>
                     </div>
 
                     <div class="input-grp">
+                        <h3>9. FEATURE REQUEST / REMOVAL</h3>
                         <label for="feature_request">Are there any features you’d like added or improved?</label>
                         <textarea name="feature_request" id="feature_request"></textarea>
                     </div>
 
                     <div class="input-grp">
+                        <h3>10. ADDITIONAL COMMENTS</h3>
                         <label for="overall_experience">Any additional feedback on your overall experience?</label>
                         <textarea name="overall_experience" id="overall_experience"></textarea>
                     </div>

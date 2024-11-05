@@ -9,18 +9,7 @@
 </head>
 <body class="submit-page">
     <header>
-        <div class="container">
-            <div class="logo">
-                <a href="/"><img src="/images/first-aid-kit.png" alt=""></a>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="/form">Submit Incident</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                </ul>
-            </nav>
-            <%- include('partials/_login-toggler') %>
-        </div>
+        <%- include('partials/_login-toggler') %>
     </header>
 
    <main>
@@ -42,7 +31,7 @@
                         <div class="alert alert-danger"><%= error %></div>
                     <% } %>
                     <!-- ID (Autoincrement, automatically handled by the DB, so no need for an input field) -->
-                    <div class="date-time">
+                    <div class="date-time grid-2">
                         <!-- Date -->
                         <div class="input-grp">
                             <label for="date">Date:</label>
@@ -54,7 +43,7 @@
                             <input type="time" id="time_of_arrival" name="time_of_arrival" required>
                         </div>
                     </div>
-                    <div class="company-badge">
+                    <div class="company-badge grid-2">
                         <!-- Company (Select) -->
                         <div class="input-grp">
                             <label for="company">Company:</label>

@@ -274,43 +274,44 @@ hr {
     text-align: center;
   }
   
-  header .container, header nav {
+  .toggler>ul {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 24px;
+  }
+  .nav-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
   }
   
   header nav a {
-    margin-right: var(--padding-small);
+    // margin-right: var(--padding-medium);
     color: var(--white-color);
     font-weight: 700;
-    :not(:last-of-type) {
-        margin-right: none;
-    }
+    
   }
   header nav a:hover {
     color: var(--text-color);
   }
 
-  header li {
-    display: inline;
-  }
   .nav-item {
     position: relative;
     display: inline-block;
+    z-index: 3;
   }
-  
-  .nav-link {
-    padding: 10px 20px;
-  }
-  
+    
   .nav-links {
     display: none; /* Initially hide the sub-menu */
     position: absolute;
-    top: 100%; /* Ensure it shows up beneath the parent */
-    left: 0;
-    background-color: #203764d0;
+    left: -10px;
+    background-color: #69b2fff1;
     text-align: left;
+    width: max-content;
+    box-shadow: var(--box-shadow-medium);
   }
   
   .nav-links li {
@@ -318,21 +319,37 @@ hr {
   }
   
   .nav-links li a {
-    padding: 10px 20px;
+    padding: var(--padding-small);
     width: 100%;
     display: block;
     transition: var(--transition-normal);
+    border-bottom: 1px solid #ffffff56;
   }
-  
-  .nav-links li a:hover {
-    background-color: #274277;
-    color: #0072ec;
-  }
-  
+    
   /* Show sub-menu when hovering over the parent .nav-item */
   .nav-item:hover > .nav-links {
     display: block;
+    border-radius: 5px;
+    border-bottom: 1px solid #ffffff56;
   }
+
+
+  // Styling for hamburger icon and close button
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    
+    span {
+        width: 25px;
+        height: 3px;
+        background-color: var(--white-color);
+        border-radius: 2px;
+    }
+}
+
+
   
   .logo {
     width: 48px;
@@ -352,12 +369,15 @@ hr {
     #records_page .sec-header {
         background-color: var(--primary-color);
     }
+
+
+
     
     /* Text styling */
-    /* p, ul, li {
+    p, ul, li {
         max-width: 60ch;
         margin-inline: auto;
-    } */
+    }
      h1, h2, h3, h4 {
         font-family: var(--font-heading);
      }
@@ -365,7 +385,8 @@ hr {
     h1 {
         font-size: var(--font-size-xxlarge);
         line-height: 1;
-        margin-bottom: 24px;
+        margin: var(--margin-y-normal);
+        margin-inline: auto;
     }
     h2 {
         font-size: var(--font-size-xlarge);
@@ -378,6 +399,7 @@ hr {
     h4 {
         font-size: var(--font-size-medium);
     }
+
     
     /* Section */
     section.intro, .qlinks {
@@ -824,10 +846,6 @@ form > div {
 // form .alert {
 //     display: none;
 // }
-.date-time, .company-badge {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-}
 
 /* Ensure the last item doesn't have extra margin */
 .tews .input-grp:last-child {
@@ -1113,5 +1131,160 @@ th, td {
     .grid-3 {
         grid-template-columns: unset;
     }
+
+    // .nav-container {
+    //     flex-direction: row;
+    // }
+    // .toggler {
+    //     display: block;
+    //     background-color: var(--primary-color);
+    //     position: absolute;
+    //     top: 60px; // Adjust to position below header
+    //     // right: 0;
+    //     // width: 100%;
+    //     z-index: 10;
+    //     // padding: 1rem;
+    //     ul {
+    //         flex-direction: column;
+    //     }
+    // }
+    // // Show hamburger icon
+    // .hamburger-menu {
+    //     display: flex;
+    // }
+    // // Toggle display on clicking hamburger icon
+    // .show-menu {
+    //     display: flex !important;
+    // }
+    // // Styles for nested nav items under each main item
+    // .nav-links {
+    //     display: block;
+    //     margin-left: 1rem;
+
+    //     a {
+    //         padding: 0.5rem 1rem;
+    //         color: var(--white-color);
+    //         font-weight: normal;
+    //         &:hover {
+    //             color: var(--text-color);
+    //         }
+    //     }
+    // }
+    // // Styling for nav items to ensure space and visibility in the toggled menu
+    // .nav-item {
+    //     margin-bottom: 1rem;
+    // }
 }
   
+
+
+    @media (max-width: 650px) {
+        h1 {
+            font-size: var(--font-size-large);
+            max-width: 450px;
+        }
+        .nav-container {
+            flex-direction: column;
+        }
+
+        .btn {
+            padding: var(--padding-small);
+        }
+    }
+
+    /* General Variables */
+$bg-color: #f9f9f9;
+$card-bg: #ffffff;
+$shadow-color: rgba(0, 0, 0, 0.1);
+$hover-shadow-color: rgba(0, 0, 0, 0.15);
+$text-color: #333;
+
+/* Reset default margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: $bg-color;
+  color: $text-color;
+}
+
+/* Dashboard Main Layout */
+.dashboard {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  section {
+    margin-bottom: 2rem;
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: darken($text-color, 10%);
+    }
+  }
+}
+
+/* Card Styling */
+.card {
+  background-color: $card-bg;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px $shadow-color;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 8px $hover-shadow-color;
+    transform: translateY(-4px);
+  }
+
+  h1, h3 {
+    margin-bottom: 0.5rem;
+    color: $text-color;
+  }
+
+  p, ul {
+    color: lighten($text-color, 10%);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  a {
+    color: darken($text-color, 20%);
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+/* Grid Containers */
+.grid-container {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* Quick Links Specific Styles */
+.quick-links .card {
+  text-align: center;
+  padding: 1.2rem;
+
+  a {
+    font-weight: bold;
+    color: $text-color;
+    display: block;
+    margin-top: 0.5rem;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 1rem;
+  }
+}

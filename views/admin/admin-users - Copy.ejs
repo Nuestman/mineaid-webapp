@@ -1,38 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Users - Admin</title>
-    <link rel="stylesheet" href="/css/mineaid-styles.css">
-    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Manage Users</title>
+  <link rel="stylesheet" href="/css/mineaid-styles.css">
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon"><!-- Link to your stylesheets -->
 </head>
-<body class="users-page">
+<body>
 
-    <header>
-            <%- include('../partials/_login-toggler') %>
-        <div class="container">
-            <h1>Admin - Manage Users</h1>
+    
+<header>
+    <div class="container">
+        <div class="logo">
+            <a href="/"><img src="/images/first-aid-kit.png" alt=""></a>
         </div>
-    </header>
+        <nav>
+            <a href="/admin/admin-home">SuperUser</a>
+        </nav>
+        <%- include('../partials/_login-toggler') %>
+    </div>
+    <h1>Admin - Manage Users</h1>
+</header>
 
 <main class="admin-users">
     <div class="container">
         <div class="user-table-container wide-table">
-                <div class="alert-parent">
-                    <!-- Display flash messages if there are any -->
-                    <% if (success_msg) { %>
-                        <div class="alert alert-success"><%= success_msg %></div>
-                    <% } %>
-                    
-                    <% if (error_msg) { %>
-                        <div class="alert alert-danger"><%= error_msg %></div>
-                    <% } %>
-                    
-                    <% if (error) { %>
-                        <div class="alert alert-danger"><%= error %></div>
-                    <% } %>
-                                <table>
+            <div class="alert-parent">
+                <!-- Display flash messages if there are any -->
+                <% if (success_msg) { %>
+                    <div class="alert alert-success"><%= success_msg %></div>
+                <% } %>
+                
+                <% if (error_msg) { %>
+                    <div class="alert alert-danger"><%= error_msg %></div>
+                <% } %>
+                
+                <% if (error) { %>
+                    <div class="alert alert-danger"><%= error %></div>
+                <% } %>
+                <table>
                     <thead>
                         <tr>
                             <th>Id</th>
@@ -60,6 +67,7 @@
                                     <% if (user.status.trim() === 'Pending') { %>
                                         <a class="reg-action btn-approve" data-user-id="<%= user.id %>" href="/admin/approve/<%= user.id %>">Approve</a>
                                     <% } %>
+                
                                     <% if (user.status.trim() !== 'Blocked') { %>
                                         <a class="reg-action btn-block" href="/admin/block/<%= user.id %>" data-user-id="<%= user.id %>">Block</a>
                                     <% } else { %>
@@ -70,16 +78,17 @@
                             </tr>
                         <% }) %>
                     </tbody>
-                                </table>
-                </div>
+                </table>
+            </div>
         </div>        
     </div>
 </main>
 
-<footer>
+  <footer>
     <p>&copy; 2024 First Aid Portal. All Rights Reserved.</p>
     <p>Designed and Developed by <a href="mailto:nuestman@icloud.com" class="dev">Numan Usman</a></p>
-</footer>
-<script src="/js/mineaid-scripts.js"></script>
+  </footer>
+
+  <script src="/js/mineaid-scripts.js"></script>
 </body>
 </html>

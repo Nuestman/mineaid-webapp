@@ -193,3 +193,14 @@ document.addEventListener('mouseout', (e) => {
 if (window.location.pathname === '/feedback/submit') {
     document.getElementById('feedback-float').style.display = 'none';
 }
+
+
+/* NAV MENU TOGGLER */
+// document.addEventListener("DOMContentLoaded", function() {
+//     const menuToggle = document.getElementById("menu-toggle");
+//     const navbar = document.getElementById("navbar");
+
+//     menuToggle.addEventListener("click", () => {
+//         navbar.classList.toggle("show-menu");
+//     });
+// });

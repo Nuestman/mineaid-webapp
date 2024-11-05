@@ -17,7 +17,7 @@ This project is designed to manage data entry and administrative functions for m
 - **Data Filtering**: Admins can filter users by status (Pending, Approved, Blocked).
 - **User Authentication**: Login and logout functionality.
 - **Admin Dashboard**: Separate interface for administrative tasks.
-- **Profile management**: Users can update their profiles with the necessary info, like profile pictures, contact, etc.
+- **Profile management**: Users can update their profiles with additional info, like profile pictures, contact, etc.
   
 ---
 

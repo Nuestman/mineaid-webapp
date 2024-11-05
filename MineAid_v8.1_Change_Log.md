@@ -1,7 +1,18 @@
+Version 9. 
+Fixed the nev with logical grouping and showing on hover.
+Improved feedback survey questionnaire
+improved navbar styling and responsiveness
+
+
+Version 8.1 Fixes with a feature
 Few minor fixes
 BG color to white
 Profile page width fixes
-Added a feedback button, linked to a feedback form, to feedback record in db rendered in user feedback.
+Table head fixes
+Added a feedback feature with a button, linked to a feedback form, to feedback record in db rendered in user feedback.
+Iterating nav links
+Added Messages and feedback view page Page created, routes added and added to toggler
+04/11/24 @ 1300Hrs
 
 
 

@@ -251,45 +251,45 @@ header {
   text-align: center;
 }
 
-header .container, header nav {
+.toggler > ul {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 24px;
+}
+
+.nav-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
 }
 
 header nav a {
-  margin-right: var(--padding-small);
   color: var(--white-color);
   font-weight: 700;
-}
-header nav a :not(:last-of-type) {
-  margin-right: none;
 }
 
 header nav a:hover {
   color: var(--text-color);
 }
 
-header li {
-  display: inline;
-}
-
 .nav-item {
   position: relative;
   display: inline-block;
-}
-
-.nav-link {
-  padding: 10px 20px;
+  z-index: 3;
 }
 
 .nav-links {
   display: none; /* Initially hide the sub-menu */
   position: absolute;
-  top: 100%; /* Ensure it shows up beneath the parent */
-  left: 0;
-  background-color: rgba(32, 55, 100, 0.8156862745);
+  left: -10px;
+  background-color: rgba(105, 178, 255, 0.9450980392);
   text-align: left;
+  width: -moz-max-content;
+  width: max-content;
+  box-shadow: var(--box-shadow-medium);
 }
 
 .nav-links li {
@@ -297,20 +297,31 @@ header li {
 }
 
 .nav-links li a {
-  padding: 10px 20px;
+  padding: var(--padding-small);
   width: 100%;
   display: block;
   transition: var(--transition-normal);
-}
-
-.nav-links li a:hover {
-  background-color: #274277;
-  color: #0072ec;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.337254902);
 }
 
 /* Show sub-menu when hovering over the parent .nav-item */
 .nav-item:hover > .nav-links {
   display: block;
+  border-radius: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.337254902);
+}
+
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+.hamburger-menu span {
+  width: 25px;
+  height: 3px;
+  background-color: var(--white-color);
+  border-radius: 2px;
 }
 
 .logo {
@@ -334,10 +345,11 @@ header li {
 }
 
 /* Text styling */
-/* p, ul, li {
-    max-width: 60ch;
-    margin-inline: auto;
-} */
+p, ul, li {
+  max-width: 60ch;
+  margin-inline: auto;
+}
+
 h1, h2, h3, h4 {
   font-family: var(--font-heading);
 }
@@ -345,7 +357,8 @@ h1, h2, h3, h4 {
 h1 {
   font-size: var(--font-size-xxlarge);
   line-height: 1;
-  margin-bottom: 24px;
+  margin: var(--margin-y-normal);
+  margin-inline: auto;
 }
 
 h2 {
@@ -784,11 +797,6 @@ form > div {
   gap: 10px;
 }
 
-.date-time, .company-badge {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
 /* Ensure the last item doesn't have extra margin */
 .tews .input-grp:last-child {
   margin-right: 0;
@@ -1063,5 +1071,100 @@ th, td {
   }
   .grid-3 {
     grid-template-columns: unset;
+  }
+}
+@media (max-width: 650px) {
+  h1 {
+    font-size: var(--font-size-large);
+    max-width: 450px;
+  }
+  .nav-container {
+    flex-direction: column;
+  }
+  .btn {
+    padding: var(--padding-small);
+  }
+}
+/* General Variables */
+/* Reset default margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* Dashboard Main Layout */
+.dashboard {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.dashboard section {
+  margin-bottom: 2rem;
+}
+.dashboard section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+}
+
+/* Card Styling */
+.card {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
+.card h1, .card h3 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+.card p, .card ul {
+  color: #4d4d4d;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.card a {
+  color: black;
+  text-decoration: none;
+}
+.card a:hover {
+  text-decoration: underline;
+}
+
+/* Grid Containers */
+.grid-container {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* Quick Links Specific Styles */
+.quick-links .card {
+  text-align: center;
+  padding: 1.2rem;
+}
+.quick-links .card a {
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 1rem;
   }
 }/*# sourceMappingURL=mineaid-styles.css.map */

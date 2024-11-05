@@ -9,20 +9,8 @@
 </head>
 <body class="full-height" id="home">
     <header>
-        <div class="container">
-            <div class="logo">
-                <a href="/"><img src="/images/first-aid-kit.png" alt=""></a>
-            </div>
-            <nav>
-                <ul>
-                  <li><a href="/triage">Triage Client</a></li>
-                  <li><a href="/form">Add Incident</a></li>
-                  <li><a href="/contact">Contact</a></li>
-                </ul>
-            </nav>
-            <!-- Show login/register links if not logged in -->
-             <%- include('partials/_login-toggler') %>
-        </div>
+        <!-- Show login/register links if not logged in -->
+            <%- include('partials/_login-toggler') %>
         <h1>Welcome to the First Aid Portal</h1>
     </header>
 
@@ -42,9 +30,9 @@
                 <section class="qlinks">
                     <h2>Quick Links</h2>
                     <div class="btn-grp">
-                        <a href="/triage" class="btn">Submit New Record</a>
-                        <a href="/records" class="btn">View Records</a>
-                        <a href="/admin" class="btn">View Admin Panel</a>
+                        <a href="/triage" class="btn">Triage</a>
+                        <a href="/records" class="btn">Triage Book</a>
+                        <a href="/admin" class="btn">Admin</a>
                     </div>
                 </section>
             </div>
