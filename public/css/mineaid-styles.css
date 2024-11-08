@@ -345,6 +345,9 @@ header {
   padding: var(--padding-small);
   text-align: center;
 }
+header p {
+  margin-inline: auto;
+}
 
 .toggler > ul {
   display: flex;
@@ -432,20 +435,19 @@ header nav a:hover {
 }
 
 /* Text styling */
-p, ul, li {
+p {
   max-width: 60ch;
-  margin-inline: auto;
 }
 
 h1, h2, h3, h4 {
   font-family: var(--font-heading);
+  text-align: center;
 }
 
 h1 {
   font-size: var(--font-size-xxlarge);
   line-height: 1;
-  margin: var(--margin-y-normal);
-  margin-inline: auto;
+  margin: 1.5rem 0;
 }
 
 h2 {
@@ -711,17 +713,14 @@ footer p {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 .login-main .intro-content {
   margin-inline: auto;
   padding: var(--padding-hor-large);
 }
-.login-main .intro-content h1 {
-  margin-bottom: 32px;
-}
 .login-main .intro-content ul, .login-main .intro-content li, .login-main .intro-content p {
-  font-size: 20px;
-  margin-bottom: 20px;
+  font-size: 1.5rem;
 }
 .login-main .intro-content p {
   margin-bottom: 24px;

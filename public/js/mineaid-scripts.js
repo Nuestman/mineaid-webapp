@@ -207,11 +207,12 @@ if (window.location.pathname === '/feedback/submit') {
 
 
 
-/*
-Add JavaScript for Secure Download
-Use JavaScript to add the secret parameter to the endpoint URL when the button is clicked.
-*/
-function downloadBackup() {
+//Add JavaScript for Secure Download
+//Use JavaScript to add the secret parameter to the endpoint URL when the button is clicked.
+
+<script>
+  function downloadBackup() {
     const secret = '<%= process.env.DOWNLOAD_SECRET %>'; // Securely inject the secret from the environment variable
     window.location.href = `/download-sqlite-backup?secret=${secret}`;
-}
+  }
+</script>

@@ -360,6 +360,9 @@ hr {
     color: var(--white-color);
     padding: var(--padding-small);
     text-align: center;
+    p {
+        margin-inline: auto;
+    }
   }
   
   .toggler>ul {
@@ -452,19 +455,18 @@ hr {
 
     
 /* Text styling */
-p, ul, li {
+p {
     max-width: 60ch;
-    margin-inline: auto;
 }
-    h1, h2, h3, h4 {
+h1, h2, h3, h4 {
     font-family: var(--font-heading);
-    }
+    text-align: center;
+}
 
 h1 {
     font-size: var(--font-size-xxlarge);
     line-height: 1;
-    margin: var(--margin-y-normal);
-    margin-inline: auto;
+    margin: 1.5rem 0;
 }
 h2 {
     font-size: var(--font-size-xlarge);
@@ -719,16 +721,13 @@ footer p {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
   }
   .intro-content {
     margin-inline: auto;
     padding: var(--padding-hor-large);
-    h1 {
-        margin-bottom: 32px;
-    }
     ul, li, p {
-        font-size: 20px;
-        margin-bottom: 20px;
+        font-size: 1.5rem;
       }
   }
   .intro-content p {

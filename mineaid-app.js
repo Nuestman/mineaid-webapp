@@ -687,7 +687,26 @@ app.get('/logout', (req, res) => {
 // Route: Dashboard (GET)
 // Dashboard route (requires login)
 app.get('/dashboard', ensureAuthenticated, (req, res) => {
-    res.render('dashboard', { user: req.user });
+    
+    // Fetch all users from DB    
+    // Fetch recent activities
+    db.all(`SELECT activity FROM recent_activities ORDER BY timestamp DESC LIMIT 5`, (err, recent_activity) => {
+        if (err) return console.error(err.message);
+
+
+            // Fetch statistics (modify based on your data requirements)
+            db.get(`SELECT 
+                    (SELECT COUNT(*) FROM triagebook WHERE strftime('%m', date) = strftime('%m', 'now')) AS triageEntries,
+                    (SELECT COUNT(*) FROM incident_reporting WHERE strftime('%m', incident_date) = strftime('%m', 'now')) AS incidents,
+                    (SELECT COUNT(*) FROM users WHERE strftime('%m', created_at) = strftime('%m', 'now')) AS newUsers
+                    `, (err, statistics) => {
+                if (err) return console.error(err.message);
+
+                // Render the admin-users page
+                res.render('dashboard', { recent_activity,  statistics, user: req.user });
+            });
+
+    });
 });
 
 // Route for the admin page (only for authenticated users)
@@ -1059,7 +1078,7 @@ app.get('/export', ensureAuthenticated, (req, res) => {
 /* ROUTE TO DOWNLOAD LIVE DATABASE FILE FROM RENDER */
 
 // Temporary download endpoint for SQLite backup
-app.get('/download-sqlite-backup', (req, res) => {
+app.post('/download-sqlite-backup', (req, res) => {
     const dbPath = path.join(__dirname, 'database', 'mineaid.db'); // Update the path if needed
 
     // Set up a basic check to restrict access (change as needed)
@@ -1068,8 +1087,13 @@ app.get('/download-sqlite-backup', (req, res) => {
     return res.status(403).render('error/403', { message: 'You are not authorized to perform this action.' });
     }
 
+    // Use a human-readable timestamp format for the backup filename
+    const getFormattedDate = () => {
+        const now = new Date();
+        return now.toISOString().replace(/:/g, '-').split('.')[0]; // e.g., "2024-11-07T15-30-20"
+    };
     // Send the SQLite file as a download
-    res.download(dbPath, 'mineaid-backup.db', (err) => {
+    res.download(dbPath, `live_backup-${getFormattedDate()}.db`, (err) => {
     if (err) {
         console.error('Error downloading database:', err);
         res.status(500).send('Error downloading the file');
