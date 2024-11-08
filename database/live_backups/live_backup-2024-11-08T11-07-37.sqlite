@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found - MineAid</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css"> <!-- Link to your CSS -->
+</head>
+<body class="full-height">
+    <header>
+        
+
+<div class="container">
+    <div class="nav-container">
+        <div class="logo">
+            <a href="/"><img src="/images/first-aid-kit.png" alt=""></a>
+        </div>
+
+        <!-- Hamburger icon for smaller screens -->
+        <div class="hamburger-menu" id="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav class="toggler" id="navbar">
+            <!-- Existing nav structure -->
+            <ul>
+                <li class="nav-item">Actions
+                    <ul class="nav-links">
+                        <li><a href="/triage">Triage</a></li>
+                        <li><a href="/form">Add Incident</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/user-survey">Give Feedback</a></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </li>
+                <li class="nav-item">Admin
+                    <ul class="nav-links">
+                        <li><a href="/admin/admin-users">Admin Users</a></li>
+                        <li><a href="/admin/users">Users</a></li>
+                        <li><a href="/messages">Messages</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/admin/admin-home">SuperUser</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">Records
+                    <ul class="nav-links">
+                        <li><a href="/records">Triage Book</a></li>
+                        <li><a href="/incident-book">Incident Book</a></li>
+                        <li><a href="/feedback/results">User Feedback</a></li>
+                    </ul>
+                </li>
+                <!-- Show dashboard/logout links if logged in -->
+                
+                        <li class="nav-item">Accounts
+                            <ul class="nav-links">
+                                <li><a href="/login">Login</a></li>
+                                <li><a href="/register">Register</a></li>
+                            </ul>
+                        </li>
+                            
+            </ul>
+        </nav>
+    </div>
+</div>
+
+    </header>
+    <main>
+        <div class="inner-flex">
+            <div class="container">
+                <div class="message-container">
+                    <!-- Display flash messages if there are any -->
+                    
+                        <div class="alert alert-success"></div>
+                    
+                    
+                        <div class="alert alert-danger"></div>
+                    
+                    
+                        <div class="alert alert-danger"></div>
+                    
+                    <h1>404 - Page not found.</h1>
+                    <div class="error-text">
+                        <p>Page does not exist.</p>
+                        <p>Please try again later or contact support if the problem persists.</p>
+                    </div>
+                    <div class="btn-grp">
+                        <a class="btn btn-outline" href="javascript:history.back()">Go back</a>
+                        <a class="btn" href="/contact">Contact Support</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer><footer>
+    <p>&copy; 2024 First Aid Portal. All Rights Reserved.</p>
+    <p>Designed and Developed by <a href="mailto:nuestman@icloud.com" class="dev">Numan Usman</a></p>
+</footer></footer>
+</body>
+</html>

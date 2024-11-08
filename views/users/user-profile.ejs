@@ -49,9 +49,9 @@
                     <!-- Recent Activity -->
                     <section class="profile-card recent-activity">
                         <h3>Recent Activity</h3>
-                        <% if (recentActivity.length > 0) { %>
+                        <% if (recent_activity.length > 0) { %>
                             <ul>
-                                <% recentActivity.forEach(activity => { %>
+                                <% recent_activity.forEach(activity => { %>
                                     <li><%= activity.activity %> on <%= activity.timestamp %></li>
                                 <% }) %>
                             </ul>
@@ -73,9 +73,9 @@
                     <!-- Connected Accounts -->
                     <section class="connected-accounts">
                         <h3>Connected Accounts</h3>
-                        <% if (connectedAccounts.length > 0) { %>
+                        <% if (connected_accounts.length > 0) { %>
                             <ul>
-                                <% connectedAccounts.forEach(account => { %>
+                                <% connected_accounts.forEach(account => { %>
                                     <li>
                                         <a href="<%= account.url %>" target="_blank"><%= account.platform %> Profile</a>
                                         (Linked on <%= account.linkedAt %>)

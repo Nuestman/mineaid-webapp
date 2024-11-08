@@ -6,101 +6,7 @@
     <title>Incident Form</title>
     <link rel="stylesheet" href="/css/mineaid-styles.css">
     <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
-    <style>
-        body {
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #007bff;
-            color: white;
-            padding: 10px;
-            text-align: center;
-        }
-        .container {
-            display: flex;
-            padding: 20px;
-        }
-        .sidebar {
-            position: sticky;
-            top: 0;
-            overflow: hidden;
-            width: 300px;
-            background-color: #203764;
-            color: white;
-            padding: 15px;
-            height: 100vh;
-        }
-        .sidebar a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #304266;
-            border: 1px solid transparent;
-            border-radius: 5px;
-        }
-        .sidebar a:hover {
-            background-color: #203764;
-            border: 1px solid #304266;
-        }
-        .main-content {
-            flex: 1;
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .card {
-            background-color: #f9f9f9;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-        .card h3 {
-            margin-top: 0;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        .btn {
-            display: inline-block;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-            text-align: center;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        .stats, .operations {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .stats .card, .operations .card {
-            flex: 1;
-            margin-right: 10px;
-        }
-        .stats .card:last-child, .operations .card:last-child {
-            margin-right: 0;
-        }
-    </style>
+   
     <link rel="stylesheet" href="/css/fapstyle.css">
 </head>
 <body class="dashboard-page">
@@ -110,15 +16,12 @@
 </header>
 
 <main>
-    <div class="container">
-        <%- include('./partials/_sidebar') %>
-        
+    <div class="container">        
         <div class="main-content">
             <h1>Report An Incident</h1>
     
             <!-- Incident Reporting -->
             <div class="card">
-                <h3>Incident Reporting</h3>
                 <div class="form-container">
                     <div class="alert-parent">
                         <!-- Display flash messages if there are any -->

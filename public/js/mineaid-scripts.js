@@ -204,3 +204,14 @@ if (window.location.pathname === '/feedback/submit') {
 //         navbar.classList.toggle("show-menu");
 //     });
 // });
+
+
+
+/*
+Add JavaScript for Secure Download
+Use JavaScript to add the secret parameter to the endpoint URL when the button is clicked.
+*/
+function downloadBackup() {
+    const secret = '<%= process.env.DOWNLOAD_SECRET %>'; // Securely inject the secret from the environment variable
+    window.location.href = `/download-sqlite-backup?secret=${secret}`;
+}

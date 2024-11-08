@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 Not Authorized - MineAid</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css"> <!-- Link to your CSS -->
+</head>
+<body class="full-height">
+    <header>
+        <%- include('../partials/_login-toggler') %>
+    </header>
+    <main>
+        <div class="inner-flex">
+            <div class="container">
+                <div class="message-container">
+                    <!-- Display flash messages if there are any -->
+                    <% if (success_msg) { %>
+                        <div class="alert alert-success"><%= success_msg %></div>
+                    <% } %>
+                    <% if (error_msg) { %>
+                        <div class="alert alert-danger"><%= error_msg %></div>
+                    <% } %>
+                    <% if (error) { %>
+                        <div class="alert alert-danger"><%= error %></div>
+                    <% } %>
+                    <h1>403 - Unauthorized!.</h1>
+                    <div class="error-text">
+                        <p>This action is restricted to the SuperUser.</p>
+                        <p>Please try again later or contact support if the problem persists.</p>
+                    </div>
+                    <div class="btn-grp">
+                        <a class="btn btn-outline" href="javascript:history.back()">Go back</a>
+                        <a class="btn" href="/contact">Contact Support</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer><%- include('../partials/_footer') %></footer>
+</body>
+</html>

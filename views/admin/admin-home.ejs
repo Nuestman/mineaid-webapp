@@ -3,127 +3,144 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Senior Admin - MineAid Portal</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <title>Admin - Dashboard</title>
   <link rel="stylesheet" href="/css/mineaid-styles.css">
-  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon"><!-- Link to your stylesheets -->
 </head>
-<body id="" class="admin-login">
-    <header>
-        <%- include('../partials/_login-toggler') %>
-        <h1>HOME OF THE SUPER USER</h1>
-    </header>
-    
-    <main class="admin-users">
-        <div class="container">
-            <div class="user-table-container wide-table">
-                <div class="alert-parent">
-                    <!-- Display flash messages if there are any -->
-                <% if (success_msg) { %>
-                    <div class="alert alert-success"><%= success_msg %></div>
-                <% } %>
-                
-                <% if (error_msg) { %>
-                    <div class="alert alert-danger"><%= error_msg %></div>
-                <% } %>
-                
-                <% if (error) { %>
-                    <div class="alert alert-danger"><%= error %></div>
-                <% } %>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Firstname</th>
-                                <th>Surname</th>
-                                <th>Email</th>
-                                <th>Username</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                                <th>Created At</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% users.forEach(user => { %>
-                                <tr>
-                                    <td><%= user.id %></td>
-                                    <td><%= user.firstname %></td>
-                                    <td><%= user.surname %></td>
-                                    <td><%= user.email %></td>
-                                    <td><%= user.username %></td>
-                                    <td><%= user.role %>
-                                        <% if (user.role.trim() === 'User') { %>
-                                            <br><a href="/admin/make-admin/<%= user.id %>" data-user-id="<%= user.id %>" class="reg-action btn-approve make-admin">makeAdmin</a>
-                                        <% } %>
-                                    </td>
-                                    <td><%= user.status.trim() %></td>  <!-- Use trim() to clean up the status -->
-                                    <td class="admin-user-action-container">
-                                        <% if (user.status.trim() === 'Pending') { %>
-                                            <a class="reg-action btn-approve" data-user-id="<%= user.id %>" href="/admin/approve/<%= user.id %>">Approve</a>
-                                        <% } %>
-                    
-                                        <% if (user.status.trim() !== 'Blocked') { %>
-                                            <a class="reg-action btn-block" href="/admin/block/<%= user.id %>" data-user-id="<%= user.id %>">Block</a>
-                                        <% } else { %>
-                                            <a class="reg-action btn-unblock" href="/admin/unblock/<%= user.id %>" data-user-id="<%= user.id %>">Unblock</a>
-                                        <% } %>
-                                    </td>
-                                    <td><%= user.created_at %></td>
-                                </tr>
-                            <% }) %>
-                        </tbody>
-                    </table>
-                </div>
-            </div>        
-        </div>
-    </main>
-    
-    <!-- <main class="login-main">
-        <div class="">
-            <div class="login-container">
-                <div class="intro-container">
-                    <div class="intro-content">
-                        <h1>Welcome: Login to manage users.</h1>
-                        <p>Through our admin dashboard, you can...</p>
+
+<body>
+<header>
+    <%- include('../partials/_nav') %>
+    <h1>Admin Dashboard</h1>
+</header>
+
+<main class="dashboard">
+    <div class="container">
+        <div class="grid-1-3">
+            <!-- Bring the _sidebar partial back after fixing pages under dev. -->
+            <aside class="sidebar">
+                <h2>Navigation</h2>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/incident-book">Incident Book</a>
+                <a href="/admin/users">Manage Users</a>
+                <a class="soon reports" href="../coming-soon">Analytics &amp; Reports</a>
+                <a class="soon inventory" href="../coming-soon">Inventory Management</a>
+                <a class="soon training" href="../coming-soon">Training &amp; Resources</a>
+                <a class="soon settings" href="../coming-soon">Settings</a>
+            </aside>
+            <div class="main-content">
+                <section class="welcome-card card">
+                    <div class="">
+                        <h2>Welcome back, <span class="accent"><%= user.firstname %>!</span></h2>
+                        <p>Here’s a quick overview of your activity and key updates.</p>
+                    </div>
+                </section>
+                <section class="quick-links card">
+                    <h3>Quick Links</h3>
+                    <div class="grid-container">
+                        <div class="card"><a href="/triage">Triage</a></div>
+                        <div class="card"><a href="/incident-form">Report Incident</a></div>
+                        <div class="card"><a href="/records">Records</a></div>
+                        <div class="card"><a href="/user-survey">User Survey</a></div>
+                        <div class="card"><a href="/messages">Messages</a></div>
+                        <div class="card"><a href="/users/user-profile">Profile</a></div>
+                    </div>
+                </section>
+                <section class="pending card">
+                    <h3>Pending Tickets / Tasks</h3>
+                    <div class="">
                         <ul>
-                            <li><i class="icon icon-small"></i>Make/Unmake Admins</li>
-                            <li><i class="icon icon-small"></i>Manage the PAF Inventory</li>
-                            <li><i class="icon icon-small"></i>View Analytics &amp; Reports</li>
-                            <li><i class="icon icon-small"></i>Access Training Resources</li>
-                            <li><i class="icon icon-small"></i> Update your account information</li>
-                            <li><i class="icon icon-small"></i>Download Stats as Excel and more...</li>
+                            No pending tickets.
                         </ul>
                     </div>
-                    
-                    <footer>
-                      <p>&copy; 2024 First Aid Portal. All Rights Reserved.</p>
-                      <p>Designed and Developed by <a href="mailto:nuestman@icloud.com" class="dev">Numan Usman</a></p>
-                    </footer>
-                </div>
-                <div class="form-container">
-                    <div class="form-content">
-                        <h2>Login to access the First Aid Portal</h2>
-                        <form action="/login" method="POST">
-                            <div class="input-grp">
-                                <label for="username">Username:</label>
-                                <input type="text" name="username" required>
-                            </div>
-                            <div class="input-grp">
-                                <label for="password">Password:</label>
-                                <input type="password" name="password" required>
-                            </div>
-                            <button type="submit" class="btn">Login</button>
-                            <a href="/" class="btn btn-outline">Cancel</a>
-                        </form>
+                </section>
+                <section class="activity-summary card">
+                    <h3>Recent Activity</h3>
+                    <div class="">
+                        <% if (recent_activity.length > 0) { %>
+                            <ul>
+                                <% recent_activity.forEach(activity => { %>
+                                    <li><%= activity.activity %> on <%= activity.timestamp %></li>
+                                <% }) %>
+                            </ul>
+                        <% } else { %>
+                            <p>No recent activity.</p>
+                        <% } %>
+                    </div>
+                </section>
+                <section class="statistics card">
+                    <h3>Statistics & Summaries</h3>
+                    <div class="grid-container">
+                        <div class="card">
+                            <h4>Total Triage Entries</h4>
+                            <p><%= statistics.triageEntries %> this month</p>
+                        </div>
+                        <div class="card">
+                            <h4>Incidents Reported</h4>
+                            <p><%= statistics.incidents %> reported</p>
+                        </div>
+                        <div class="card">
+                            <h4>New Users Registered</h4>
+                            <p><%= statistics.newUsers %> this month</p>
+                        </div>
+                        <div class="card">
+                            <h4>Compliance Status</h4>
+                            <p>85%</p>
+                        </div>
+                        <div class="card">
+                            <h4>Database Management</h4>
+                            <!-- Only shows if user is a super admin -->
+                            <button class="btn" id="download-backup-btn" onclick="downloadBackup()">Download Database Backup</button>
+
+                        </div>
+                    </div>
+                </section>
+                <!-- FAP Operations Management -->
+                <div class="card">
+                    <h3>FAP Operations Management</h3>
+                    <div class="operations grid-container">
+                        <div class="card">
+                            <h4>Shift Logs</h4>
+                            <p>View and update logs for each shift.</p>
+                        </div>
+                        <div class="card">
+                            <h4>Task Assignments</h4>
+                            <p>Assign and track tasks for FAP staff.</p>
+                        </div>
+                        <div class="card">
+                            <h4>Compliance Tracking</h4>
+                            <p>Monitor adherence to protocols and standards.</p>
+                        </div>
                     </div>
                 </div>
+                <!-- User Survey Reminder -->
+                <section class="survey-prompt">
+                    <div class="card">
+                        <% if (!user.hasCompletedSurvey) { %>
+                            <p>Help us improve! <a href="/user-survey">Complete our quick User Survey.</a></p>
+                        <% } else { %>
+                            <p>Thank you for your feedback!</p>
+                        <% } %>
+                    </div>
+                </section>
+                <section class="resources grid-container ">
+                    <div class="card">
+                        <h3>Resources & Support</h3>
+                        <p>If you need assistance, check out our <a href="/support">Support Page</a> or contact us directly.</p>
+                    </div>
+                    <!-- Analytics & Reports -->
+                    <div class="card">
+                        <h3>Analytics &amp; Reports</h3>
+                        <p>Generate detailed reports on incidents, referrals, compliance, and more.</p>
+                    </div>
+                </section>
             </div>
         </div>
-    </main>
-     -->
-    <%- include('../partials/_footer') %>
-    
-    <script src="/js/mineaid-scripts.js"></script>
+    </div>
+</main>
+
+<%- include('../partials/_footer') %>
+
+<script src="/js/mineaid-scripts.js"></script>
 </body>
 </html>

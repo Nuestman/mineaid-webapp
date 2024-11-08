@@ -159,13 +159,13 @@ app.post('/profile/update-social', (req, res) => {
     // Helper function to save or update an account link
     const saveOrUpdateAccount = (platform, url) => {
         if (url) {
-            db.get(`SELECT * FROM connectedAccounts WHERE userId = ? AND platform = ?`, [userId, platform], (err, row) => {
+            db.get(`SELECT * FROM connected_accounts WHERE userId = ? AND platform = ?`, [userId, platform], (err, row) => {
                 if (err) {
                     console.error(`Error checking ${platform} account:`, err);
                     req.flash('error_msg', `Error checking ${platform} account.`);
                 } else if (row) {
                     // Update existing record if it already exists
-                    db.run(`UPDATE connectedAccounts SET url = ?, linkedAt = CURRENT_TIMESTAMP WHERE id = ?`, [url, row.id], (err) => {
+                    db.run(`UPDATE connected_accounts SET url = ?, linkedAt = CURRENT_TIMESTAMP WHERE id = ?`, [url, row.id], (err) => {
                         if (err) {
                             console.error(`Error updating ${platform} account:`, err);
                             req.flash('error_msg', `Error updating ${platform} account.`);
@@ -176,7 +176,7 @@ app.post('/profile/update-social', (req, res) => {
                     });
                 } else {
                     // Insert new record
-                    db.run(`INSERT INTO connectedAccounts (userId, platform, url) VALUES (?, ?, ?)`, [userId, platform, url], (err) => {
+                    db.run(`INSERT INTO connected_accounts (userId, platform, url) VALUES (?, ?, ?)`, [userId, platform, url], (err) => {
                         if (err) {
                             console.error(`Error connecting ${platform} account:`, err);
                             req.flash('error_msg', `Error connecting ${platform} account.`);
@@ -293,7 +293,7 @@ function logActivity(req, res, next) {
     if (req.user) { // Log only if user is authenticated
         const userId = req.user.id;
         const activity = `${req.method} ${req.originalUrl}`;
-        db.run('INSERT INTO recentActivities (userId, activity, timestamp) VALUES (?, ?, datetime("now", "localtime"))',
+        db.run('INSERT INTO recent_activities (userId, activity, timestamp) VALUES (?, ?, datetime("now", "localtime"))',
             [userId, activity],
             (err) => {
                 if (err) console.error('Activity log failed:', err);
@@ -356,7 +356,7 @@ app.post('/submit', (req, res) => {
 });
 
 // Route to display triage book
-app.get('/records', (req, res) => {
+app.get('/triage-book', (req, res) => {
     const query = 'SELECT * FROM triagebook ORDER BY date DESC';
 
     db.all(query, [], (err, rows) => {
@@ -364,14 +364,14 @@ app.get('/records', (req, res) => {
             console.error('Error fetching triagebook records:', err.message);
             res.status(500).render('error', { message: 'Error fetching records' });
         } else {
-            res.render('records', { records: rows });
+            res.render('triage-book', { records: rows });
         }
     });
 });
 
 // INCIDENT REPORTING
 // Display incident form
-app.get('/form', (req, res) => {
+app.get('/incident-form', (req, res) => {
     res.render('incident-form');
 })
 
@@ -650,22 +650,22 @@ app.get('/users/user-profile', (req, res) => {
     // Fetch user data from session or DB
     const userId = req.user.id;
     
-    db.all('SELECT activity, timestamp FROM recentActivities WHERE userId = ? ORDER BY timestamp DESC LIMIT 5', [userId], (err, recentActivity) => {
+    db.all('SELECT activity, timestamp FROM recent_activities WHERE userId = ? ORDER BY timestamp DESC LIMIT 5', [userId], (err, recent_activity) => {
         if (err) {
             console.error('Error fetching recent activities:', err);
-            recentActivity = [];
+            recent_activity = [];
         }
 
-        db.all('SELECT platform, linkedAt FROM connectedAccounts WHERE userId = ?', [userId], (err, connectedAccounts) => {
+        db.all('SELECT platform, linkedAt FROM connected_accounts WHERE userId = ?', [userId], (err, connected_accounts) => {
             if (err) {
                 console.error('Error fetching connected accounts:', err);
-                connectedAccounts = [];
+                connected_accounts = [];
             }
 
             res.render('users/user-profile', {
                 user: req.user,
-                recentActivity,
-                connectedAccounts
+                recent_activity,
+                connected_accounts
             });
         });
     });
@@ -703,17 +703,17 @@ app.get('/admin', ensureAuthenticated, (req, res) => {
 });
 
 
-// Ensure only admins
-function seniorAdmin(req, res, next) {
-    if (req.isAuthenticated() && req.user.role === 'seniorAdmin') {
+// Ensure only SuperUser
+function superuser(req, res, next) {
+    if (req.isAuthenticated() && req.user.role === 'superuser') {
         return next();
     }
     req.flash('error_msg', 'You are not authorized to view this page.');
     res.redirect('/login');
 }
 
-// Protect Senior Admin routes with seniorAdmin
-app.get('/admin/admin-home',  ensureAuthenticated, seniorAdmin, (req, res) => {
+// Protect Senior Admin routes with superuser
+app.get('/admin/super-user',  ensureAuthenticated, superuser, (req, res) => {
     // Fetch all users from DB    
     const query = 'SELECT * FROM users'; 
     db.all(query, [], (err, rows) => {
@@ -721,27 +721,33 @@ app.get('/admin/admin-home',  ensureAuthenticated, seniorAdmin, (req, res) => {
             console.error('Error fetching users:', err.message);
             res.status(500).render('error/error', { message: 'Error fetching users' });
         } else {
-            res.render('admin/admin-home', { title: 'Manage Users', users: rows }); 
+            res.render('admin/super-user', { title: 'Manage Users', users: rows }); 
             console.log('Senior Admin page: Users fetched successfully.')
         }
     });
 });
 
-app.get('/admin/admin-users', ensureAuthenticated,  (req, res) => {
+app.get('/admin/admin-home', ensureAuthenticated,  (req, res) => {
     // Fetch all users from DB    
-    const query = 'SELECT * FROM users'; 
-    db.all(query, [], (err, rows) => {
-        if (err) {
-            console.error('Error fetching users:', err.message);
-            res.status(500).render('error/error', { message: 'Error fetching users' });
-        } else {
-            
-            req.flash('success_msg', 'Under development. Page is inaccessible! Youve been redirected! Check back later.');
-            res.redirect('/admin'); // Redirect here after handling email
-            // res.render('admin/admin-users', { title: 'Manage Users', users: rows });  COME BACK TO THIS
-            console.log('Users fetched successfully.')
-        }
+    // Fetch recent activities
+    db.all(`SELECT activity FROM recent_activities ORDER BY timestamp DESC LIMIT 5`, (err, recent_activity) => {
+        if (err) return console.error(err.message);
+
+
+            // Fetch statistics (modify based on your data requirements)
+            db.get(`SELECT 
+                    (SELECT COUNT(*) FROM triagebook WHERE strftime('%m', date) = strftime('%m', 'now')) AS triageEntries,
+                    (SELECT COUNT(*) FROM incident_reporting WHERE strftime('%m', incident_date) = strftime('%m', 'now')) AS incidents,
+                    (SELECT COUNT(*) FROM users WHERE strftime('%m', created_at) = strftime('%m', 'now')) AS newUsers
+                    `, (err, statistics) => {
+                if (err) return console.error(err.message);
+
+                // Render the admin-users page
+                res.render('admin/admin-home', { recent_activity,  statistics, user: req.user });
+            });
+
     });
+
 });
 
 // Route: View All Users (GET)
@@ -1050,6 +1056,29 @@ app.get('/export', ensureAuthenticated, (req, res) => {
 });
 
 
+/* ROUTE TO DOWNLOAD LIVE DATABASE FILE FROM RENDER */
+
+// Temporary download endpoint for SQLite backup
+app.get('/download-sqlite-backup', (req, res) => {
+    const dbPath = path.join(__dirname, 'database', 'mineaid.db'); // Update the path if needed
+
+    // Set up a basic check to restrict access (change as needed)
+    if (req.query.secret !== process.env.DOWNLOAD_SECRET) {
+    console.error('Error getting authorization');
+    return res.status(403).render('error/403', { message: 'You are not authorized to perform this action.' });
+    }
+
+    // Send the SQLite file as a download
+    res.download(dbPath, 'mineaid-backup.db', (err) => {
+    if (err) {
+        console.error('Error downloading database:', err);
+        res.status(500).send('Error downloading the file');
+    }
+    });
+/* END DOWNLOAD ROUTE - BRACKETS BELOW INCLUDED */
+});
+
+
 // OTHER GENERAL ROUTES
 // Route: About Page (GET)
 app.get('/about', (req, res) => {
@@ -1182,6 +1211,10 @@ app.get('/error', (req, res) => {
 // Route: Error 401 (GET)
 app.get('/error/401', (req, res) => {
     res.render('error/401'); // help.ejs
+});
+// Route: Error 403 (GET)
+app.get('/error/403', (req, res) => {
+    res.render('error/403'); // help.ejs
 });
 // Route: Error 404 (GET)
 app.get('/error/404', (req, res) => {

@@ -8,16 +8,7 @@
     <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
     <style>
         body {
-            font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #007bff;
-            color: white;
-            padding: 10px;
-            text-align: center;
         }
         .container {
             display: flex;
@@ -64,31 +55,6 @@
         .card h3 {
             margin-top: 0;
         }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        .btn {
-            display: inline-block;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-            text-align: center;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
         .stats, .operations {
             display: flex;
             justify-content: space-between;
@@ -100,9 +66,6 @@
         }
         .stats .card:last-child, .operations .card:last-child {
             margin-right: 0;
-        }
-        .dashboard-page form > div {
-            display: block;
         }
     </style>
 </head>
@@ -121,17 +84,8 @@
             
             <div class="alert-parent">
                 <!-- Display flash messages if there are any -->
-                <% if (success_msg) { %>
-                    <div class="alert alert-success"><%= success_msg %></div>
-                <% } %>
+                <%- include('./partials/_flash-alert') %>
                 
-                <% if (error_msg) { %>
-                    <div class="alert alert-danger"><%= error_msg %></div>
-                <% } %>
-                
-                <% if (error) { %>
-                    <div class="alert alert-danger"><%= error %></div>
-                <% } %>
                 <!-- Dashboard -->
                 <div class="card">
                     <h3>Dashboard Overview</h3>
@@ -149,37 +103,6 @@
                             <p>85%</p>
                         </div>
                     </div>
-                </div>
-                <!-- Incident Reporting -->
-                <div class="card">
-                    <h3>Incident Reporting</h3>
-                    <form>
-                        <div class="form-group">
-                            <label for="patient-name">Patient Name</label>
-                            <input type="text" id="patient-name" placeholder="Enter patient name">
-                        </div>
-                        <div class="form-group">
-                            <label for="incident-date">Incident Date</label>
-                            <input type="date" id="incident-date">
-                        </div>
-                        <div class="form-group">
-                            <label for="incident-type">Incident Type</label>
-                            <select id="incident-type">
-                                <option value="injury">Injury</option>
-                                <option value="illness">Illness</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="incident-details">Incident Details</label>
-                            <textarea id="incident-details" rows="4" placeholder="Describe the incident"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="treatment-provided">Treatment Provided</label>
-                            <textarea id="treatment-provided" rows="4" placeholder="Describe the treatment provided"></textarea>
-                        </div>
-                        <a href="#" class="btn">Submit Incident</a>
-                    </form>
                 </div>
                 <!-- FAP Operations Management -->
                 <div class="card">

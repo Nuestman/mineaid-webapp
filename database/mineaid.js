@@ -268,8 +268,10 @@ const clearExpiredTokens = () => {
     db.run(query, [currentTime], function (err) {
         if (err) {
             console.error('Error clearing expired tokens:', err.message);
-        } else {
+        } else if (err) {
             console.log(`Expired tokens cleared at server restart.`);
+        } else {
+            console.log(`No expired tokens present in database.`);
         }
     });
 };

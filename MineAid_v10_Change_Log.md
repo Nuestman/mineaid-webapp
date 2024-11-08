@@ -1,3 +1,27 @@
+# Session 08112024
+
+__________________________________________________________________________________
+
+1. Created backup-to-mega.js to help upload live to MEGA
+2. Installed MEGAcmd on the PC and set up an upload of the DB to MEGA using the MEGAcmdclientshell.
+3. Set up a DOWNLOAD_SECRET and tybfat 45324 on render to get the live file. Also modified the .env on render to include MEGA
+4. Changed seniorAdmin to superuser in routes and database and assigned db backup file download to superuser
+5. Fixed admin dashboard rendering coming-soon pages to 404. Sidebar expanded. Replace with partial later.
+6. Added a new route for the download of the DB backup file. 1060
+DB button causing 'ERR_HTTP_HEADERS_SENT' error    -    FIXED by returning the auth error
+
+
+## Setting up db backup to Mega.nz
+## Procedures.
+1. Set up email and password in env variables (I'm using dotenv so set up in .env file and not hardcode into the server.)
+2. Mega is using 2FA so install MegaCLI/megacmd dowload from Mega
+3. Follow db_backup_process_to_mega.md file
+Using the main MEGA cmd program, use this command (MEGA CMD> login mineaid.notifications@gmail.com }cx@,$mf56KSHfV --auth-code="626646")
+
+Starting with attempts to backup db to Mega - 07/11/24 @ 0800Hrs
+
+___________________________________________________________________________________
+
 Issues
 DB dropped on deploy
 Duplicated navbar on some pages (User profile)

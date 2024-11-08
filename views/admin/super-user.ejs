@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Senior Admin - MineAid Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="/css/mineaid-styles.css">
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+</head>
+<body id="" class="admin-login">
+    <header>
+        <%- include('../partials/_login-toggler') %>
+        <h1>HOME OF THE SUPER USER</h1>
+    </header>
+    
+    <main class="admin-users">
+        <div class="container">
+            <div class="user-table-container wide-table">
+                <div class="alert-parent">
+                    <!-- Display flash messages if there are any -->
+                <% if (success_msg) { %>
+                    <div class="alert alert-success"><%= success_msg %></div>
+                <% } %>
+                
+                <% if (error_msg) { %>
+                    <div class="alert alert-danger"><%= error_msg %></div>
+                <% } %>
+                
+                <% if (error) { %>
+                    <div class="alert alert-danger"><%= error %></div>
+                <% } %>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Firstname</th>
+                                <th>Surname</th>
+                                <th>Email</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                                <th>Created At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% users.forEach(user => { %>
+                                <tr>
+                                    <td><%= user.id %></td>
+                                    <td><%= user.firstname %></td>
+                                    <td><%= user.surname %></td>
+                                    <td><%= user.email %></td>
+                                    <td><%= user.username %></td>
+                                    <td><%= user.role %>
+                                        <% if (user.role.trim() === 'User') { %>
+                                            <br><a href="/admin/make-admin/<%= user.id %>" data-user-id="<%= user.id %>" class="reg-action btn-approve make-admin">makeAdmin</a>
+                                        <% } %>
+                                    </td>
+                                    <td><%= user.status.trim() %></td>  <!-- Use trim() to clean up the status -->
+                                    <td class="admin-user-action-container">
+                                        <% if (user.status.trim() === 'Pending') { %>
+                                            <a class="reg-action btn-approve" data-user-id="<%= user.id %>" href="/admin/approve/<%= user.id %>">Approve</a>
+                                        <% } %>
+                    
+                                        <% if (user.status.trim() !== 'Blocked') { %>
+                                            <a class="reg-action btn-block" href="/admin/block/<%= user.id %>" data-user-id="<%= user.id %>">Block</a>
+                                        <% } else { %>
+                                            <a class="reg-action btn-unblock" href="/admin/unblock/<%= user.id %>" data-user-id="<%= user.id %>">Unblock</a>
+                                        <% } %>
+                                    </td>
+                                    <td><%= user.created_at %></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>        
+        </div>
+    </main>
+    
+    <!-- <main class="login-main">
+        <div class="">
+            <div class="login-container">
+                <div class="intro-container">
+                    <div class="intro-content">
+                        <h1>Welcome: Login to manage users.</h1>
+                        <p>Through our admin dashboard, you can...</p>
+                        <ul>
+                            <li><i class="icon icon-small"></i>Make/Unmake Admins</li>
+                            <li><i class="icon icon-small"></i>Manage the PAF Inventory</li>
+                            <li><i class="icon icon-small"></i>View Analytics &amp; Reports</li>
+                            <li><i class="icon icon-small"></i>Access Training Resources</li>
+                            <li><i class="icon icon-small"></i> Update your account information</li>
+                            <li><i class="icon icon-small"></i>Download Stats as Excel and more...</li>
+                        </ul>
+                    </div>
+                    
+                    <footer>
+                      <p>&copy; 2024 First Aid Portal. All Rights Reserved.</p>
+                      <p>Designed and Developed by <a href="mailto:nuestman@icloud.com" class="dev">Numan Usman</a></p>
+                    </footer>
+                </div>
+                <div class="form-container">
+                    <div class="form-content">
+                        <h2>Login to access the First Aid Portal</h2>
+                        <form action="/login" method="POST">
+                            <div class="input-grp">
+                                <label for="username">Username:</label>
+                                <input type="text" name="username" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="password">Password:</label>
+                                <input type="password" name="password" required>
+                            </div>
+                            <button type="submit" class="btn">Login</button>
+                            <a href="/" class="btn btn-outline">Cancel</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+     -->
+    <%- include('../partials/_footer') %>
+    
+    <script src="/js/mineaid-scripts.js"></script>
+</body>
+</html>

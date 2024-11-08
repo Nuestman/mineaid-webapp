@@ -1,0 +1,8 @@
+@echo off
+
+:: Define paths
+set "DB_PATH=.\database\mineaid.db"
+set "BACKUP_NAME=mineaidBackup-%date:~10,4%%date:~4,2%%date:~7,2%%time:~0,2%%time:~3,2%%time:~6,2%.db"
+
+:: Upload to Mega.nz
+mega-put "%DB_PATH%" "/Root/MineaidBackupFolder/%BACKUP_NAME%"
