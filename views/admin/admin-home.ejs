@@ -68,6 +68,7 @@
                         <% } %>
                     </div>
                 </section>
+                <!-- Statistics Card -->
                 <section class="statistics card">
                     <h3>Statistics & Summaries</h3>
                     <div class="grid-container">
@@ -142,5 +143,13 @@
 <%- include('../partials/_footer') %>
 
 <script src="/js/mineaid-scripts.js"></script>
+<!-- Pass the download secret to the JavaScript -->
+<script>
+    const secret = "<%= process.env.DOWNLOAD_SECRET %>";
+    function downloadBackup() {
+        window.location.href = `/download-sqlite-backup?secret=${secret}`;
+    }
+</script>
+
 </body>
 </html>
