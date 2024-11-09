@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database Management</title>
+  <link rel="stylesheet" href="/css/mineaid-styles.css">
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon"><!-- Link to your stylesheets -->
+</head>
+
+<body>
+<header>
+    <%- include('../partials/_nav') %>
+</header>
+<section class="prim-header">
+    <div class="container">
+        <h1>Database Management</h1>
+    </div>
+</section>
+
+  <main>
+      <div class="container">
+        <div class="alert-parent">
+            <div class="grid-containe">
+                <!-- Backup and Restore Card -->
+                <div class="card">
+                  <h2>Backup and Restore</h2>
+                  <form action="/download-db" method="get">
+                    <button type="submit">Download Backup</button>
+                  </form>
+                  <form action="/upload-db" method="post" enctype="multipart/form-data">
+                    <input type="file" name="backup" required>
+                    <button type="submit">Upload Backup</button>
+                  </form>
+                </div>
+                <!-- Migration Card -->
+                <div class="card">
+                  <h2>Database Migration</h2>
+                  <form action="/migrate-db" method="post">
+                    <button type="submit">Migrate to PostgreSQL</button>
+                  </form>
+                </div>
+                <!-- CSV Export/Import Card -->
+                <div class="card">
+                  <h2>Data Export/Import</h2>
+                  <form action="/export-csv" method="post">
+                    <button type="submit">Export CSV</button>
+                  </form>
+                  <form action="/import-csv" method="post" enctype="multipart/form-data">
+                    <input type="file" name="csvFile" required>
+                    <button type="submit">Import CSV</button>
+                  </form>
+                </div>
+                <!-- Maintenance Card -->
+                <div class="card">
+                  <h2>Database Maintenance</h2>
+                  <form action="/clear-old-data" method="post">
+                    <button type="submit">Clear Old Data</button>
+                  </form>
+                  <form action="/optimize-db" method="post">
+                    <button type="submit">Optimize Database</button>
+                  </form>
+                </div>
+                <!-- Health Check Card -->
+                <div class="card">
+                  <h2>Database Health Check</h2>
+                  <form action="/db-health" method="get">
+                    <button type="submit">Run Health Check</button>
+                  </form>
+                </div>
+                <!-- Schedule Backup Card -->
+                <div class="card">
+                  <h2>Schedule Backup</h2>
+                  <form action="/schedule-backup" method="post">
+                    <input type="text" name="cronExpression" placeholder="Cron Expression (e.g., 0 0 * * *)" required>
+                    <button type="submit">Set Backup Schedule</button>
+                  </form>
+                </div>
+                <!-- Logs Card -->
+                <div class="card">
+                  <h2>Security and Logs</h2>
+                  <form action="/view-logs" method="get">
+                    <button type="submit">View Logs</button>
+                  </form>
+                </div>
+            </div>
+        </div>
+      </div>
+  </main>
+
+  <!-- Include footer partial -->
+  <%- include('partials/footer') %>
+</body>
+</html>

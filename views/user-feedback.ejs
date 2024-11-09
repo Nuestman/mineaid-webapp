@@ -12,10 +12,15 @@
     
 <header>
     <%- include('partials/_nav') %>
-    <h1>User Survey Results</h1>
 </header>
+<section class="prim-header">
+    <div class="container">
+        <h1>User Survey Results</h1>
+        <p>User feedback for consideration.</p>
+    </div>
+</section>
 
-<main >
+<main class="user-feedback">
     <div class="container">
         <div class="user-table-container wide-table">
             <div class="alert-parent">
@@ -31,7 +36,6 @@
                 <% if (error) { %>
                     <div class="alert alert-danger"><%= error %></div>
                 <% } %>
-                <p>User feedback for consideration.</p>
                 <table>
                     <thead>
                         <tr>

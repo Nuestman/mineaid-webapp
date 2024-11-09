@@ -9,6 +9,11 @@
 </head>
 <body>
     <header><%- include('partials/_nav') %></header>
+    <section class="prim-header">
+        <div class="container">
+            <h1>Contact Messages</h1>
+        </div>
+    </section>
     <main>
         <div class="container">
             <div class="alert-parent">
@@ -23,7 +28,6 @@
                     <% if (error) { %>
                         <div class="alert alert-danger"><%= error %></div>
                     <% } %>
-                    <h1>Contact Messages</h1>
                     <div class="message-list grid-3">
                         <% if (messages.length > 0) { %>
                             <% messages.forEach(message => { %>

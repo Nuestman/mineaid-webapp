@@ -727,6 +727,7 @@ function superuser(req, res, next) {
     if (req.isAuthenticated() && req.user.role === 'superuser') {
         return next();
     }
+    res.status(403).render('error/403', { message: 'Access denied.' });
     req.flash('error_msg', 'You are not authorized to view this page.');
     res.redirect('/login');
 }
@@ -1078,14 +1079,14 @@ app.get('/export', ensureAuthenticated, (req, res) => {
 /* ROUTE TO DOWNLOAD LIVE DATABASE FILE FROM RENDER */
 
 // Temporary download endpoint for SQLite backup
-app.get('/download-sqlite-backup', (req, res) => {
+app.get('/download-sqlite-backup', superuser, (req, res) => {
     const dbPath = path.join(__dirname, 'database', 'mineaid.db'); // Update the path if needed
 
-    // Set up a basic check to restrict access (change as needed)
-    if (req.query.secret !== process.env.DOWNLOAD_SECRET) {
-    console.error('Error getting authorization');
-    return res.status(403).render('error/403', { message: 'You are not authorized to perform this action.' });
-    }
+    // // Set up a basic check to restrict access (change as needed)
+    // if (req.query.secret !== process.env.DOWNLOAD_SECRET) {
+    // console.error('Error getting authorization');
+    // return res.status(403).render('error/403', { message: 'You are not authorized to perform this action.' });
+    // }
 
     // Use a human-readable timestamp format for the backup filename
     const getFormattedDate = () => {

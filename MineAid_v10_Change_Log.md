@@ -1,10 +1,20 @@
-# Session 08112024
+# Session 091124
+1. 403 cleared and db downloaded successfully, but with secret visible in markup after injection with function().
+2. Secret dependent auth removed and replaced with route-related auth middleware.
+3. Unluckily, db does not persist, but a a few minutes so above not useful for now.
+4. Styles fixing
+5. Media queries almost done
+6. Need to clear redundant code
+7. Upload and deploy
 
+
+# Session 08112024
+Failed attempts at getting db download  button and auto back up to work
 __________________________________________________________________________________
 
 1. Created backup-to-mega.js to help upload live to MEGA
 2. Installed MEGAcmd on the PC and set up an upload of the DB to MEGA using the MEGAcmdclientshell.
-3. Set up a DOWNLOAD_SECRET and tybfat 45324 on render to get the live file. Also modified the .env on render to include MEGA
+3. Set up a secret and tybfat 45324 on render to get the live file. Also modified the .env on render to include MEGA
 4. Changed seniorAdmin to superuser in routes and database and assigned db backup file download to superuser
 5. Fixed admin dashboard rendering coming-soon pages to 404. Sidebar expanded. Replace with partial later.
 6. Added a new route for the download of the DB backup file. 1060
