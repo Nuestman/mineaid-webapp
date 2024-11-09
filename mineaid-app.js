@@ -1078,7 +1078,7 @@ app.get('/export', ensureAuthenticated, (req, res) => {
 /* ROUTE TO DOWNLOAD LIVE DATABASE FILE FROM RENDER */
 
 // Temporary download endpoint for SQLite backup
-app.post('/download-sqlite-backup', (req, res) => {
+app.get('/download-sqlite-backup', (req, res) => {
     const dbPath = path.join(__dirname, 'database', 'mineaid.db'); // Update the path if needed
 
     // Set up a basic check to restrict access (change as needed)
