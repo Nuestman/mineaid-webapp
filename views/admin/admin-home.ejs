@@ -34,13 +34,13 @@
                     <a class="soon settings" href="../coming-soon">Settings</a>
                 </aside>
                 <div class="main-content">
-                    <section class="welcome-card card">
+                    <section class="welcome-card card-container">
                         <div class="">
                             <h2>Welcome back, <span class="accent"><%= user.firstname %>!</span></h2>
                             <p>Here’s a quick overview of your activity and key updates.</p>
                         </div>
                     </section>
-                    <section class="quick-links card">
+                    <section class="quick-links card-container">
                         <h3>Quick Links</h3>
                         <div class="grid-container">
                             <div class="card"><a href="/triage">Triage</a></div>
@@ -51,18 +51,19 @@
                             <div class="card"><a href="/users/user-profile">Profile</a></div>
                         </div>
                     </section>
-                    <section class="pending card">
+                    <section class="pending card-container">
                         <h3>Pending Tickets / Tasks</h3>
-                    <section>
-                        <div class="">
-                            <ul>
-                                No pending tickets.
-                            </ul>
+                        <div>
+                            <div class="">
+                                <ul>
+                                    No pending tickets.
+                                </ul>
+                            </div>
                         </div>
                     </section>
-                    <section class="activity-summary card">
+                    <section class="activity-summary card-container">
                         <h3>Recent Activity</h3>
-                        <div class="">
+                        <div class="card">
                             <% if (recent_activity.length > 0) { %>
                                 <ul>
                                     <% recent_activity.forEach(activity => { %>
@@ -75,7 +76,7 @@
                         </div>
                     </section>
                     <!-- Statistics Card -->
-                    <section class="statistics card">
+                    <section class="statistics card-container">
                         <h3>Statistics & Summaries</h3>
                         <div class="grid-container">
                             <div class="card">
@@ -104,7 +105,7 @@
                         </div>
                     </section>
                     <!-- FAP Operations Management -->
-                    <div class="card">
+                    <section class="card-container">
                         <h3>FAP Operations Management</h3>
                         <div class="operations grid-container">
                             <div class="card">
@@ -120,7 +121,7 @@
                                 <p>Monitor adherence to protocols and standards.</p>
                             </div>
                         </div>
-                    </div>
+                    </section>
                     <!-- User Survey Reminder -->
                     <section class="survey-prompt">
                         <div class="card">

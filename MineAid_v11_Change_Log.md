@@ -1,3 +1,36 @@
+# Session 091124 Late night
+1. Style adjustments
+## Responsive Mobile Issues
+2. Triage book h1 fixed
+Triage table top margin - Remove on mobile fixed
+Download button too big fixed 
+3. Incident Form
+Padding issues fixed
+Remove card padding fixed
+Input fields (company and badge) overflowing parents fixed
+4. Triage form
+Radio buttons aligning with icon
+Remove internal padding fixed
+5. Contact form
+Something overflowing - Looks like a margin to the right
+Reduce internal padding - annoying side eye
+6. Feedback form
+Reduce internal padding 
+Annoying side eye
+7. Password request
+Annoying side eye
+8. Admin dashboard /home and dashboard 
+Big margin left on main fixed
+Remove internal padding fixed
+Dashboard at least has done padding or margin on the right fixed-ish
+9. Footer - Break all rights reserved fixed
+
+## Pending
+1. Entry by column not populated
+2. Function to select final triage based on total tews
+3. Delete and modify entry functionality
+
+
 # Session 091124
 1. 403 cleared and db downloaded successfully, but with secret visible in markup after injection with function().
 2. Secret dependent auth removed and replaced with route-related auth middleware.

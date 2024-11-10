@@ -245,12 +245,25 @@ button, select, option {
 .dashboard {
   padding: 2rem;
 }
+.dashboard h3 {
+  margin: 2rem 0;
+  color: var(--accent-color);
+}
+.dashboard .container {
+  padding: 0;
+}
 
 .dashboard section {
   margin-bottom: 2rem;
 }
 
 /* Card Styling */
+.card-container {
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
 .card {
   background-color: #ffffff;
   padding: 1.5rem;
@@ -472,11 +485,6 @@ h4 {
 }
 
 /* Section */
-.qlinks {
-  padding: var(--padding-medium);
-  text-align: center;
-}
-
 .v-flex {
   display: flex;
   flex-direction: column;
@@ -494,6 +502,11 @@ h4 {
 }
 .btn-grp .btn-outline {
   width: unset;
+}
+
+.qlinks {
+  padding: var(--padding-medium);
+  justify-content: left;
 }
 
 .btn {
@@ -861,6 +874,7 @@ footer p {
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
 .input-grp-hor {
@@ -911,7 +925,7 @@ h3 {
 
 form > div {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
 }
 
@@ -923,7 +937,7 @@ form > div {
 /* Radio buttons */
 .input-grp input[type=radio],
 .input-grp input[type=checkbox] {
-  margin-right: 10px;
+  margin-right: 6px;
 }
 
 .input-grp label[for=disposition] {
@@ -1001,7 +1015,6 @@ form > div {
 /* Records Table */
 table {
   border-collapse: collapse;
-  margin-top: 56px;
   box-shadow: var(--box-shadow-medium);
 }
 
@@ -1205,6 +1218,12 @@ th, td {
   .login-container .intro-container, .login-container .form-container {
     width: 100%;
   }
+  .btn {
+    font-size: 14px;
+  }
+  .form-container {
+    padding: var(--padding-medium);
+  }
 }
 @media (max-width: 500px) {
   .container {
@@ -1218,6 +1237,32 @@ th, td {
   }
   .grid-3 {
     grid-template-columns: unset;
+  }
+  /* Incident Form*/
+  .incident-form .container {
+    padding: 0;
+  }
+  /* Index page styling */
+  .home-main .container {
+    padding: 32px;
+  }
+  .home-main p {
+    font-size: 0.875rem;
+    margin: 1rem;
+    text-align: center;
+  }
+  .home-main ul {
+    font-size: 0.875rem;
+    margin-inline: auto;
+  }
+  .home-main p, .home-main ul {
+    width: 250px;
+  }
+  .dashboard {
+    padding: 0;
+  }
+  .card {
+    text-align: center;
   }
 }
 @media (max-width: 650px) {

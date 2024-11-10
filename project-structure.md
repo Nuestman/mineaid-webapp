@@ -40,6 +40,7 @@ project-root/
 │   ├── js/
 │   │   └── mineaid-scripts.js    # Frontend JS (if applicable)
 │   └── images/                   # Images folder (if applicable)
+│   └── uploads/                   # User uploads, eg profile pics
 │
 ├── database/                     # Folder for database-related files
 │   └── mineaid-db.js                     # Database connection and configuration

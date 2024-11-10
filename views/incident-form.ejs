@@ -9,7 +9,7 @@
    
     <link rel="stylesheet" href="/css/fapstyle.css">
 </head>
-<body class="dashboard-page">
+<body class="incident-form">
 
 <header>
     <%- include('partials/_nav') %>
@@ -21,169 +21,167 @@
             <h1>Report An Incident</h1>
     
             <!-- Incident Reporting -->
-            <div class="card">
-                <div class="form-container">
-                    <div class="alert-parent">
-                        <!-- Display flash messages if there are any -->
-                        <% if (success_msg) { %>
-                            <div class="alert alert-success"><%= success_msg %></div>
-                        <% } %>
-                        
-                        <% if (error_msg) { %>
-                            <div class="alert alert-danger"><%= error_msg %></div>
-                        <% } %>
-                        
-                        <% if (error) { %>
-                            <div class="alert alert-danger"><%= error %></div>
-                        <% } %>
-                        <form action="/incident/submit" method="POST">
+            <div class="form-container">
+                <div class="alert-parent">
+                    <!-- Display flash messages if there are any -->
+                    <% if (success_msg) { %>
+                        <div class="alert alert-success"><%= success_msg %></div>
+                    <% } %>
+                    
+                    <% if (error_msg) { %>
+                        <div class="alert alert-danger"><%= error_msg %></div>
+                    <% } %>
+                    
+                    <% if (error) { %>
+                        <div class="alert alert-danger"><%= error %></div>
+                    <% } %>
+                    <form action="/incident/submit" method="POST">
+                        <div class="form-group input-grp">
+                            <label for="post">Post</label>
+                            <select id="post" name="post">
+                                <option value="">Select FAP</option>
+                                <option value="ODD">ODD</option>
+                                <option value="STP">STP</option>
+                                <option value="KMS">KMS</option>
+                                <option value="GCS">GCS</option>
+                                <option value="EMS">EMS</option>
+                            </select>
+                        </div>
+                        <div class="grid-2">
                             <div class="form-group input-grp">
-                                <label for="post">Post</label>
-                                <select id="post" name="post">
-                                    <option value="">Select FAP</option>
-                                    <option value="ODD">ODD</option>
-                                    <option value="STP">STP</option>
-                                    <option value="KMS">KMS</option>
-                                    <option value="GCS">GCS</option>
-                                    <option value="EMS">EMS</option>
-                                </select>
+                                <label for="incident_date">Incident Date</label>
+                                <input type="date" name="incident_date" id="incident_date" placeholder="Enter incident date">
                             </div>
-                            <div class="grid-2">
-                                <div class="form-group input-grp">
-                                    <label for="incident_date">Incident Date</label>
-                                    <input type="date" name="incident_date" id="incident_date" placeholder="Enter incident date">
-                                </div>
-                                <div class="form-group input-grp">
-                                    <label for="incident_time">Incident Time</label>
-                                    <input type="time" name="incident_time" id="incident_time" placeholder="Enter incident time">
-                                </div>
+                            <div class="form-group input-grp">
+                                <label for="incident_time">Incident Time</label>
+                                <input type="time" name="incident_time" id="incident_time" placeholder="Enter incident time">
                             </div>
+                        </div>
 
-                            <div class="company-badge grid-2">
-                                <!-- Company (Select) -->
-                                <div class="input-grp">
-                                    <label for="company">Company:</label>
-                                    <select id="company" name="company" required>
-                                        <option value="">--Select Company--</option>
-                                        <option value="AGA">AGA</option>
-                                        <option value="UMA">UMA</option>
-                                        <option value="MFS">Magnum</option>
-                                        <option value="Berves">Berves</option>
-                                        <option value="Rammoth">Rammoth</option>
-                                        <option value="MTG">Mining Tools</option>
-                                        <option value="Pamicor">Pamicor</option>
-                                        <option value="Ampcor">Ampcor</option>
-                                        <option value="MCS">Mining and Construction</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                                <!-- Badge (Text) -->
-                                <div class="input-grp">
-                                    <label for="badge">Badge Number:</label>
-                                    <input type="text" id="badge" name="badge" required>
-                                </div>
-                            </div>
-                            <div class="form-group input-grp">
-                                <label for="name">Patient Name</label>
-                                <input type="text" name="name" id="name" placeholder="Enter patient name">
-                            </div>
-                            <div class="form-group input-grp">
-                                <label for="incident_type">Incident Type</label>
-                                <select id="incident_type" name="incident_type">
-                                    <option value="Trauma/Injury">Trauma/Injury</option>
-                                    <option value="Medical">Medical</option>
-                                    <option value="other">Other</option>
+                        <div class="company-badge grid-2">
+                            <!-- Company (Select) -->
+                            <div class="input-grp">
+                                <label for="company">Company:</label>
+                                <select id="company" name="company" required>
+                                    <option value="">--Select Company--</option>
+                                    <option value="AGA">AGA</option>
+                                    <option value="UMA">UMA</option>
+                                    <option value="MFS">Magnum</option>
+                                    <option value="Berves">Berves</option>
+                                    <option value="Rammoth">Rammoth</option>
+                                    <option value="MTG">Mining Tools</option>
+                                    <option value="Pamicor">Pamicor</option>
+                                    <option value="Ampcor">Ampcor</option>
+                                    <option value="MCS">Mining and Construction</option>
+                                    <option value="Other">Other</option>
                                 </select>
                             </div>
-                            <div class="form-group input-grp">
-                                <label for="incident_location">Incident Location</label>
-                                <input type="text" name="incident_location" id="incident_location" placeholder="Where did it happen?">
-                            </div>
-                            <div class="form-group input-grp">
-                                <label for="incident_details">Incident Details</label>
-                                <textarea name="incident_details" id="incident_details" rows="4" placeholder="Describe the incident"></textarea>
-                            </div>
+                            <!-- Badge (Text) -->
                             <div class="input-grp">
-                                <label for="first_aid">On-Site First Aid</label>
-                                <div>
-                                    <input type="radio" name="first_aid" id="first-aid-yes" value="Yes">
-                                    <label for="first-aid-yes">Yes</label>
-                                </div>
-                                <div>
-                                    <input type="radio" name="first_aid" id="first-aid-no" value="No">
-                                    <label for="first-aid-no">No</label>
-                                </div>
+                                <label for="badge">Badge Number:</label>
+                                <input type="text" id="badge" name="badge" required>
                             </div>
-                            <!-- Detention status -->
-                            <div class="input-grp">
-                                <label>Detained?</label>
-                                <div>
-                                    <input type="radio" name="detained" id="is_detained" value="Yes" required>
-                                    <label for="is_detained">Yes</label>
-                                </div>
-                                <div>
-                                    <input type="radio" name="detained" id="not_detained" value="No" required>
-                                    <label for="not_detained">No</label>
-                                </div>
-                             </div>
-                             <!-- Treatment given -->
-                            <div class="form-group input-grp">
-                                <label for="treatment_given">Treatment Given</label>
-                                <textarea name="treatment_given" id="treatment_given" rows="4" placeholder="Describe the treatment given"></textarea>
+                        </div>
+                        <div class="form-group input-grp">
+                            <label for="name">Patient Name</label>
+                            <input type="text" name="name" id="name" placeholder="Enter patient name">
+                        </div>
+                        <div class="form-group input-grp">
+                            <label for="incident_type">Incident Type</label>
+                            <select id="incident_type" name="incident_type">
+                                <option value="Trauma/Injury">Trauma/Injury</option>
+                                <option value="Medical">Medical</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group input-grp">
+                            <label for="incident_location">Incident Location</label>
+                            <input type="text" name="incident_location" id="incident_location" placeholder="Where did it happen?">
+                        </div>
+                        <div class="form-group input-grp">
+                            <label for="incident_details">Incident Details</label>
+                            <textarea name="incident_details" id="incident_details" rows="4" placeholder="Describe the incident"></textarea>
+                        </div>
+                        <div class="input-grp">
+                            <label for="first_aid">On-Site First Aid</label>
+                            <div>
+                                <input type="radio" name="first_aid" id="first-aid-yes" value="Yes">
+                                <label for="first-aid-yes">Yes</label>
                             </div>
-                            <!-- Disposition (Radio Buttons) -->
-                            <div class="input-grp">
-                                <label>Disposition:</label>
-                                <div>
-                                    <input type="radio" id="back_to_work" name="disposition" value="Back to work" required>
-                                    <label for="back_to_work">Back to work</label>
-                                </div>
-                                <div>
-                                    <input type="radio" id="sent_to_employee_clinic" name="disposition" value="Sent to Employee Clinic" required>
-                                    <label for="sent_to_employee_clinic">Sent to Employee Clinic</label>
-                                </div>
-                                <div>
-                                    <input type="radio" id="sent_to_agahf" name="disposition" value="Sent to AGAHF" required>
-                                    <label for="sent_to_agahf">Sent to AGAHF</label>
-                                </div>
-                                <div>
-                                    <input type="radio" id="sent_to_hospital" name="disposition" value="Sent to Hospital (Other)" required>
-                                    <label for="sent_to_hospital">Sent to Hospital (Other)</label>
-                                </div>
+                            <div>
+                                <input type="radio" name="first_aid" id="first-aid-no" value="No">
+                                <label for="first-aid-no">No</label>
                             </div>
-                            <!-- Time of Disposition -->
-                            <div class="input-grp">
-                                <label for="disposition_time">Time of Disposition:</label>
-                                <input type="time" id="disposition_time" name="disposition_time" required>
+                        </div>
+                        <!-- Detention status -->
+                        <div class="input-grp">
+                            <label>Detained?</label>
+                            <div>
+                                <input type="radio" name="detained" id="is_detained" value="Yes" required>
+                                <label for="is_detained">Yes</label>
                             </div>
-                            <!-- Reporting (Checkboxes) -->
-                            <div class="input-grp">
-                                <label>Reporting:</label>
-                                <div>
-                                    <input type="checkbox" id="not_rep" name="reporting" value="Unreported">
-                                    <label for="not_rep">Not Reportable</label>
-                                </div>
-                                <div>
-                                    <input type="checkbox" id="uma" name="reporting" value="UMA">
-                                    <label for="uma">UMA Informed</label>
-                                </div>
-                                <div>
-                                    <input type="checkbox" id="ems" name="reporting" value="EMS">
-                                    <label for="ems">EMS Informed</label>
-                                </div>
-                                <div>
-                                    <input type="checkbox" id="employee_clinic" name="reporting" value="Employee Clinic">
-                                    <label for="employee_clinic">Employee Clinic Informed</label>
-                                </div>
-                                <div>
-                                    <input type="checkbox" id="agahf" name="reporting" value="AGAHF">
-                                    <label for="agahf">AGAHF Informed</label>
-                                </div>
+                            <div>
+                                <input type="radio" name="detained" id="not_detained" value="No" required>
+                                <label for="not_detained">No</label>
                             </div>
-                            <!-- Submit Button -->
-                            <button type="submit" class="btn">Submit Incident</button>
-                        </form>
-                    </div>
+                            </div>
+                            <!-- Treatment given -->
+                        <div class="form-group input-grp">
+                            <label for="treatment_given">Treatment Given</label>
+                            <textarea name="treatment_given" id="treatment_given" rows="4" placeholder="Describe the treatment given"></textarea>
+                        </div>
+                        <!-- Disposition (Radio Buttons) -->
+                        <div class="input-grp">
+                            <label>Disposition:</label>
+                            <div>
+                                <input type="radio" id="back_to_work" name="disposition" value="Back to work" required>
+                                <label for="back_to_work">Back to work</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="sent_to_employee_clinic" name="disposition" value="Sent to Employee Clinic" required>
+                                <label for="sent_to_employee_clinic">Sent to Employee Clinic</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="sent_to_agahf" name="disposition" value="Sent to AGAHF" required>
+                                <label for="sent_to_agahf">Sent to AGAHF</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="sent_to_hospital" name="disposition" value="Sent to Hospital (Other)" required>
+                                <label for="sent_to_hospital">Sent to Hospital (Other)</label>
+                            </div>
+                        </div>
+                        <!-- Time of Disposition -->
+                        <div class="input-grp">
+                            <label for="disposition_time">Time of Disposition:</label>
+                            <input type="time" id="disposition_time" name="disposition_time" required>
+                        </div>
+                        <!-- Reporting (Checkboxes) -->
+                        <div class="input-grp">
+                            <label>Reporting:</label>
+                            <div>
+                                <input type="checkbox" id="not_rep" name="reporting" value="Unreported">
+                                <label for="not_rep">Not Reportable</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="uma" name="reporting" value="UMA">
+                                <label for="uma">UMA Informed</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="ems" name="reporting" value="EMS">
+                                <label for="ems">EMS Informed</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="employee_clinic" name="reporting" value="Employee Clinic">
+                                <label for="employee_clinic">Employee Clinic Informed</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="agahf" name="reporting" value="AGAHF">
+                                <label for="agahf">AGAHF Informed</label>
+                            </div>
+                        </div>
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn">Submit Incident</button>
+                    </form>
                 </div>
             </div>
         </div>
