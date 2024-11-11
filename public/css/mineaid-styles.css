@@ -166,6 +166,19 @@ input, button, textarea, select {
   font: inherit;
   border: none;
   background: none;
+  width: 100%;
+}
+
+/* Buttons*/
+button, input[type=button] {
+  width: unset;
+}
+
+/* Radio buttons */
+input[type=radio],
+input[type=checkbox] {
+  margin-right: 6px;
+  width: unset;
 }
 
 /* Make buttons and inputs clickable */
@@ -174,8 +187,6 @@ button, select, option {
   background-color: transparent;
 }
 
-/* Make sure that form elements don't shrink in flex layouts */
-/* Input styling */
 /* Responsive motion */
 /* Remove animations from media queries (for people who prefer reduced motion) */
 @media (prefers-reduced-motion: reduce) {
@@ -421,6 +432,7 @@ header nav a:hover {
   padding: 1rem 2rem;
   width: 100%;
   display: block;
+  text-align: center;
   transition: var(--transition-normal);
   border-bottom: 1px solid rgba(255, 255, 255, 0.337254902);
 }
@@ -651,8 +663,8 @@ footer p {
 
 /*USER PROFILE PAGE*/
 .user-profile-icon img {
-  display: inline;
   width: 32px;
+  margin-inline: auto;
   border-radius: 50%;
 }
 
@@ -853,6 +865,7 @@ footer p {
   padding: var(--padding-xlarge);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow-light);
+  overflow: hidden;
 }
 .form-container h2 {
   font-size: var(--font-size-medium);
@@ -877,12 +890,14 @@ footer p {
   gap: 10px;
 }
 
+.input-grp label[for=disposition] {
+  display: block;
+  margin-bottom: 10px;
+}
+
 .input-grp-hor {
   flex-direction: row;
   justify-content: space-between;
-}
-.input-grp-hor input {
-  flex-grow: 1;
 }
 .input-grp-hor .btn {
   margin-top: unset;
@@ -918,31 +933,11 @@ h3 {
   margin-top: 30px;
 }
 
-.tews .input-grp {
-  flex: 1;
-  margin-right: 10px;
-}
-
+/* TEWS */
 form > div {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-/* Ensure the last item doesn't have extra margin */
-.tews .input-grp:last-child {
-  margin-right: 0;
-}
-
-/* Radio buttons */
-.input-grp input[type=radio],
-.input-grp input[type=checkbox] {
-  margin-right: 6px;
-}
-
-.input-grp label[for=disposition] {
-  display: block;
-  margin-bottom: 10px;
+  gap: 20px;
 }
 
 .message-container {
@@ -1226,6 +1221,10 @@ th, td {
   }
 }
 @media (max-width: 500px) {
+  /* Show sub-menu when .nav-item touched on mobile*/
+  .nav-item:hover > .nav-links {
+    margin-top: 0.6rem;
+  }
   .container {
     padding: var(--padding-hor-medium);
   }
@@ -1234,6 +1233,9 @@ th, td {
   }
   .grid-2 {
     grid-template-columns: unset;
+  }
+  .grid-2 .input-grp:not(:last-child) {
+    margin-bottom: 0;
   }
   .grid-3 {
     grid-template-columns: unset;

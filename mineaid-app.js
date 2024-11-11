@@ -340,12 +340,12 @@ app.get('/triage', (req, res) => {
 
 // Route to handle form submission 
 app.post('/submit', (req, res) => {
-    const { date, time_of_arrival, company, badge, name, age, gender, incident, complaints, mobility, respiratory_rate, pulse, blood_pressure, temperature, avpu, oxygen_saturation, glucose, pain_score, final_triage, detained, treatment_given, disposition, disposition_time, reporting } = req.body;
+    const { post, date, time_of_arrival, company, badge, name, age, gender, incident, complaints, mobility, respiratory_rate, pulse, blood_pressure, temperature, avpu, oxygen_saturation, glucose, pain_score, final_triage, detained, treatment_given, disposition, disposition_time, condition, reporting, entry_by } = req.body;
     
-    const query = `INSERT INTO triagebook (date, time_of_arrival, company, badge, name, age, gender, incident, complaints, mobility, respiratory_rate, pulse, blood_pressure, temperature, avpu, oxygen_saturation, glucose, pain_score, final_triage, detained, treatment_given, disposition, disposition_time, reporting) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO triagebook (post, date, time_of_arrival, company, badge, name, age, gender, incident, complaints, mobility, respiratory_rate, pulse, blood_pressure, temperature, avpu, oxygen_saturation, glucose, pain_score, final_triage, detained, treatment_given, disposition, disposition_time, condition, reporting, entry_by) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     
-    db.run(query, [date, time_of_arrival, company, badge, name, age, gender, incident, complaints, mobility, respiratory_rate, pulse, blood_pressure, temperature, avpu, oxygen_saturation, glucose, pain_score, final_triage, detained, treatment_given, disposition, disposition_time, reporting], function(err) {
+    db.run(query, [post, date, time_of_arrival, company, badge, name, age, gender, incident, complaints, mobility, respiratory_rate, pulse, blood_pressure, temperature, avpu, oxygen_saturation, glucose, pain_score, final_triage, detained, treatment_given, disposition, disposition_time, condition, reporting, entry_by], function(err) {
         if (err) {
             console.error('Error inserting into triagebook:', err.message);
             res.status(500).render('error', { message: 'Submission failed' });
@@ -364,7 +364,7 @@ app.get('/triage-book', (req, res) => {
             console.error('Error fetching triagebook records:', err.message);
             res.status(500).render('error', { message: 'Error fetching records' });
         } else {
-            res.render('triage-book', { records: rows });
+            res.render('triage-book', { triagebook: rows });
         }
     });
 });
@@ -383,12 +383,12 @@ app.post('/incident/submit', (req, res) => {
     // Convert reporting checkboxes to a single string, if multiple are selected
     const reportingStr = Array.isArray(reporting) ? reporting.join(', ') : reporting;
 
-    const query = `INSERT INTO incident_reporting (post, incident_date, incident_time, company, badge, name, incident_type, incident_location, incident_details, first_aid, detained, treatment_given, disposition, disposition_time, reporting) 
+    const query = `INSERT INTO incident_book (post, incident_date, incident_time, company, badge, name, incident_type, incident_location, incident_details, first_aid, detained, treatment_given, disposition, disposition_time, reporting) 
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.run(query, [post, incident_date, incident_time, company, badge, name, incident_type, incident_location, incident_details, first_aid, detained, treatment_given, disposition, disposition_time, reportingStr], function(err) {
         if (err) {
-            console.error('Error inserting into incident_reporting:', err.message);
+            console.error('Error inserting into incident_book:', err.message);
             res.status(500).render('error/500', { message: 'Incident submission failed' });
         } else {
             res.render('success', { title: 'Incident Submission Successful' });
@@ -397,8 +397,8 @@ app.post('/incident/submit', (req, res) => {
 });
 
 // Route to display incident book
-app.get('/incident-book', ensureAuthenticated, (req, res) => {
-    const query = 'SELECT * FROM incident_reporting ORDER BY incident_date DESC';
+app.get('/incident-book', ensureAuthenticated, ensureAdmin, (req, res) => {
+    const query = 'SELECT * FROM incident_book ORDER BY incident_date DESC';
 
     db.all(query, [], (err, rows) => {
         if (err) {
@@ -423,6 +423,14 @@ function ensureAuthenticated(req, res, next) {
     console.log('Session ID on setting returnTo:', req.sessionID);
     console.log('Session returnTo set to:', req.session.returnTo);
     res.redirect('/login');
+}
+// Middleware to Ensure the user is an admin
+function ensureAdmin(req, res, next) {
+    if (req.isAuthenticated() && req.user.isAdmin) {
+        return next();
+    }
+    req.flash('error_msg', 'Admin access required');
+    res.redirect('/');
 }
 
 // Nodemailer setup for sending emails after user approval
@@ -697,7 +705,7 @@ app.get('/dashboard', ensureAuthenticated, (req, res) => {
             // Fetch statistics (modify based on your data requirements)
             db.get(`SELECT 
                     (SELECT COUNT(*) FROM triagebook WHERE strftime('%m', date) = strftime('%m', 'now')) AS triageEntries,
-                    (SELECT COUNT(*) FROM incident_reporting WHERE strftime('%m', incident_date) = strftime('%m', 'now')) AS incidents,
+                    (SELECT COUNT(*) FROM incident_book WHERE strftime('%m', incident_date) = strftime('%m', 'now')) AS incidents,
                     (SELECT COUNT(*) FROM users WHERE strftime('%m', created_at) = strftime('%m', 'now')) AS newUsers
                     `, (err, statistics) => {
                 if (err) return console.error(err.message);
@@ -710,7 +718,7 @@ app.get('/dashboard', ensureAuthenticated, (req, res) => {
 });
 
 // Route for the admin page (only for authenticated users)
-app.get('/admin', ensureAuthenticated, (req, res) => {
+app.get('/admin', ensureAuthenticated, ensureAdmin,  (req, res) => {
     db.all('SELECT * FROM triagebook', (err, rows) => {
         if (err) {
             console.error('Error fetching records:', err.message);
@@ -733,7 +741,7 @@ function superuser(req, res, next) {
 }
 
 // Protect Senior Admin routes with superuser
-app.get('/admin/super-user',  ensureAuthenticated, superuser, (req, res) => {
+app.get('/admin/super-user', superuser, (req, res) => {
     // Fetch all users from DB    
     const query = 'SELECT * FROM users'; 
     db.all(query, [], (err, rows) => {
@@ -747,7 +755,7 @@ app.get('/admin/super-user',  ensureAuthenticated, superuser, (req, res) => {
     });
 });
 
-app.get('/admin/admin-home', ensureAuthenticated,  (req, res) => {
+app.get('/admin/admin-home', ensureAuthenticated, ensureAdmin, (req, res) => {
     // Fetch all users from DB    
     // Fetch recent activities
     db.all(`SELECT activity FROM recent_activities ORDER BY timestamp DESC LIMIT 5`, (err, recent_activity) => {
@@ -757,7 +765,7 @@ app.get('/admin/admin-home', ensureAuthenticated,  (req, res) => {
             // Fetch statistics (modify based on your data requirements)
             db.get(`SELECT 
                     (SELECT COUNT(*) FROM triagebook WHERE strftime('%m', date) = strftime('%m', 'now')) AS triageEntries,
-                    (SELECT COUNT(*) FROM incident_reporting WHERE strftime('%m', incident_date) = strftime('%m', 'now')) AS incidents,
+                    (SELECT COUNT(*) FROM incident_book WHERE strftime('%m', incident_date) = strftime('%m', 'now')) AS incidents,
                     (SELECT COUNT(*) FROM users WHERE strftime('%m', created_at) = strftime('%m', 'now')) AS newUsers
                     `, (err, statistics) => {
                 if (err) return console.error(err.message);
@@ -771,7 +779,7 @@ app.get('/admin/admin-home', ensureAuthenticated,  (req, res) => {
 });
 
 // Route: View All Users (GET)
-app.get('/admin/users', ensureAuthenticated, (req, res) => {
+app.get('/admin/users', ensureAuthenticated, ensureAdmin, (req, res) => {
 // Fetch all users from DB    
     const query = 'SELECT * FROM users'; 
     db.all(query, [], (err, rows) => {
@@ -789,7 +797,7 @@ app.get('/admin/users', ensureAuthenticated, (req, res) => {
 
 
 // Route to approve a user
-app.get('/admin/approve/:id', ensureAuthenticated, (req, res) => {
+app.get('/admin/approve/:id', ensureAuthenticated, ensureAdmin, (req, res) => {
     const userId = req.params.id;
     db.run('UPDATE users SET status = ? WHERE id = ?', ['Approved'.trim(), userId], (err) => {
         if (err) {
@@ -826,7 +834,7 @@ app.get('/admin/approve/:id', ensureAuthenticated, (req, res) => {
     });
 });
 // Route to make a user an Admin
-app.get('/admin/make-admin/:id', ensureAuthenticated, (req, res) => {
+app.get('/admin/make-admin/:id', ensureAuthenticated, ensureAdmin, (req, res) => {
     const userId = req.params.id;
     db.run('UPDATE users SET role = ? WHERE id = ?', ['Admin'.trim(), userId], (err) => {
         if (err) {
@@ -840,7 +848,7 @@ app.get('/admin/make-admin/:id', ensureAuthenticated, (req, res) => {
 });
 
 // Route to block a user
-app.get('/admin/block/:id', ensureAuthenticated, (req, res) => {
+app.get('/admin/block/:id', ensureAuthenticated, ensureAdmin, (req, res) => {
     const userId = req.params.id;
     db.run('UPDATE users SET status = ? WHERE id = ?', ['Blocked'.trim(), userId], (err) => {
         if (err) {
@@ -855,7 +863,7 @@ app.get('/admin/block/:id', ensureAuthenticated, (req, res) => {
 });
 
 // Route to unblock a user
-app.get('/admin/unblock/:id', ensureAuthenticated, (req, res) => {
+app.get('/admin/unblock/:id', ensureAuthenticated, ensureAdmin, (req, res) => {
     const userId = req.params.id;
     db.run('UPDATE users SET status = ? WHERE id = ?', ['Approved'.trim(), userId], (err) => {
         if (err) {
@@ -868,16 +876,81 @@ app.get('/admin/unblock/:id', ensureAuthenticated, (req, res) => {
     });
 });
 
-// Route to delete a record
-app.get('/delete/:id', ensureAuthenticated, (req, res) => {
+
+
+/* ROUTES TO DELETE RECORDS */
+// Route to delete a record from triagebook (Admin only)
+app.get('/delete/triagebook/:id', (req, res) => {
     const id = req.params.id;
-    db.run('DELETE FROM daily_records WHERE id = ?', id, (err) => {
+    db.run('DELETE FROM triagebook WHERE id = ?', id, (err) => {
         if (err) {
-            console.error('Error deleting record:', err.message);
+            console.error('Error deleting triagebook record:', err.message);
         }
-        res.redirect('/records');
+        res.redirect('/triage-book'); // Redirect to triagebook records page
     });
 });
+
+// Route to delete a record from users table (Admin only)
+app.get('/delete/user/:id', (req, res) => {
+    const id = req.params.id;
+    db.run('DELETE FROM users WHERE id = ?', id, (err) => {
+        if (err) {
+            console.error('Error deleting user record:', err.message);
+        }
+        res.redirect('/admin/users'); // Redirect to users page
+    });
+});
+
+// Route to delete a record from contact_messages (Admin only)
+app.get('/delete/contact/:id', (req, res) => {
+    const id = req.params.id;
+    db.run('DELETE FROM contact_messages WHERE id = ?', id, (err) => {
+        if (err) {
+            console.error('Error deleting contact message:', err.message);
+        }
+        res.redirect('/messages'); // Redirect to messages page
+    });
+});
+
+// Route to delete a record from incident_book (Admin only)
+app.get('/delete/incident/:id', (req, res) => {
+    const id = req.params.id;
+    db.run('DELETE FROM incident_book WHERE id = ?', id, (err) => {
+        if (err) {
+            console.error('Error deleting incident record:', err.message);
+        }
+        res.redirect('/incident-book'); // Redirect to incidents page
+    });
+});
+
+
+/* EDIT ROUTES */
+// Route to edit a triagebook entry
+app.get('/edit/triagebook/:id', ensureAuthenticated, (req, res) => {
+    const id = req.params.id;
+    db.get('SELECT * FROM triagebook WHERE id = ? AND user_id = ?', [id, req.user.id], (err, row) => {
+        if (err || !row) {
+            req.flash('error_msg', 'You do not have permission to edit this entry.');
+            return res.redirect('/triage-book');
+        }
+        res.render('editTriage', { entry: row }); // Render edit form with entry data
+    });
+});
+
+// Route to edit an incident_book entry
+app.get('/edit/incident/:id', ensureAuthenticated, (req, res) => {
+    const id = req.params.id;
+    db.get('SELECT * FROM incident_book WHERE id = ? AND user_id = ?', [id, req.user.id], (err, row) => {
+        if (err || !row) {
+            req.flash('error_msg', 'You do not have permission to edit this entry.');
+            return res.redirect('/incidents');
+        }
+        res.render('editIncident', { entry: row }); // Render edit form with entry data
+    });
+});
+
+
+
 
 // Middleware to log every incoming request
 app.use((req, res, next) => {

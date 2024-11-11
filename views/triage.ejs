@@ -31,7 +31,20 @@
                         <div class="alert alert-danger"><%= error %></div>
                     <% } %>
                     <!-- ID (Autoincrement, automatically handled by the DB, so no need for an input field) -->
-                    <div class="date-time grid-2">
+                    <div class="post-date-time">
+                        <!-- Post -->
+                        <div class="input-grp">
+                            <label for="post">Post:</label>
+                            <select id="post" name="post" required>
+                                <option disabled selected>Client reported to...</option>
+                                <option value="ODD">ODD</option>
+                                <option value="STP">STP</option>
+                                <option value="KMS">KMS</option>
+                                <option value="GCS">GCS</option>
+                                <option value="EMS">EMS</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
                         <!-- Date -->
                         <div class="input-grp">
                             <label for="date">Date:</label>
@@ -48,7 +61,7 @@
                         <div class="input-grp">
                             <label for="company">Company:</label>
                             <select id="company" name="company" required>
-                                <option value="">--Select Company--</option>
+                                <option disabled selected>Client works with...</option>
                                 <option value="AGA">AGA</option>
                                 <option value="UMA">UMA</option>
                                 <option value="MFS">Magnum</option>
@@ -82,10 +95,9 @@
                         <div class="input-grp">
                             <label for="gender">Gender:</label>
                             <select id="gender" name="gender" required>
-                                <option value="">--Select Gender--</option>
+                                <option disabled selected>Client is a...</option>
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
-                                <option value="Other">Other</option>
                             </select>
                         </div>
                     </div>
@@ -111,7 +123,7 @@
                             <div class="input-grp">
                                 <label for="mobility">Mobility:</label>
                                 <select id="mobility" name="mobility" required>
-                                    <option value="">--Select Mobility--</option>
+                                    <option disabled selected>Client came...</option>
                                     <option value="Walking">Walking</option>
                                     <option value="with_help">With Help</option>
                                     <option value="stretcher">Stretcher/Immobile</option>
@@ -136,7 +148,7 @@
                             <div class="input-grp">
                                 <label for="avpu">AVPU:</label>
                                 <select id="avpu" name="avpu" required>
-                                    <option value="">--Select AVPU--</option>
+                                    <option disabled selected>Client was...</option>
                                     <option value="alert">Alert</option>
                                     <option value="confused">Confused</option>
                                     <option value="voice">Reacts to Voice</option>
@@ -166,7 +178,7 @@
                             <div class="input-grp">
                                 <label for="final_triage">Final Triage:</label>
                                 <select id="final_triage" name="final_triage" required>
-                                    <option value="">--Select Final Triage--</option>
+                                    <option disabled selected>Client's Final Triage</option>
                                     <option value="Red">Red</option>
                                     <option value="Orange">Orange</option>
                                     <option value="Yellow">Yellow</option>
@@ -214,10 +226,24 @@
                             <label for="sent_to_hospital">Sent to Hospital (Other)</label>
                         </div>
                     </div>
-                    <!-- Time of Disposition -->
-                    <div class="input-grp">
-                        <label for="disposition_time">Time of Disposition:</label>
-                        <input type="time" id="disposition_time" name="disposition_time" required>
+                    <div class="grid-2">
+                        <!-- Time of Disposition -->
+                        <div class="input-grp">
+                            <label for="disposition_time">Time of Disposition:</label>
+                            <input type="time" id="disposition_time" name="disposition_time" required>
+                        </div>
+                        <!-- Condition at Disposition -->
+                        <div class="input-grp">
+                            <label for="condition">Condition Before Leaving:</label>
+                            <select id="condition" name="condition" required>
+                                <option disabled selected>Client's condition was...</option>
+                                <option value="Satisfactory">Satisfactory</option>
+                                <option value="Stable">Stable</option>
+                                <option value="Ill">Ill</option>
+                                <option value="Unconscious">Unconscious</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
                     </div>
                     <!-- Reporting (Checkboxes) -->
                     <div class="input-grp">
@@ -252,9 +278,7 @@
 </main>
 
 
-    <footer>
-    <p>&copy; 2024 First Aid Portal. All Rights Reserved.</p>
-  </footer>
+    <%- include('partials/_footer') %>
 
   <script src="/js/mineaid-scripts.js"></script>
 </body>

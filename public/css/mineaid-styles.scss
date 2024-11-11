@@ -178,6 +178,17 @@ hr {
     font: inherit;
     border: none;
     background: none;
+    width: 100%;
+  }
+  /* Buttons*/
+  button, input[type="button"] {
+    width: unset;
+  }
+  /* Radio buttons */
+  input[type="radio"],
+  input[type="checkbox"] {
+      margin-right: 6px;
+      width: unset;
   }
   
   /* Make buttons and inputs clickable */
@@ -185,21 +196,6 @@ hr {
     cursor: pointer;
     background-color: transparent;
   }
-  
-  /* Make sure that form elements don't shrink in flex layouts */
-//   button, input, select, textarea {
-//     max-width: 100%;
-//     overflow: visible;
-//   }
-  
-  /* Input styling */
-//   input[type="text"], textarea {
-//     border: 1px solid #ccc;
-//     padding: 8px;
-//     border-radius: 4px;
-//     width: 100%;
-//     outline: none;
-//   }
   
   /* Responsive motion */
   /* Remove animations from media queries (for people who prefer reduced motion) */
@@ -435,6 +431,7 @@ hr {
     padding: 1rem 2rem;
     width: 100%;
     display: block;
+    text-align: center;
     transition: var(--transition-normal);
     border-bottom: 1px solid #ffffff56;
   }
@@ -658,8 +655,8 @@ footer p {
 /*USER PROFILE PAGE*/
 // Show Profile Icon in place of firstname
 .user-profile-icon img {
-    display: inline;
     width: 32px;
+    margin-inline: auto;
     border-radius: 50%;
 }
 .profile-page main {
@@ -878,6 +875,7 @@ footer p {
     padding: var(--padding-xlarge);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow-light);
+    overflow: hidden;
     h2 {
         font-size: var(--font-size-medium);
     }
@@ -904,12 +902,15 @@ footer p {
     flex-direction: column;
     gap: 10px;
   }
+
+.input-grp label[for="disposition"] {
+    display: block;
+    margin-bottom: 10px;
+}
   .input-grp-hor {
     flex-direction: row;
     justify-content: space-between;
-    input {
-        flex-grow: 1;
-    }
+   
     .btn {
         margin-top: unset;
         width: max-content;
@@ -944,32 +945,13 @@ h3 {
 }
 
 
-
-.tews .input-grp {
-    flex: 1;
-    margin-right: 10px;
-}
+/* TEWS */
 form > div {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    gap: 20px;
 }
 
-/* Ensure the last item doesn't have extra margin */
-.tews .input-grp:last-child {
-    margin-right: 0;
-}
-
-/* Radio buttons */
-.input-grp input[type="radio"],
-.input-grp input[type="checkbox"] {
-    margin-right: 6px;
-}
-
-.input-grp label[for="disposition"] {
-    display: block;
-    margin-bottom: 10px;
-}
 
 .message-container {
     max-width: 765px;
@@ -1251,6 +1233,10 @@ th, td {
     }
 }
 @media (max-width: 500px) {
+    /* Show sub-menu when .nav-item touched on mobile*/
+    .nav-item:hover > .nav-links {
+        margin-top: 0.6rem;
+    }
     .container {
       padding: var(--padding-hor-medium);
     }
@@ -1260,6 +1246,9 @@ th, td {
 
     .grid-2 {
         grid-template-columns: unset;
+        .input-grp:not(:last-child) {
+            margin-bottom: 0;
+        }
     }
     .grid-3 {
         grid-template-columns: unset;
@@ -1344,12 +1333,12 @@ th, td {
   
 
 
-    @media (max-width: 650px) {
-        .nav-container {
-            flex-direction: column;
-        }
-
-        .btn {
-            padding: var(--padding-small);
-        }
+@media (max-width: 650px) {
+    .nav-container {
+        flex-direction: column;
     }
+
+    .btn {
+        padding: var(--padding-small);
+    }
+}

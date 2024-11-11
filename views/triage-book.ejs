@@ -17,7 +17,7 @@
     </section>
 
     <main>
-        <div class="container">
+        <div class="table-page-container">
             <div class="wide-table">
                 <div class="alert-parent">
                     <table > <!-- Optional: Add border for better visibility -->
@@ -60,43 +60,59 @@
                             <th>TreatmentGiven</th>
                             <th>Disposition</th>
                             <th>Disposition Time</th>
+                            <th>Gen. Condition</th>
                             <th>Reporting</th>
                             <th>Entry by</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <% records.forEach(record => { %>
+                            <% triagebook.forEach(entry => { %>
                             <tr>
-                                <td><%= record.id %></td>
-                                <td><%= record.post %></td>
-                                <td><%= record.date %></td>
-                                <td><%= record.time_of_arrival %></td>
-                                <td><%= record.company %></td>
-                                <td><%= record.badge %></td>
-                                <td><%= record.name %></td>
-                                <td><%= record.age %></td>
-                                <td><%= record.gender %></td>
-                                <td><%= record.incident %></td>
-                                <td><%= record.complaints %></td>
-                                <td><%= record.mobility %></td>
-                                <td><%= record.respiratory_rate %></td>
-                                <td><%= record.pulse %></td>
-                                <td><%= record.blood_pressure %></td>
-                                <td><%= record.temperature %></td>
-                                <td><%= record.avpu %></td>
-                                <td><%= record.oxygen_saturation %></td>
-                                <td><%= record.glucose %></td>
-                                <td><%= record.pain_score %></td>
-                                <td><%= record.final_triage %></td>
-                                <td><%= record.detained %></td>
-                                <td><%= record.treatment_given %></td>
-                                <td><%= record.disposition %></td>
-                                <td><%= record.disposition_time %></td>
-                                <td><%= record.reporting %></td>
-                                <td><%= record.entry_by %></td>
+                                <td><%= entry.id %></td>
+                                <td><%= entry.post %></td>
+                                <td><%= entry.date %></td>
+                                <td><%= entry.time_of_arrival %></td>
+                                <td><%= entry.company %></td>
+                                <td><%= entry.badge %></td>
+                                <td><%= entry.name %></td>
+                                <td><%= entry.age %></td>
+                                <td><%= entry.gender %></td>
+                                <td><%= entry.incident %></td>
+                                <td><%= entry.complaints %></td>
+                                <td><%= entry.mobility %></td>
+                                <td><%= entry.respiratory_rate %></td>
+                                <td><%= entry.pulse %></td>
+                                <td><%= entry.blood_pressure %></td>
+                                <td><%= entry.temperature %></td>
+                                <td><%= entry.avpu %></td>
+                                <td><%= entry.oxygen_saturation %></td>
+                                <td><%= entry.glucose %></td>
+                                <td><%= entry.pain_score %></td>
+                                <td><%= entry.final_triage %></td>
+                                <td><%= entry.detained %></td>
+                                <td><%= entry.treatment_given %></td>
+                                <td><%= entry.disposition %></td>
+                                <td><%= entry.disposition_time %></td>
+                                <td><%= entry.condition %></td>
+                                <td><%= entry.reporting %></td>
+                                <td><%= user.firstname %></td>
+                        
+                                <!-- Edit button, only shown if the entry was created by the logged-in user -->
+                                
+                                <!-- Combine Edit and Delete logic into a single cell -->
+                               
+                                <!-- Edit button, visible to all users -->
+                                <td><a class="btn-approve" href="/edit/triagebook/<%= entry.id %>" >Edit</a></td>
+
+                                <!-- Delete button, visible to all users -->
+                                <td><a class="btn-block" href="/delete/triagebook/<%= entry.id %>" >Delete</a></td>
+                                %>
                             </tr>
                             <% }) %>
                         </tbody>
+                        
                     </table>
                 </div>
                 

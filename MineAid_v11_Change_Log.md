@@ -1,3 +1,8 @@
+# Session 11112024 morning
+1. Mobile style adjustments
+2. Added post, condition, entry by columns to triage form and table
+3. Entry by column not populated     -   Done
+
 # Session 091124 Late night
 1. Style adjustments
 ## Responsive Mobile Issues
@@ -26,7 +31,6 @@ Dashboard at least has done padding or margin on the right fixed-ish
 9. Footer - Break all rights reserved fixed
 
 ## Pending
-1. Entry by column not populated
 2. Function to select final triage based on total tews
 3. Delete and modify entry functionality
 

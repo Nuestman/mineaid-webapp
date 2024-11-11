@@ -51,6 +51,7 @@
                             <th>Disposition</th>
                             <th>Disposition Time</th>
                             <th>Reporting</th>
+                            <th>Entry By</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -72,6 +73,7 @@
                                 <td><%= incident.disposition %></td>
                                 <td><%= incident.disposition_time %></td>
                                 <td><%= incident.reporting %></td>
+                                <td><%= user.firstname %></td>
                             </tr>
                             <% }) %>
                         </tbody>
