@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Form</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+   
+    <link rel="stylesheet" href="/css/fapstyle.css">
+</head>
+<body class="incident-form">
+
+<header>
+    <%- include('partials/_nav') %>
+</header>
+
+<main>
+    <div class="container">        
+        <div class="main-content">
+            <h1>Report An Incident</h1>
+    
+            <!-- Incident Reporting -->
+            <div class="form-container">
+                <div class="alert-parent">
+                    <!-- Display flash messages if there are any -->
+                    <% if (success_msg) { %>
+                        <div class="alert alert-success"><%= success_msg %></div>
+                    <% } %>
+                    
+                    <% if (error_msg) { %>
+                        <div class="alert alert-danger"><%= error_msg %></div>
+                    <% } %>
+                    
+                    <% if (error) { %>
+                        <div class="alert alert-danger"><%= error %></div>
+                    <% } %>
+                    <form action="/incident/edit/<%= incident.id %>" method="POST">
+                        <div class="form-group input-grp">
+                            <label for="post">Post</label>
+                            <select id="post" name="post">
+                                <option value="">Select FAP</option>
+                                <option value="ODD" <%= incident.post === 'ODD' ? 'selected' : '' %>>ODD</option>
+                                <option value="STP" <%= incident.post === 'STP' ? 'selected' : '' %>>STP</option>
+                                <option value="KMS" <%= incident.post === 'KMS' ? 'selected' : '' %>>KMS</option>
+                                <option value="GCS" <%= incident.post === 'GCS' ? 'selected' : '' %>>GCS</option>
+                                <option value="EMS" <%= incident.post === 'EMS' ? 'selected' : '' %>>EMS</option>
+                            </select>
+                        </div>
+                    
+                        <div class="grid-2">
+                            <div class="form-group input-grp">
+                                <label for="incident_date">Incident Date</label>
+                                <input type="date" name="incident_date" id="incident_date" value="<%= incident.incident_date %>">
+                            </div>
+                            <div class="form-group input-grp">
+                                <label for="incident_time">Incident Time</label>
+                                <input type="time" name="incident_time" id="incident_time" value="<%= incident.incident_time %>">
+                            </div>
+                        </div>
+                    
+                        <div class="company-badge grid-2">
+                            <div class="input-grp">
+                                <label for="company">Company:</label>
+                                <select id="company" name="company" required>
+                                    <option value="">--Select Company--</option>
+                                    <option value="AGA" <%= incident.company === 'AGA' ? 'selected' : '' %>>AGA</option>
+                                    <option value="UMA" <%= incident.company === 'UMA' ? 'selected' : '' %>>UMA</option>
+                                    <option value="MCS" <%= incident.company === 'MCS' ? 'selected' : '' %>>MCS</option>
+                                    <option value="Mining Tools" <%= incident.company === 'Mining Tools' ? 'selected' : '' %>>Mining Tools</option>
+                                    <option value="Rammoth" <%= incident.company === 'Rammoth' ? 'selected' : '' %>>Rammoth</option>
+                                    <option value="Berves" <%= incident.company === 'Berves' ? 'selected' : '' %>>Berves</option>
+                                    <!-- Repeat this format for each company option -->
+                                </select>
+                            </div>
+                    
+                            <div class="input-grp">
+                                <label for="badge">Badge Number:</label>
+                                <input type="text" id="badge" name="badge" value="<%= incident.badge %>">
+                            </div>
+                        </div>
+                    
+                        <div class="form-group input-grp">
+                            <label for="name">Patient Name</label>
+                            <input type="text" name="name" id="name" value="<%= incident.name %>">
+                        </div>
+                    
+                        <div class="form-group input-grp">
+                            <label for="incident_type">Incident Type</label>
+                            <select id="incident_type" name="incident_type">
+                                <option value="Trauma/Injury" <%= incident.incident_type === 'Trauma/Injury' ? 'selected' : '' %>>Trauma/Injury</option>
+                                <option value="Medical" <%= incident.incident_type === 'Medical' ? 'selected' : '' %>>Medical</option>
+                                <option value="Other" <%= incident.incident_type === 'Other' ? 'selected' : '' %>>Other</option>
+                            </select>
+                        </div>
+                    
+                        <div class="form-group input-grp">
+                            <label for="incident_location">Incident Location</label>
+                            <input type="text" name="incident_location" id="incident_location" value="<%= incident.incident_location %>">
+                        </div>
+                    
+                        <div class="form-group input-grp">
+                            <label for="incident_details">Incident Details</label>
+                            <textarea name="incident_details" id="incident_details" rows="4"><%= incident.incident_details %></textarea>
+                        </div>
+                    
+                        <div class="input-grp">
+                            <label for="first_aid">On-Site First Aid</label>
+                            <input type="radio" name="first_aid" id="first-aid-yes" value="Yes" <%= incident.first_aid === 'Yes' ? 'checked' : '' %>>
+                            <label for="first-aid-yes">Yes</label>
+                            <input type="radio" name="first_aid" id="first-aid-no" value="No" <%= incident.first_aid === 'No' ? 'checked' : '' %>>
+                            <label for="first-aid-no">No</label>
+                        </div>
+                    
+                        <!-- Detention status -->
+                        <div class="input-grp">
+                            <label>Detained?</label>
+                            <div>
+                                <input type="radio" name="detained" id="is_detained" value="Yes" <%= incident.detained === 'Yes' ? 'checked' : '' %> required>
+                                <label for="is_detained">Yes</label>
+                            </div>
+                            <div>
+                                <input type="radio" name="detained" id="not_detained" value="No" <%= incident.detained === 'No' ? 'checked' : '' %> required>
+                                <label for="not_detained">No</label>
+                            </div>
+                        </div>
+
+                        <!-- Treatment given -->
+                        <div class="form-group input-grp">
+                            <label for="treatment_given">Treatment Given</label>
+                            <textarea name="treatment_given" id="treatment_given" rows="4" placeholder="Describe the treatment given"><%= incident.treatment_given %></textarea>
+                        </div>
+
+                        <!-- Disposition (Radio Buttons) -->
+                        <div class="input-grp">
+                            <label>Disposition:</label>
+                            <div>
+                                <input type="radio" id="back_to_work" name="disposition" value="Back to work" <%= incident.disposition === 'Back to work' ? 'checked' : '' %> required>
+                                <label for="back_to_work">Back to work</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="sent_to_employee_clinic" name="disposition" value="Sent to Employee Clinic" <%= incident.disposition === 'Sent to Employee Clinic' ? 'checked' : '' %> required>
+                                <label for="sent_to_employee_clinic">Sent to Employee Clinic</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="sent_to_agahf" name="disposition" value="Sent to AGAHF" <%= incident.disposition === 'Sent to AGAHF' ? 'checked' : '' %> required>
+                                <label for="sent_to_agahf">Sent to AGAHF</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="sent_to_hospital" name="disposition" value="Sent to Hospital (Other)" <%= incident.disposition === 'Sent to Hospital (Other)' ? 'checked' : '' %> required>
+                                <label for="sent_to_hospital">Sent to Hospital (Other)</label>
+                            </div>
+                        </div>
+
+                        <!-- Time of Disposition -->
+                        <div class="input-grp">
+                            <label for="disposition_time">Time of Disposition:</label>
+                            <input type="time" id="disposition_time" name="disposition_time" value="<%= incident.disposition_time %>" required>
+                        </div>
+
+                        <!-- Reporting (Checkboxes) -->
+                        <div class="input-grp">
+                            <label>Reporting:</label>
+                            <div>
+                                <input type="checkbox" id="not_rep" name="reporting" value="Unreported" <%= incident.reporting.includes('Unreported') ? 'checked' : '' %>>
+                                <label for="not_rep">Not Reportable</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="uma" name="reporting" value="UMA" <%= incident.reporting.includes('UMA') ? 'checked' : '' %>>
+                                <label for="uma">UMA Informed</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="ems" name="reporting" value="EMS" <%= incident.reporting.includes('EMS') ? 'checked' : '' %>>
+                                <label for="ems">EMS Informed</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="employee_clinic" name="reporting" value="Employee Clinic" <%= incident.reporting.includes('Employee Clinic') ? 'checked' : '' %>>
+                                <label for="employee_clinic">Employee Clinic Informed</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="agahf" name="reporting" value="AGAHF" <%= incident.reporting.includes('AGAHF') ? 'checked' : '' %>>
+                                <label for="agahf">AGAHF Informed</label>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn">Submit Incident</button>
+
+                        
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn">Update Incident</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('partials/_footer') %>
+</body>
+
+
+<script src="/js/mineaid-scripts.js"></script>
+</html>

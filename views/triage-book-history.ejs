@@ -105,7 +105,7 @@
                                 <!-- Edit Button: Shown for entry owners or admins -->
                                 <!-- Allow the user to edit only if the "entry by" matches their firstname -->
                                 <% if (entry['entry by'] === user.firstname) { %>
-                                    <td><a class="reg-action btn-approve" href="/edit/triagebook/<%= entry.id %>">Edit</a></td>
+                                    <td><a class="btn-approve" href="/edit/triagebook/<%= entry.id %>">Edit</a></td>
                                 <% } else { %>
                                     <td>Uneditable</td>
                                 <% } %>
@@ -113,7 +113,7 @@
 
                                 <!-- Delete Button: Shown for admins only -->
                                 <% if (user.role === 'Admin' || user.role === 'Superuser') { %>
-                                    <td><a class="reg-action btn-block" href="/delete/triagebook/<%= entry.id %>">Delete</a></td>
+                                    <td><a class="btn-block" href="/delete/triagebook/<%= entry.id %>">Delete</a></td>
                                 <% } else { %>
                                     <td>No Access</td>
                                 <% } %>

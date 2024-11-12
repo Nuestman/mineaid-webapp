@@ -276,6 +276,15 @@ const clearExpiredTokens = () => {
     });
 };
 
+// db.run("ALTER TABLE incident_book_history ADD COLUMN deleted_on DATETIME", function(error) {
+//     if (error) {
+//         console.log("Error adding column:", error.message);
+//     } else {
+//         console.log("Column 'deleted_on' added successfully.");
+//     }
+// });
+
+
 // Call the function to clear expired tokens
 clearExpiredTokens();
 

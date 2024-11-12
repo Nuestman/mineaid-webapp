@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Admin</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+</head>
+<body class="users-page">
+
+    <header>
+        <%- include('../partials/_login-toggler') %>
+    </header>
+    <section class="prim-header">
+        <div class="container">
+            <h1>Admin - Manage Users</h1>
+        </div>
+    </section>
+
+<main class="admin-users">
+    <div class="container">
+        <div class="user-table-container wide-table">
+                <div class="alert-parent">
+                    <!-- Display flash messages if there are any -->
+                    <% if (success_msg) { %>
+                        <div class="alert alert-success"><%= success_msg %></div>
+                    <% } %>
+                    
+                    <% if (error_msg) { %>
+                        <div class="alert alert-danger"><%= error_msg %></div>
+                    <% } %>
+                    
+                    <% if (error) { %>
+                        <div class="alert alert-danger"><%= error %></div>
+                    <% } %>
+                                <table>
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Firstname</th>
+                            <th>Surname</th>
+                            <th>Email</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% users.forEach(user => { %>
+                            <tr>
+                                <td><%= user.id %></td>
+                                <td><%= user.firstname %></td>
+                                <td><%= user.surname %></td>
+                                <td><%= user.email %></td>
+                                <td><%= user.username %></td>
+                                <td><%= user.role %></td>
+                                <td><%= user.status.trim() %></td>  <!-- Use trim() to clean up the status -->
+                                <td class="admin-user-action-container">
+                                    <% if (user.status.trim() === 'Pending') { %>
+                                        <a class="reg-action btn-approve" data-user-id="<%= user.id %>" href="/admin/approve/<%= user.id %>">Approve</a>
+                                    <% } %>
+                                    <% if (user.status.trim() !== 'Blocked') { %>
+                                        <a class="reg-action btn-block" href="/admin/block/<%= user.id %>" data-user-id="<%= user.id %>">Block</a>
+                                    <% } else { %>
+                                        <a class="reg-action btn-unblock" href="/admin/unblock/<%= user.id %>" data-user-id="<%= user.id %>">Unblock</a>
+                                    <% } %>
+                                </td>
+                                <td><%= user.created_at %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                                </table>
+                </div>
+        </div>        
+    </div>
+</main>
+
+<%- include('../partials/_footer') %>
+<script src="/js/mineaid-scripts.js"></script>
+</body>
+</html>

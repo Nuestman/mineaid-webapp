@@ -412,26 +412,35 @@ app.get('/incident-book', ensureAuthenticated, ensureAdmin, (req, res) => {
 
 
 // USER REGISTRATION AND LOGIN
+
 // Middleware to check if the user is authenticated
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
     req.flash('error_msg', 'Please log in to view that resource');
-    // Store the original URL in session before redirecting to login
-    req.session.returnTo = req.originalUrl; // Capture the URL in session
-    console.log('Session ID on setting returnTo:', req.sessionID);
-    console.log('Session returnTo set to:', req.session.returnTo);
+    req.session.returnTo = req.originalUrl;
     res.redirect('/login');
 }
-// Middleware to Ensure the user is an admin
+
+// Middleware to ensure the user has Admin access (Admin or Superuser)
 function ensureAdmin(req, res, next) {
-    if (req.isAuthenticated() && req.user.isAdmin) {
+    if (req.user && (req.user.role === 'Admin' || req.user.role === 'Superuser')) {
         return next();
     }
     req.flash('error_msg', 'Admin access required');
     res.redirect('/');
 }
+// Middleware to ensure the user is a Superuser
+function ensureSuperuser(req, res, next) {
+    if (req.isAuthenticated() && req.user.role === 'Superuser') {
+        return next();
+    }
+    console.log('Superuser access denied: User role is', req.user ? req.user.role : 'undefined');
+    req.flash('error_msg', 'You are not authorized to view this page.');
+    res.redirect('/');
+}
+
 
 // Nodemailer setup for sending emails after user approval
 // Configure the transporter (Initialize only once)
@@ -689,9 +698,6 @@ app.get('/logout', (req, res) => {
 
 
 
-// ADMIN ROUTES
-
-
 // Route: Dashboard (GET)
 // Dashboard route (requires login)
 app.get('/dashboard', ensureAuthenticated, (req, res) => {
@@ -729,19 +735,8 @@ app.get('/admin', ensureAuthenticated, ensureAdmin,  (req, res) => {
     });
 });
 
-
-// Ensure only SuperUser
-function superuser(req, res, next) {
-    if (req.isAuthenticated() && req.user.role === 'superuser') {
-        return next();
-    }
-    res.status(403).render('error/403', { message: 'Access denied.' });
-    req.flash('error_msg', 'You are not authorized to view this page.');
-    res.redirect('/login');
-}
-
-// Protect Senior Admin routes with superuser
-app.get('/admin/super-user', superuser, (req, res) => {
+// Protect Senior Admin routes with ensureSuperuser
+app.get('/admin/super-user', ensureSuperuser, (req, res) => {
     // Fetch all users from DB    
     const query = 'SELECT * FROM users'; 
     db.all(query, [], (err, rows) => {
@@ -797,7 +792,7 @@ app.get('/admin/users', ensureAuthenticated, ensureAdmin, (req, res) => {
 
 
 // Route to approve a user
-app.get('/admin/approve/:id', ensureAuthenticated, ensureAdmin, (req, res) => {
+app.get('/admin/approve/:id', ensureAuthenticated, ensureAdmin, ensureSuperuser, (req, res) => {
     const userId = req.params.id;
     db.run('UPDATE users SET status = ? WHERE id = ?', ['Approved'.trim(), userId], (err) => {
         if (err) {
@@ -834,16 +829,16 @@ app.get('/admin/approve/:id', ensureAuthenticated, ensureAdmin, (req, res) => {
     });
 });
 // Route to make a user an Admin
-app.get('/admin/make-admin/:id', ensureAuthenticated, ensureAdmin, (req, res) => {
+app.get('/admin/make-admin/:id', ensureAuthenticated, ensureSuperuser, (req, res) => {
     const userId = req.params.id;
     db.run('UPDATE users SET role = ? WHERE id = ?', ['Admin'.trim(), userId], (err) => {
         if (err) {
             console.log('Error approving admin role.')
             req.flash('error_msg', 'Error approving admin role.');
-            return res.redirect('/admin/admin-home');
+            return res.redirect('/admin/users');
         }
         req.flash('success_msg', 'User has been made an admin successfully');
-        res.redirect('/admin/admin-home');
+        res.redirect('/admin/users');
     });
 });
 
@@ -878,53 +873,9 @@ app.get('/admin/unblock/:id', ensureAuthenticated, ensureAdmin, (req, res) => {
 
 
 
-/* ROUTES TO DELETE RECORDS */
-// Route to delete a record from triagebook (Admin only)
-app.get('/delete/triagebook/:id', (req, res) => {
-    const id = req.params.id;
-    db.run('DELETE FROM triagebook WHERE id = ?', id, (err) => {
-        if (err) {
-            console.error('Error deleting triagebook record:', err.message);
-        }
-        res.redirect('/triage-book'); // Redirect to triagebook records page
-    });
-});
+/* ------------------------------ EDIT ROUTES -----------------------------------*/
 
-// Route to delete a record from users table (Admin only)
-app.get('/delete/user/:id', (req, res) => {
-    const id = req.params.id;
-    db.run('DELETE FROM users WHERE id = ?', id, (err) => {
-        if (err) {
-            console.error('Error deleting user record:', err.message);
-        }
-        res.redirect('/admin/users'); // Redirect to users page
-    });
-});
-
-// Route to delete a record from contact_messages (Admin only)
-app.get('/delete/contact/:id', (req, res) => {
-    const id = req.params.id;
-    db.run('DELETE FROM contact_messages WHERE id = ?', id, (err) => {
-        if (err) {
-            console.error('Error deleting contact message:', err.message);
-        }
-        res.redirect('/messages'); // Redirect to messages page
-    });
-});
-
-// Route to delete a record from incident_book (Admin only)
-app.get('/delete/incident/:id', (req, res) => {
-    const id = req.params.id;
-    db.run('DELETE FROM incident_book WHERE id = ?', id, (err) => {
-        if (err) {
-            console.error('Error deleting incident record:', err.message);
-        }
-        res.redirect('/incident-book'); // Redirect to incidents page
-    });
-});
-
-
-/* EDIT ROUTES */
+/* TRIAGE EDIT */
 // Route to edit a triagebook entry
 app.get('/edit/triagebook/:id', ensureAuthenticated, (req, res) => {
     const id = req.params.id;
@@ -937,17 +888,296 @@ app.get('/edit/triagebook/:id', ensureAuthenticated, (req, res) => {
     });
 });
 
-// Route to edit an incident_book entry
-app.get('/edit/incident/:id', ensureAuthenticated, (req, res) => {
-    const id = req.params.id;
-    db.get('SELECT * FROM incident_book WHERE id = ? AND user_id = ?', [id, req.user.id], (err, row) => {
-        if (err || !row) {
-            req.flash('error_msg', 'You do not have permission to edit this entry.');
-            return res.redirect('/incidents');
+// GET route to load the edit form with existing data
+app.get('/edit/triagebook/:id', ensureAuthenticated, (req, res) => {
+    const entryId = req.params.id;
+
+    // Fetch the triage entry from the database using the entryId
+    db.query('SELECT * FROM triagebook WHERE id = ?', [entryId], (error, results) => {
+        if (error) {
+            req.flash('error_msg', 'Error loading entry for editing.');
+            return res.redirect('/triagebook');
         }
-        res.render('editIncident', { entry: row }); // Render edit form with entry data
+
+        if (results.length === 0) {
+            req.flash('error_msg', 'Entry not found.');
+            return res.redirect('/triagebook');
+        }
+
+        const entry = results[0];
+        res.render('editTriage', { entry, user: req.user, success_msg: req.flash('success_msg'), error_msg: req.flash('error_msg') });
     });
 });
+
+// POST route to handle the form submission and update the entry
+app.post('/edit/triagebook/:id', ensureAuthenticated, (req, res) => {
+    const entryId = req.params.id;
+    const updatedEntry = {
+        post: req.body.post,
+        date: req.body.date,
+        time_of_arrival: req.body.time_of_arrival,
+        company: req.body.company,
+        badge: req.body.badge,
+        name: req.body.name,
+        age: req.body.age,
+        gender: req.body.gender,
+        incident: req.body.incident,
+        complaints: req.body.complaints,
+        mobility: req.body.mobility,
+        respiratory_rate: req.body.respiratory_rate,
+        pulse: req.body.pulse,
+        blood_pressure: req.body.blood_pressure,
+        temperature: req.body.temperature,
+        avpu: req.body.avpu,
+        oxygen_saturation: req.body.oxygen_saturation,
+        glucose: req.body.glucose,
+        pain_score: req.body.pain_score,
+        tews_score: req.body.tews_score,
+        final_triage: req.body.final_triage,
+        detained: req.body.detained,
+        treatment_given: req.body.treatment_given,
+        disposition: req.body.disposition,
+        disposition_time: req.body.disposition_time,
+        condition: req.body.condition,
+        reporting: req.body.reporting
+    };
+
+    // Update the database with new values
+    db.query('UPDATE triagebook SET ? WHERE id = ?', [updatedEntry, entryId], (error) => {
+        if (error) {
+            req.flash('error_msg', 'Error updating entry.');
+            return res.redirect(`/edit/triagebook/${entryId}`);
+        }
+
+        req.flash('success_msg', 'Entry updated successfully!');
+        res.redirect('/triagebook');
+    });
+});
+
+
+/* INCIDENT EDIT */
+// Route to edit an incident_book entry
+app.get('/edit/incident/:id', ensureAuthenticated, (req, res) => {
+    const incidentId = req.params.id;
+    db.get('SELECT * FROM incident_book WHERE id = ?', [incidentId], (error, result) => {
+        if (error) {
+            req.flash('error_msg', 'Error loading incident.');
+            return res.redirect('/incident-book');
+        }
+        if (!result) {  // No incident found
+            req.flash('error_msg', 'Incident not found.');
+            return res.redirect('/incident-book');
+        }
+        
+        // Log the retrieved incident
+        console.log(result);
+        
+        res.render('incident-edit-form', { incident: result, user: req.user });
+    });
+});
+
+// Edit route (POST)
+app.post('/incident/edit/:id', ensureAuthenticated, (req, res) => {
+    const incidentId = req.params.id;
+
+    // Fetch the existing incident before editing (for history)
+    db.get('SELECT * FROM incident_book WHERE id = ?', [incidentId], (error, incident) => {
+        if (error || !incident) {
+            req.flash('error_msg', 'Error loading incident for history.');
+            return res.redirect('/incident-book');
+        }
+
+        // Store original data in incident_book_history before updating
+        const historySql = `
+            INSERT INTO incident_book_history (
+                id, post, incident_date, incident_time, company, badge, name,
+                incident_type, incident_location, incident_details, first_aid, detained,
+                treatment_given, disposition, disposition_time, reporting
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+        db.run(historySql, [
+            incidentId, incident.post, incident.incident_date, incident.incident_time, incident.company,
+            incident.badge, incident.name, incident.incident_type, incident.incident_location, incident.incident_details,
+            incident.first_aid, incident.detained, incident.treatment_given, incident.disposition,
+            incident.disposition_time, incident.reporting
+        ], function(error) {
+            if (error) {
+                console.log('Error saving incident history.');
+                req.flash('error_msg', 'Error saving incident history.');
+                return res.redirect('/incident-book');
+            }
+
+            console.log(req.body); // Log the form data to verify
+            // Now proceed with the update
+            const updatedIncident = {
+                id: req.body.id,
+                post: req.body.post,
+                incident_date: req.body.incident_date,
+                incident_time: req.body.incident_time,
+                company: req.body.company,
+                badge: req.body.badge,
+                name: req.body.name,
+                incident_type: req.body.incident_type,
+                incident_location: req.body.incident_location,
+                incident_details: req.body.incident_details,
+                first_aid: req.body.first_aid,
+                detained: req.body.detained,
+                treatment_given: req.body.treatment_given,
+                disposition: req.body.disposition,
+                disposition_time: req.body.disposition_time,
+                reporting: req.body.reporting
+            };
+
+            const sql = `
+                UPDATE incident_book
+                SET post = ?, incident_date = ?, incident_time = ?, company = ?, badge = ?, name = ?,
+                    incident_type = ?, incident_location = ?, incident_details = ?, first_aid = ?, detained = ?,
+                    treatment_given = ?, disposition = ?, disposition_time = ?, reporting = ?
+                WHERE id = ?`;
+
+            db.run(sql, [
+                updatedIncident.post, updatedIncident.incident_date, updatedIncident.incident_time,
+                updatedIncident.company, updatedIncident.badge, updatedIncident.name, updatedIncident.incident_type,
+                updatedIncident.incident_location, updatedIncident.incident_details, updatedIncident.first_aid,
+                updatedIncident.detained, updatedIncident.treatment_given, updatedIncident.disposition,
+                updatedIncident.disposition_time, updatedIncident.reporting, incidentId
+            ], function(error) {
+                if (error) {
+                    req.flash('error_msg', 'Error updating incident.');
+                    return res.redirect('/incident-book');
+                }
+
+                req.flash('success_msg', 'Incident updated successfully!');
+                res.redirect('/incident-book');
+            });
+        });
+    });
+});
+
+// Incident delete
+app.post('/delete/incident/:id', ensureAdmin, (req, res) => {
+    const incidentId = req.params.id;
+
+    // Fetch the existing incident before deleting (for history)
+    db.get('SELECT * FROM incident_book WHERE id = ?', [incidentId], (error, incident) => {
+        if (error || !incident) {
+            req.flash('error_msg', 'Error loading incident for history.');
+            return res.redirect('/incident-book');
+        }
+
+        // Store the incident data in incident_book_history with deleted_on set
+        const historySql = `
+            INSERT INTO incident_book_history (
+                id, post, incident_date, incident_time, company, badge, name,
+                incident_type, incident_location, incident_details, first_aid, detained,
+                treatment_given, disposition, disposition_time, reporting, created_at, deleted_on
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+        db.run(historySql, [
+            incident.id, incident.post, incident.incident_date, incident.incident_time, incident.company,
+            incident.badge, incident.name, incident.incident_type, incident.incident_location, incident.incident_details,
+            incident.first_aid, incident.detained, incident.treatment_given, incident.disposition,
+            incident.disposition_time, incident.reporting, incident.created_at, new Date().toISOString() // Record the deletion time
+        ], function(error) {
+            if (error) {
+                req.flash('error_msg', 'Error saving incident history.');
+                return res.redirect('/incident-book');
+            }
+
+            // Now delete the incident from the incident_book table
+            const deleteSql = 'DELETE FROM incident_book WHERE id = ?';
+            db.run(deleteSql, [incidentId], function(error) {
+                if (error) {
+                    req.flash('error_msg', 'Error deleting incident.');
+                    return res.redirect('/incident-book');
+                }
+
+                req.flash('success_msg', 'Incident deleted successfully.');
+                res.redirect('/incident-book');
+            });
+        });
+    });
+});
+
+
+
+
+// Update incident history book
+app.get('/incident/book/history', ensureAuthenticated, (req, res) => {
+    db.all('SELECT * FROM incident_book_history ORDER BY modified_at DESC', [], (error, results) => {
+        if (error) {
+            req.flash('error_msg', 'Error loading incident history.');
+            return res.redirect('/incident-book');
+        }
+
+        res.render('incident-book-history', { incidents: results, user: req.user });
+    });
+});
+
+
+
+/* ------------------------------ ROUTES TO DELETE RECORDS ---------------------------------*/
+// Route to delete a record from triagebook (Admin only)
+app.get('/delete/triagebook/:id', ensureAdmin, (req, res) => {
+    const id = req.params.id;
+    db.run('DELETE FROM triagebook WHERE id = ?', id, (err) => {
+        if (err) {
+            console.error('Error deleting triagebook record:', err.message);
+        }
+        res.redirect('/triage-book'); // Redirect to triagebook records page
+    });
+});
+
+// Route to delete a record from users table (Admin only)
+app.get('/delete/user/:id', ensureAdmin, (req, res) => {
+    const id = req.params.id;
+    db.run('DELETE FROM users WHERE id = ?', id, (err) => {
+        if (err) {
+            console.error('Error deleting user record:', err.message);
+        }
+        res.redirect('/admin/users'); // Redirect to users page
+    });
+});
+
+// Route to delete a record from contact_messages (Admin only)
+app.get('/delete/contact/:id', ensureAdmin, (req, res) => {
+    const id = req.params.id;
+    db.run('DELETE FROM contact_messages WHERE id = ?', id, (err) => {
+        if (err) {
+            console.error('Error deleting contact message:', err.message);
+        }
+        res.redirect('/messages'); // Redirect to messages page
+    });
+});
+
+// Route to delete a record from incident_book (Admin only)
+app.get('/delete/incident/:id', ensureAdmin, (req, res) => {
+    const id = req.params.id;
+    db.run('DELETE FROM incident_book WHERE id = ?', id, (err) => {
+        if (err) {
+            console.error('Error deleting incident record:', err.message);
+        }
+        res.redirect('/incident-book'); // Redirect to incidents page
+    });
+});
+
+// Delete route (POST)
+app.post('/delete/incident/:id', ensureAdmin, (req, res) => {
+    const incidentId = req.params.id;
+    db.get('DELETE FROM incident_book WHERE id = ?', [incidentId], (error) => {
+        if (error) {
+            req.flash('error_msg', 'Error deleting incident.');
+            return res.redirect('/incident-book');
+        }
+        req.flash('success_msg', 'Incident deleted successfully.');
+        res.redirect('/incident-book');
+    });
+});
+
+
+
+
+
 
 
 
@@ -1152,7 +1382,7 @@ app.get('/export', ensureAuthenticated, (req, res) => {
 /* ROUTE TO DOWNLOAD LIVE DATABASE FILE FROM RENDER */
 
 // Temporary download endpoint for SQLite backup
-app.get('/download-sqlite-backup', superuser, (req, res) => {
+app.get('/download-sqlite-backup', ensureSuperuser, (req, res) => {
     const dbPath = path.join(__dirname, 'database', 'mineaid.db'); // Update the path if needed
 
     // // Set up a basic check to restrict access (change as needed)

@@ -1,3 +1,8 @@
+# Session 121124 Morning
+1. Routes for delete and edit  -   Partially done
+3. Created incident_history and triage_history and users_history pages
+2. Fixed success page button overflow
+
 # Session 11112024 morning
 1. Mobile style adjustments
 2. Added post, condition, entry by columns to triage form and table
@@ -33,6 +38,7 @@ Dashboard at least has done padding or margin on the right fixed-ish
 ## Pending
 2. Function to select final triage based on total tews
 3. Delete and modify entry functionality
+4. JS object not being handled correctly (non-standard) in the code. [Object: null prototype] Explanation
 
 
 # Session 091124
