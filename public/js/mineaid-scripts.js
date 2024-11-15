@@ -219,3 +219,37 @@ if (window.location.pathname === '/feedback/submit') {
 function downloadBackup() {
     window.location.href = `/download-sqlite-backup`;
 }
+
+
+//JavaScript for Triggering Animation
+//This JavaScript code will add a delay to reveal the cards as they slide in from opposite directions.
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   setTimeout(() => {
+//     // Select the options container and cards
+//     const optionsContainer = document.querySelector(".options");
+//     const iAidCard = document.querySelector(".iAid");
+//     const iSoupCard = document.querySelector(".iSoup");
+
+//     // Make the options container visible
+//     optionsContainer.style.opacity = 1;
+
+//     // Trigger the animation by setting transform to none
+//     iAidCard.style.transform = "translateX(0)";
+//     iSoupCard.style.transform = "translateX(0)";
+
+//     // Fade in the options
+//     iAidCard.style.opacity = 1;
+//     iSoupCard.style.opacity = 1;
+//   }, 100); // Delay for the entry effect
+// });
+document.addEventListener("DOMContentLoaded", () => {
+      // Select the cards
+      const iAidCard = document.querySelector(".iAid");
+      const iSoupCard = document.querySelector(".iSoup");
+  
+      // Add animate class to trigger the slide-in animations
+      iAidCard.classList.add("animate");
+      iSoupCard.classList.add("animate");
+  });
+  

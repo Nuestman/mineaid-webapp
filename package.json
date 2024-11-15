@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node mineaid-app.js",
-    "dev": "browser-sync start --proxy http://localhost:3000 --files 'public/css/**/*.css, public/js/**/*.js, views/**/*.ejs' --port 3003",
+    "dev": "browser-sync start --config bs-config.js",
     "postinstall": "npm rebuild sqlite3"
   },
   "keywords": [],

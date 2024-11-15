@@ -1,3 +1,18 @@
+# Session 151124 Dawn
+1. Set up Inventory mgt page with its routes
+2. Activated the button in sidebar to open the inv-mtg dashboard
+3. Fixed qlinks overflow on mobile
+4. Re-routed '/' to landing-page.ejs and '/index' for iAid
+5. Style changes
+6. Set up db mgt dashboard with initial styles and db-route
+7. Added Hub, inventory and DB mgt links to nav
+
+# Session 141124 Morning
+1. Fixed landing page for Nursing Portal
+2. Added iAid and iSoup with their routes and link
+3. Hub link to nav
+4. Set up iSoup landing page and Dashboard
+
 # Session 121124 Morning
 1. Routes for delete and edit  -   Partially done
 3. Created incident_history and triage_history and users_history pages

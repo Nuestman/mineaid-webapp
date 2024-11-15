@@ -26,7 +26,7 @@
                     <a href="/incident-book">Incident Book</a>
                     <a href="/admin/users">Manage Users</a>
                     <a class="soon reports" href="../coming-soon">Analytics &amp; Reports</a>
-                    <a class="soon inventory" href="../coming-soon">Inventory Management</a>
+                    <a class="" href="../inventory">Inventory Management</a>
                     <a class="soon training" href="../coming-soon">Training &amp; Resources</a>
                     <a class="soon settings" href="../coming-soon">Settings</a>
                 </aside>
@@ -92,11 +92,14 @@
                                 <h4>Compliance Status</h4>
                                 <p>85%</p>
                             </div>
-                            <div class="card">
+                            <div class="card db-mgt">
                                 <h4>Database Management</h4>
                                 <!-- Only shows if user is a super admin -->
-                                <% if (user && user.role === 'superuser') { %>
-                                    <button class="btn" id="download-backup-btn" onclick="downloadBackup()">Download Database Backup</button>
+                                <% if (user && user.role === 'Superuser') { %>
+                                    <div class="btn-grp h-flex">
+                                        <a class="btn" href="/database">Manage Database</a>
+                                        <button class="btn" id="download-backup-btn" onclick="downloadBackup()">Backup Database</button>
+                                    </div>
                                 <% } %>
                             </div>
                         </div>

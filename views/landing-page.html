@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nursing Portal</title>
+  <!-- Link to FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Link to the custom stylesheet -->
+  <link rel="stylesheet" href="../public/css/mineaid-styles.css">
+  <style>
+    /* Include the fonts */
+@import url('../public/fonts/Congenial/font-files');
+
+/* Base reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: 'Congenial', sans-serif;
+  background-color: var(--background-color);
+}
+
+.landing-page {
+  text-align: center;
+  max-width: 1000px;
+  padding: 2rem;
+}
+
+.prompt {
+  font-size: var(--font-size-large);
+  margin: var(--margin-y-large);
+  color: var(--text-color);
+}
+
+/* Options container */
+.options {
+  display: flex;
+  justify-content: center;
+  gap: var(--padding-medium);
+  flex-wrap: wrap;
+}
+
+/* Card styling for options */
+.option-card {
+  width: 18.75em;
+  aspect-ratio: 1;
+  padding: var(--padding-large);
+  border-radius: var(--border-radius-large);
+  background-color: var(--white-color);
+  box-shadow: var(--box-shadow-light);
+  text-align: center;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: var(--transition-bg), transform 0.3s ease;
+  
+  /* Hover effects */
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-medium);
+    background-color: var(--primary-color-subtle);
+  }
+
+  /* Icon styling */
+  .icon {
+    font-size: 5rem; /* Make the icon large */
+    display: block;
+    margin-bottom: var(--margin-y-small);
+    margin-inline: auto;
+  }
+
+  /* Option text styling */
+  .option-text {
+    font-size: var(--font-size-medium);
+    font-weight: 500;
+    color: var(--text-color);
+  }
+}
+
+/* Individual card colors */
+.iAid {
+  background-color: var(--primary-color-bg);
+  color: var(--primary-color);
+}
+
+.iSoup {
+  background-color: var(--primary-color-subtle);
+  color: var(--accent);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .options {
+    flex-direction: column;
+  }
+
+  .option-card {
+    width: 100%; /* Full-width on smaller screens */
+    margin-bottom: var(--margin-y-small);
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="landing-page">
+    <!-- Fun question prompt -->
+    <h1 class="prompt">Choose your mission: Are you here to aid or to lead?</h1>
+    
+    <!-- Option cards with icons and centered content -->
+    <div class="options">
+      <a href="/iaid" class="option-card iAid">
+        <div class="icon"><i class="fas fa-kit-medical"></i></div>
+        <div class="option-text"><h2>iAid</h2></div>
+      </a>
+      <a href="/isoup" class="option-card iSoup">
+        <div class="icon"><i class="fas fa-mug-hot"></i></div>
+        <div class="option-text"><h2>iSoup</h2></div>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Link to JavaScript file for animations -->
+  <script src="animations.js">
+    // Apply fade-in animations on page load
+document.addEventListener("DOMContentLoaded", () => {
+  const elements = document.querySelectorAll(".option-card, .prompt");
+  elements.forEach((element, index) => {
+    setTimeout(() => {
+      element.style.opacity = 1;
+      element.style.transform = "translateY(0)";
+    }, index * 200); // Staggered delay for each element
+  });
+});
+
+  </script>
+</body>
+</html>

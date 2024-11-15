@@ -8,7 +8,7 @@
   <link rel="shortcut icon" href="favicon.png" type="image/x-icon"><!-- Link to your stylesheets -->
 </head>
 
-<body>
+<body class="db-management">
 <header>
     <%- include('../partials/_nav') %>
 </header>
@@ -21,74 +21,105 @@
   <main>
       <div class="container">
         <div class="alert-parent">
-            <div class="grid-containe">
+            <div class="backup-restore">
                 <!-- Backup and Restore Card -->
-                <div class="card">
+                <div class="">
                   <h2>Backup and Restore</h2>
-                  <form action="/download-db" method="get">
-                    <button type="submit">Download Backup</button>
-                  </form>
-                  <form action="/upload-db" method="post" enctype="multipart/form-data">
-                    <input type="file" name="backup" required>
-                    <button type="submit">Upload Backup</button>
-                  </form>
-                </div>
-                <!-- Migration Card -->
-                <div class="card">
-                  <h2>Database Migration</h2>
-                  <form action="/migrate-db" method="post">
-                    <button type="submit">Migrate to PostgreSQL</button>
-                  </form>
-                </div>
-                <!-- CSV Export/Import Card -->
-                <div class="card">
-                  <h2>Data Export/Import</h2>
-                  <form action="/export-csv" method="post">
-                    <button type="submit">Export CSV</button>
-                  </form>
-                  <form action="/import-csv" method="post" enctype="multipart/form-data">
-                    <input type="file" name="csvFile" required>
-                    <button type="submit">Import CSV</button>
-                  </form>
+                  <div class="card import-export">
+                      <form action="/download-db" method="get">
+                        <button class="btn" type="submit">Download Backup</button>
+                      </form>
+                      <form action="/upload-db" method="post" enctype="multipart/form-data">
+                        <div class="input-grp">
+                            <input type="file" name="backup" required>
+                            <button class="btn" type="submit">Upload Backup</button>
+                        </div>
+                      </form>
+                  </div>
+                <div class="grid-2">
+                    </div>
+                    <!-- Migration Card -->
+                    <div class="card">
+                      <h2>Database Migration</h2>
+                      <div class="btn-grp h-flex">
+                          <form action="/migrate-db" method="post">
+                            <button class="btn" type="submit">Migrate to PostgreSQL</button>
+                          </form>
+                      </div>
+                    </div>
+                    <!-- CSV Export/Import Card -->
+                    <div class="card">
+                      <h2>Data Export/Import</h2>
+                      <div class="btn-grp h-flex">
+                          <div class="import-export">
+                              <form action="/export-csv" method="post">
+                                <button class="btn btn-outline" type="submit">Export CSV</button>
+                              </form>
+                              <form action="/import-csv" method="post" enctype="multipart/form-data">
+                                <div class="btn-grp input-grp">
+                                    <input type="file" name="csvFile" required>
+                                    <button class="btn" type="submit">Import CSV</button>
+                                </div>
+                              </form>
+                          </div>
+                      </div>
+                    </div>
                 </div>
                 <!-- Maintenance Card -->
                 <div class="card">
-                  <h2>Database Maintenance</h2>
-                  <form action="/clear-old-data" method="post">
-                    <button type="submit">Clear Old Data</button>
-                  </form>
-                  <form action="/optimize-db" method="post">
-                    <button type="submit">Optimize Database</button>
-                  </form>
+                    <h2>Database Maintenance</h2>
+                    <div class="btn-grp h-flex">
+                        <form action="/clear-old-data" method="post">
+                            <button class="btn" type="submit">Clear Old Data</button>
+                        </form>
+                        <form action="/optimize-db" method="post">
+                            <button class="btn" type="submit">Optimize Database</button>
+                        </form>
+                    </div>
                 </div>
                 <!-- Health Check Card -->
                 <div class="card">
                   <h2>Database Health Check</h2>
-                  <form action="/db-health" method="get">
-                    <button type="submit">Run Health Check</button>
-                  </form>
+                  <div class="btn-grp h-flex">
+                      <div class="btn-grp">
+                          <form action="/db-health" method="get">
+                            <button class="btn" type="submit">Run Health Check</button>
+                          </form>
+                      </div>
+                  </div>
                 </div>
                 <!-- Schedule Backup Card -->
                 <div class="card">
                   <h2>Schedule Backup</h2>
-                  <form action="/schedule-backup" method="post">
-                    <input type="text" name="cronExpression" placeholder="Cron Expression (e.g., 0 0 * * *)" required>
-                    <button type="submit">Set Backup Schedule</button>
-                  </form>
+                  <div class="input-grp btn-grp h-flex">
+                      <form action="/schedule-backup" method="post">
+                        <input type="text" name="cronExpression" placeholder="Cron Expression (e.g., 0 0 * * *)" required>
+                        <button class="btn" type="submit">Set Backup Schedule</button>
+                      </form>
+                  </div>
                 </div>
-                <!-- Logs Card -->
-                <div class="card">
-                  <h2>Security and Logs</h2>
-                  <form action="/view-logs" method="get">
-                    <button type="submit">View Logs</button>
-                  </form>
-                </div>
+                <section class=" grid-container ">
+                    <!-- Logs Card -->
+                    <div class="card">
+                      <h2>Security and Logs</h2>
+                      <div class="btn-grp h-flex">
+                          <form action="/view-logs" method="get">
+                            <button class="btn" type="submit">View Logs</button>
+                          </form>
+                      </div>
+                    </div>
+                    <!-- Support Card -->
+                    <div class="card">
+                        <h3>Resources & Support</h3>
+                        <p>If you need assistance, check out our <a class="accent" href="/support">Support Page</a> or contact us directly.</p>
+                    </div>
+                </section>
             </div>
         </div>
       </div>
   </main>
 
   <!-- Include footer partial -->
-  <%- include('partials/footer') %>
+  <%- include('../partials/_footer') %>
 </body>
 </html>

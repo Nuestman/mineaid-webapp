@@ -323,7 +323,7 @@ app.use((req, res, next) => {
 
 // Route: Home (index)
 app.get('/', (req, res) => {
-    res.render('index'); 
+    res.render('landing-page'); 
 });
 
 // Route: Coming Soon
@@ -429,7 +429,7 @@ function ensureAdmin(req, res, next) {
         return next();
     }
     req.flash('error_msg', 'Admin access required');
-    res.redirect('/');
+    res.redirect('index');
 }
 // Middleware to ensure the user is a Superuser
 function ensureSuperuser(req, res, next) {
@@ -438,7 +438,7 @@ function ensureSuperuser(req, res, next) {
     }
     console.log('Superuser access denied: User role is', req.user ? req.user.role : 'undefined');
     req.flash('error_msg', 'You are not authorized to view this page.');
-    res.redirect('/');
+    res.redirect('index');
 }
 
 
@@ -692,7 +692,7 @@ app.get('/users/user-profile', (req, res) => {
 app.get('/logout', (req, res) => {
     req.logout(() => {
         req.flash('success_msg', 'You have logged out.');
-        res.redirect('/'); // Redirect to home or any other page
+        res.redirect('index'); // Redirect to home or any other page
     });
 });
 
@@ -1466,7 +1466,7 @@ app.get('/messages', (req, res) => {
         if (err) {
             console.error('Error fetching messages:', err);
             req.flash('error_msg', 'Could not retrieve messages. Please try again.');
-            return res.redirect('/'); // Redirect to a default route if needed
+            return res.redirect('index'); // Redirect to a default route if needed
         }
         res.render('messages', { messages: rows });
     });
@@ -1555,6 +1555,30 @@ app.get('/error/500', (req, res) => {
 // Route: Registration Error (GET)
 app.get('/error/regis-error', (req, res) => {
     res.render('error/regis-error'); // help.ejs
+});
+// Route: Nursing Portal Landing Page (GET)
+app.get('/landing-page', (req, res) => {
+    res.render('landing-page'); // landing-page.ejs
+});
+// Route: iAid Landing Page (GET)
+app.get('/iaid', (req, res) => {
+    res.render('index'); // landing-page.ejs
+});
+// Route: iSoup Landing Page (GET)
+app.get('/isoup', (req, res) => {
+    res.render('isoup'); // landing-page.ejs
+});
+// Route: iSoup Landing Page (GET)
+app.get('/isoup-dashboard', (req, res) => {
+    res.render('isoup-dashboard'); // landing-page.ejs
+});
+// Route: Inventory Mgt Page (GET)
+app.get('/inventory', (req, res) => {
+    res.render('inventory/inventory-mgt'); // landing-page.ejs
+});
+// Route: Database Mgt Page (GET)
+app.get('/database', (req, res) => {
+    res.render('admin/db-management'); // landing-page.ejs
 });
 
 

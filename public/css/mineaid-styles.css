@@ -357,6 +357,11 @@ button, select, option {
   margin-right: 0;
 }
 
+.statistics .db-mgt {
+  grid-column: span 2;
+  text-align: center;
+}
+
 .survey-prompt a {
   color: var(--accent-color);
   font-weight: 700;
@@ -403,6 +408,7 @@ header nav a, .nav-item {
 
 header nav a:hover {
   color: var(--text-color);
+  background-color: var(--white-color);
 }
 
 .nav-item {
@@ -432,7 +438,6 @@ header nav a:hover {
   padding: 1rem 2rem;
   width: 100%;
   display: block;
-  text-align: center;
   transition: var(--transition-normal);
   border-bottom: 1px solid rgba(255, 255, 255, 0.337254902);
 }
@@ -467,6 +472,11 @@ header nav a:hover {
 }
 
 /* Text styling */
+.head {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-medium);
+}
+
 p {
   max-width: 60ch;
 }
@@ -497,6 +507,18 @@ h4 {
 }
 
 /* Section */
+.h-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: self-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.h-flex .btn-grp {
+  margin: 0;
+  flex-wrap: wrap;
+}
+
 .v-flex {
   display: flex;
   flex-direction: column;
@@ -505,7 +527,6 @@ h4 {
 }
 
 .btn-grp {
-  margin-top: var(--margin-y-small);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -517,7 +538,7 @@ h4 {
 }
 
 .qlinks {
-  padding: var(--padding-medium);
+  padding: var(--padding-y-medium);
   justify-content: left;
 }
 
@@ -1060,9 +1081,9 @@ th, td {
   max-width: 500px;
   text-align: center;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  position: sticky;
+  position: absolute;
   top: 0;
-  left: auto;
+  right: 0;
   opacity: 1;
   transition: opacity 0.5s ease-in-out;
 }
@@ -1176,6 +1197,7 @@ th, td {
   background-color: var(--text-color);
 }
 
+/* INVENTORY MGT */
 /* Responsive layout */
 @media (max-width: 950px) {
   .grid-1-3 {
@@ -1220,12 +1242,16 @@ th, td {
   }
 }
 @media (max-width: 500px) {
+  .container {
+    padding: var(--padding-small);
+  }
+  .home-main .qlinks {
+    padding: unset;
+    margin-top: 2em;
+  }
   /* Show sub-menu when .nav-item touched on mobile*/
   .nav-item:hover > .nav-links {
     margin-top: 0.6rem;
-  }
-  .container {
-    padding: var(--padding-hor-medium);
   }
   form > div {
     grid-template-columns: 1fr;
@@ -1248,9 +1274,6 @@ th, td {
     width: 100%;
   }
   /* Index page styling */
-  .home-main .container {
-    padding: 32px;
-  }
   .home-main p {
     font-size: 0.875rem;
     margin: 1rem;
@@ -1269,6 +1292,10 @@ th, td {
   .card {
     text-align: center;
   }
+  /* INVENTORY MGT */
+  .quick-actions .card {
+    width: 100%;
+  }
 }
 @media (max-width: 650px) {
   .nav-container {
@@ -1277,4 +1304,156 @@ th, td {
   .btn {
     padding: var(--padding-small);
   }
+}
+/* NURSING-HUB */
+/* Landing Page */
+.landing-page-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden; /* Prevents scroll during animation */
+}
+
+.landing-page {
+  text-align: center;
+  max-width: 1000px;
+  padding: 2rem;
+}
+
+.hub-prompt {
+  max-width: 800px;
+  margin-bottom: 3rem;
+  font-size: var(--font-size-large);
+  color: var(--text-color);
+}
+
+/* Options container */
+.options {
+  display: flex;
+  justify-content: center;
+  gap: 2em;
+  flex-wrap: wrap;
+}
+
+/* Card styling for options */
+.option-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 14em;
+  aspect-ratio: 1;
+  padding: var(--padding-large);
+  border-radius: var(--border-radius-large);
+  border: 1px solid #deeffd;
+  box-shadow: var(--box-shadow-light);
+  text-align: center;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: var(--transition-normal);
+  opacity: 0; /* Start hidden */
+  position: relative;
+  /* Hover effects */
+  /* Icon styling */
+  /* Option text styling */
+}
+.option-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--box-shadow-medium);
+  background-color: var(--text-color);
+  color: var(--white-color);
+}
+.option-card:hover .icon {
+  color: var(--white-color);
+}
+.option-card .icon, .option-card .icon i > svg {
+  font-size: 5rem; /* Make the icon large */
+  display: block;
+  margin-bottom: var(--margin-y-small);
+  margin-inline: auto;
+  color: var(--primary-color);
+  transition: var(--transition-normal);
+}
+.option-card .option-text {
+  font-size: var(--font-size-medium);
+  font-weight: 500;
+}
+
+/* Initial placement outside the viewport */
+.iAid, .iSoup {
+  opacity: 0; /* Start fully transparent */
+}
+
+.iAid {
+  transform: translateX(-100vw); /* Positioned off-screen to the left */
+  background-color: var(--primary-color-bg, orange); /* Fallback color */
+}
+
+.iSoup {
+  transform: translateX(100vw); /* Positioned off-screen to the right */
+  background-color: var(--primary-color-subtle, lightcoral); /* Fallback color */
+}
+
+/* Slide-in animation for iAid from the left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100vw);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+/* Slide-in animation for iSoup from the right */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100vw);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+/* Apply animations with slower duration */
+.iAid.animate {
+  animation: slideInLeft 1.5s ease-out forwards;
+}
+
+.iSoup.animate {
+  animation: slideInRight 1.5s ease-out forwards;
+}
+
+@media (max-width: 600px) {
+  .options {
+    flex-direction: column;
+  }
+  .option-card {
+    width: 80%; /* Full-width on smaller screens */
+    margin-bottom: var(--margin-y-small);
+    margin-inline: auto;
+  }
+}
+/* iSOUP*/
+#isoup header, #isoup footer {
+  background-color: var(--text-color);
+}
+#isoup .intro {
+  margin-top: 2rem;
+}
+
+/* Database Management */
+.db-management .input-grp {
+  display: grid;
+}
+.db-management .import-export {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: baseline;
+  gap: 1em;
+}
+.db-management button {
+  text-align: center;
 }/*# sourceMappingURL=mineaid-styles.css.map */
