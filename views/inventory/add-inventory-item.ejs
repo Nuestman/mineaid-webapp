@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Inventory Item Form</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header><%- include('../partials/_nav') %></header>
+
+    <main class="dashboard">
+        <div class="container">
+            <div class="form-container">
+                <div class="alert-parent">
+                    <form action="/inventory/add-inventory-item" method="POST">
+                        <%- include('../partials/_flash-alert') %>
+                        <h3>Add Inventory Item</h3>
+                        <div class="input-grp">
+                            <label for="name">Item Name</label>
+                            <input type="text" name="name" id="name" required>
+                        </div>
+                    
+                        <div class="input-grp">
+                            <label for="category">Category</label>
+                            <select name="category" id="category" required>
+                                <option value="Medication">Medication</option>
+                                <option value="Consumable">Consumable</option>
+                                <option value="Equipment">Equipment</option>
+                            </select>
+                        </div>
+                    
+                        <div class="input-grp">
+                            <label for="unit">Unit (e.g., tablets, pieces)</label>
+                            <input type="text" name="unit" id="unit" required>
+                        </div>
+                    
+                        <div class="input-grp">
+                            <label for="reorder_level">Reorder Level</label>
+                            <input type="number" name="reorder_level" id="reorder_level">
+                        </div>
+                    
+                        <div class="input-grp">
+                            <label for="expiry_date">Expiry Date</label>
+                            <input type="date" name="expiry_date" id="expiry_date">
+                        </div>
+                    
+                        <div class="input-grp">
+                            <label for="equip_status">Status (for equipment)</label>
+                            <select name="equip_status" id="equip_status" required>
+                                <option value="Functional">Functional</option>
+                                <option value="Faulty">Faulty</option>
+                                <option value="Missing">Missing</option>
+                                <option value="Replenish">Replenish</option>
+                            </select>
+                        </div>
+
+                        <div class="input-grp">
+                            <label for="service_date">Service Date (for equipment)</label>
+                            <input type="date" name="service_date" id="service_date">
+                        </div>
+                    
+                        <div class="input-grp">
+                            <label for="initial_stock">Initial Stock</label>
+                            <input type="number" name="initial_stock" id="initial_stock" required>
+                        </div>
+                    
+                        <button class="btn" type="submit">Add Item</button>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+    
+    <footer><%- include('../partials/_footer') %></footer>
+    <!-- Include scripts for interaction -->
+    <script src="/js/mineaid-scripts.js"></script>
+</body>
+</html>

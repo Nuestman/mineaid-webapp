@@ -15,16 +15,20 @@
         <div class="container">
             <div class="grid-1-3">
                 <!-- Sidebar with navigation links -->
-                <aside class="sidebar">
-                    <h2>Navigation</h2>
-                    <a href="/dashboard">Dashboard</a>
-                    <a href="/incident-book">Incident Book</a>
-                    <a href="/admin/users">Manage Users</a>
-                    <a class="soon reports" href="../coming-soon">Analytics &amp; Reports</a>
-                    <a class="active" href="/inventory">Inventory Management</a>
-                    <a class="soon training" href="../coming-soon">Training &amp; Resources</a>
-                    <a class="soon settings" href="../coming-soon">Settings</a>
-                </aside>
+            <aside class="sidebar">
+                <h2>Navigation</h2>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/incident-book">Incident Book</a>
+                <a href="/admin/users">Manage Users</a>
+                <a href="/analytics-reports">Analytics &amp; Reports</a>
+                <a class="active" href="/inventory">Inventory Management</a>
+                <a href="/inventory/reports">Inventory Reports</a> <!-- New link for reports -->
+                <a href="/inventory/summaries">Inventory Summaries</a> <!-- New link for summaries -->
+                <a href="/inventory/logs">Inventory Logs</a> <!-- New link for logs -->
+                <a class="soon training" href="../coming-soon">Training &amp; Resources</a>
+                <a class="soon settings" href="../coming-soon">Settings</a>
+            </aside>
+
     
                 <!-- Main Content -->
                 <div class="main-content">
@@ -37,6 +41,7 @@
                     <!-- Inventory Summary Dashboard -->
                     <section class="inventory-summary card-container">
                         <h3>Inventory Summary</h3>
+                        <p class="subhead">Summary of items with quantities and expiry/service dates.</p>
                         <div class="grid">
                             <!-- Medications Card -->
                             <div class="card h-flex">
@@ -46,30 +51,41 @@
                                     <p><strong>Low Stock:</strong> 3 items</p> <!-- Placeholder: Replace with DB-driven count -->
                                 </div>
                                 <div class="btn-grp">
-                                    <button onclick="location.href='/inventory-mgt/medications-checklist'" class="btn"><i class="fa fa-check-circle"></i>Daily Checklist</button>
-                                    <button onclick="location.href='/inventory-mgt/medications-form'" class="btn"><i class="fa fa-cogs"></i>Manage Medications</button>
+                                    <a href="inventory/daily-checklist" class="btn">Daily Checklist</a>
+                                    <button onclick="location.href='/inventory/add-medication'" class="btn">
+                                        <i class="fa fa-plus-circle"></i> Add Medication
+                                    </button>
+                                    
+                                    <button onclick="location.href='/inventory/medication-inventory'" class="btn">
+                                        <i class="fa fa-cogs"></i> Manage Medications
+                                    </button>
+                                    
                                 </div>
                             </div>
     
                             <!-- Consumables Card -->
-                            <div class="card">
-                                <h4>Consumables</h4>
-                                <p><strong>Near Expiry:</strong> 4 items</p> <!-- Placeholder: Replace with DB-driven count -->
-                                <p><strong>Low Stock:</strong> 2 items</p> <!-- Placeholder: Replace with DB-driven count -->
+                            <div class="card h-flex">
+                                <div class="card-text">
+                                    <h4>Consumables</h4>
+                                    <p><strong>Near Expiry:</strong> 4 items</p> <!-- Placeholder: Replace with DB-driven count -->
+                                    <p><strong>Low Stock:</strong> 2 items</p> <!-- Placeholder: Replace with DB-driven count -->
+                                </div>
                                 <div class="btn-grp">
-                                    <button onclick="location.href='/inventory-mgt/consumables-checklist'" class="btn"><i class="fa fa-check-circle"></i>Daily Checklist</button>
-                                    <button onclick="location.href='/inventory-mgt/consumables-form'" class="btn"><i class="fa fa-cogs"></i>Manage Consumables</button>
+                                    <button onclick="location.href='/inventory/add-consumable'" class="btn"><i class="fa fa-check-circle"></i>Daily Checklist</button>
+                                    <button onclick="location.href='/inventory/consumable-inventory'" class="btn"><i class="fa fa-cogs"></i>Manage Consumables</button>
                                 </div>
                             </div>
     
                             <!-- Equipment Card -->
-                            <div class="card">
-                                <h4>Equipment</h4>
-                                <p><strong>Service Due Soon:</strong> 1 item</p> <!-- Placeholder: Replace with DB-driven count -->
-                                <p><strong>Out of Service:</strong> 1 item</p> <!-- Placeholder: Replace with DB-driven count -->
+                            <div class="card h-flex">
+                                <div class="card-text">
+                                    <h4>Equipment</h4>
+                                    <p><strong>Service Due Soon:</strong> 1 item</p> <!-- Placeholder: Replace with DB-driven count -->
+                                    <p><strong>Out of Service:</strong> 1 item</p> <!-- Placeholder: Replace with DB-driven count -->
+                                </div>
                                 <div class="btn-grp">
-                                    <button onclick="location.href='/inventory-mgt/equipment-checklist'" class="btn"><i class="fa fa-check-circle"></i>Daily Checklist</button>
-                                    <button onclick="location.href='/inventory-mgt/equipment-form'" class="btn"><i class="fa fa-cogs"></i>Manage Equipment</button>
+                                    <button onclick="location.href='/inventory/equipment-checklist'" class="btn"><i class="fa fa-check-circle"></i>Daily Checklist</button>
+                                    <button onclick="location.href='/inventory/inventory-equipment'" class="btn"><i class="fa fa-cogs"></i>Manage Equipment</button>
                                 </div>
                             </div>
                         </div>
@@ -80,9 +96,9 @@
                         <h3>Quick Actions</h3>
                         <div class="grid-container">
                             <div class="btn-grp h-flex">
-                                <div class="card"><button onclick="location.href='/inventory-mgt/add-item'" class="btn"><i class="fas fa-plus"></i> Add Item</button></div>
-                                <div class="card"><button onclick="location.href='/inventory-mgt/export'" class="btn"><i class="fas fa-file-export"></i> Export Data</button></div>
-                                <div class="card"><button onclick="location.href='/inventory-mgt/import'" class="btn"><i class="fas fa-file-import"></i> Import Data</button></div>
+                                <div class="card"><button onclick="location.href='/inventory/add-inventory-item'" class="btn"><i class="fas fa-plus"></i> Add Item</button></div>
+                                <div class="card"><button onclick="location.href='/inventory/export'" class="btn"><i class="fas fa-file-export"></i> Export Data</button></div>
+                                <div class="card"><button onclick="location.href='/inventory/import'" class="btn"><i class="fas fa-file-import"></i> Import Data</button></div>
                             </div>
                         </div>
                     </section>
@@ -97,6 +113,73 @@
                             <li>Item <strong>MNO</strong> - Service Due (Equipment)</li> <!-- Example placeholder -->
                             <!-- Commented out placeholder for database-driven logic to dynamically populate alerts -->
                         </ul>
+                    </section>
+
+                    <section class="inventory-summaries grid-container">
+                        <!-- Weekly Summary Section -->
+                        <section class="weekly-summary card-container">
+                            <h3>Weekly Summary</h3>
+                            <p class="subhead">Highlights of the week’s inventory performance.</p>
+                            <ul>
+                                <li>Total Stock Used: <strong>120 units</strong></li>
+                                <li>New Stock Added: <strong>50 units</strong></li>
+                                <li>Items Near Expiry: <strong>3 items</strong></li>
+                                <li>Low Stock Alerts: <strong>2 items</strong></li>
+                            </ul>
+                            <button onclick="location.href='/inventory/weekly-summary'" class="btn"><i class="fas fa-chart-line"></i> View Full Weekly Report</button>
+                        </section>
+                        <!-- Monthly Summary Section -->
+                        <section class="monthly-summary card-container">
+                            <h3>Monthly Summary</h3>
+                            <p class="subhead">Aggregated data for the current month.</p>
+                            <ul>
+                                <li>Total Stock Used: <strong>450 units</strong></li>
+                                <li>New Stock Added: <strong>200 units</strong></li>
+                                <li>Items Near Expiry: <strong>8 items</strong></li>
+                                <li>Low Stock Alerts: <strong>5 items</strong></li>
+                            </ul>
+                            <button onclick="location.href='/inventory/monthly-summary'" class="btn"><i class="fas fa-file-alt"></i> View Full Monthly Report</button>
+                        </section>
+                    </section>n>
+
+                    <!-- Reports Section on the Inventory Dashboard -->
+                    <section class="reports card-container">
+                        <h3>Inventory Reports</h3>
+                        <p>Generate and download reports for inventory trends.</p>
+                        <div class="btn-grp">
+                            <button onclick="location.href='/inventory/reports?type=weekly'" class="btn"><i class="fas fa-calendar-week"></i> Weekly Report</button>
+                            <button onclick="location.href='/inventory/reports?type=monthly'" class="btn"><i class="fas fa-calendar-alt"></i> Monthly Report</button>
+                            <button onclick="location.href='/inventory/reports?type=custom'" class="btn"><i class="fas fa-file-alt"></i> Custom Report</button>
+                        </div>
+                    </section>
+
+                    <section class="weekly-logs card-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Item Name</th>
+                                    <th>Stock Start</th>
+                                    <th>Stock Used</th>
+                                    <th>Stock Added</th>
+                                    <th>Stock End</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Example row -->
+                                <tr>
+                                    <td>2024-11-15</td>
+                                    <td>Paracetamol</td>
+                                    <td>200</td>
+                                    <td>20</td>
+                                    <td>50</td>
+                                    <td>230</td>
+                                    <td>Restocked 50 units</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
                     </section>
                 </div>
             </div>
@@ -124,7 +207,7 @@
                         <li>Paracetamol - Quantity: 100 - Expiry: 2025-01-15</li>
                         <li>Ibuprofen - Quantity: 50 - Expiry: 2024-06-30</li>
                     </ul>
-                    <button onclick="location.href='/inventory-mgt/medications-form'" class="btn">
+                    <button onclick="location.href='/inventory/medications-form'" class="btn">
                         <i class="fas fa-edit"></i> Manage Medications
                     </button>
                 </section>
@@ -136,7 +219,7 @@
                         <li>Bandages - Quantity: 200 - Expiry: 2025-08-10</li>
                         <li>Surgical Gloves - Quantity: 500 - Expiry: 2024-12-31</li>
                     </ul>
-                    <button onclick="location.href='/inventory-mgt/consumables-form'" class="btn">
+                    <button onclick="location.href='/inventory/consumables-form'" class="btn">
                         <i class="fas fa-edit"></i> Manage Consumables
                     </button>
                 </section>
@@ -148,7 +231,7 @@
                         <li>Stethoscope - Service Date: 2024-03-01</li>
                         <li>Defibrillator - Service Date: 2025-02-15</li>
                     </ul>
-                    <button onclick="location.href='/inventory-mgt/equipment-form'" class="btn">
+                    <button onclick="location.href='/inventory/equipment-form'" class="btn">
                         <i class="fas fa-edit"></i> Manage Equipment
                     </button>
                 </section>
@@ -162,10 +245,10 @@
                 </div>
             </div>
             <!-- Include scripts for interaction -->
-            <script src="/js/mineaid-scripts.js"></script>
         </div>
     </div>
-
+    
     <footer><%- include('../partials/_footer') %></footer>
+    <script src="/js/mineaid-scripts.js"></script>
 </body>
 </html>

@@ -10,6 +10,108 @@ const db = new sqlite3.Database(path.join(__dirname, 'mineaid.db'), (err) => {
     }
 });
 
+db.run('PRAGMA foreign_keys = ON;', (err) => {
+    if (err) {
+        console.error('Error enabling foreign keys:', err.message);
+    } else {
+        console.log('Foreign key support enabled.');
+    }
+});
+
+
+// db.serialize(() => {
+//     // Start Transaction
+//     db.run('BEGIN TRANSACTION;', (err) => {
+//         if (err) {
+//             console.error('Error starting transaction:', err.message);
+//         } else {
+//             console.log('Transaction started.');
+//         }
+//     });
+
+//     // Modify the schema
+//     db.run(`
+//         CREATE TABLE IF NOT EXISTS inventory_items_new (
+//             id INTEGER PRIMARY KEY AUTOINCREMENT,
+//             item_name TEXT NOT NULL,
+//             category_id INTEGER NOT NULL,
+//             unit TEXT NOT NULL,
+//             reorder_level INTEGER,
+//             expiry_date TEXT,
+//             device_status TEXT,
+//             service_date TEXT,
+//             stock INTEGER DEFAULT 0,
+//             FOREIGN KEY (category_id) REFERENCES inventory_categories (id) ON DELETE CASCADE
+//         );
+//     `, (err) => {
+//         if (err) {
+//             console.error('Error creating new table:', err.message);
+//         } else {
+//             console.log('New table created successfully.');
+//         }
+//     });
+
+//     // Copy data from the old table to the new table
+//     db.run(`
+//         INSERT INTO inventory_items_new (id, item_name, category_id, unit, reorder_level, expiry_date, device_status, service_date, stock)
+//         SELECT id, item_name, category_id, unit, reorder_level, expiry_date, device_status, service_date, stock
+//         FROM inventory_items;
+//     `, (err) => {
+//         if (err) {
+//             console.error('Error copying data to new table:', err.message);
+//         } else {
+//             console.log('Data copied successfully.');
+//         }
+//     });
+
+//     // Drop the old table
+//     db.run('DROP TABLE inventory_items;', (err) => {
+//         if (err) {
+//             console.error('Error dropping old table:', err.message);
+//         } else {
+//             console.log('Old table dropped successfully.');
+//         }
+//     });
+
+//     // Rename the new table
+//     db.run('ALTER TABLE inventory_items_new RENAME TO inventory_items;', (err) => {
+//         if (err) {
+//             console.error('Error renaming new table:', err.message);
+//         } else {
+//             console.log('New table renamed to inventory_items.');
+//         }
+//     });
+
+//     // Commit Transaction
+//     db.run('COMMIT;', (err) => {
+//         if (err) {
+//             console.error('Error committing transaction:', err.message);
+//         } else {
+//             console.log('Transaction committed successfully.');
+//         }
+//     });
+
+//     // Check foreign key integrity
+//     db.run('PRAGMA foreign_key_check;', (err) => {
+//         if (err) {
+//             console.error('Foreign key integrity check failed:', err.message);
+//         } else {
+//             console.log('Foreign key integrity check passed.');
+//         }
+//     });
+// });
+
+
+
+// // Close the database connection after operations are done
+// db.close((err) => {
+//     if (err) {
+//         console.error('Error closing database:', err.message);
+//     } else {
+//         console.log('Database connection closed.');
+//     }
+// });
+
 // // Helper function to get current timestamp in ISO format
 // const getCurrentTimestamp = () => {
 //     return new Date().toISOString();
@@ -297,6 +399,113 @@ clearExpiredTokens();
 //         console.log('Database connection closed.');
 //     }
 // });
+
+// Create inventory_items table
+// db.run(`
+//     CREATE TABLE IF NOT EXISTS inventory_items (
+//         id INTEGER PRIMARY KEY AUTOINCREMENT,
+//         name TEXT NOT NULL,
+//         category TEXT NOT NULL CHECK (category IN ('Medication', 'Consumable', 'Equipment')),
+//         unit TEXT NOT NULL, -- e.g., "tablets", "ml", "pieces"
+//         reorder_level INTEGER DEFAULT 0, -- Minimum stock level before alerts are triggered
+//         expiry_date DATE, -- For items that expire
+//         service_date DATE, -- For equipment needing regular servicing
+//         initial_stock INTEGER DEFAULT 0, -- Starting stock when item is added
+//         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+//     );
+//     `, (err) => {
+//         if (err) {
+//             console.error("Error creating inventory_items table:", err.message);
+//         } else {
+//             console.log("inventory_items table created or already exists.");
+//         }
+//     });
+    
+//     // Create inventory_daily_logs table
+//     db.run(`
+//     CREATE TABLE IF NOT EXISTS inventory_daily_logs (
+//         id INTEGER PRIMARY KEY AUTOINCREMENT,
+//         item_id INTEGER NOT NULL, -- Foreign key to inventory_items
+//         log_date DATE NOT NULL DEFAULT (DATE('now')), -- Date of the log entry
+//         stock_start INTEGER NOT NULL, -- Stock at the start of the day
+//         stock_used INTEGER DEFAULT 0, -- Stock used during the day
+//         stock_added INTEGER DEFAULT 0, -- Stock added during the day (restocks)
+//         stock_end INTEGER NOT NULL, -- Stock at the end of the day
+//         remarks TEXT, -- Any additional comments or notes
+//         logged_by INTEGER NOT NULL, -- User ID of the person making the entry
+//         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//         FOREIGN KEY (item_id) REFERENCES inventory_items (id) ON DELETE CASCADE,
+//         FOREIGN KEY (logged_by) REFERENCES users (id) ON DELETE SET NULL
+//     );
+//     `, (err) => {
+//         if (err) {
+//             console.error("Error creating inventory_daily_logs table:", err.message);
+//         } else {
+//             console.log("inventory_daily_logs table created or already exists.");
+//         }
+//     });
+    
+//     // Create inventory_monthly_summaries table
+//     db.run(`
+//     CREATE TABLE IF NOT EXISTS inventory_monthly_summaries (
+//         id INTEGER PRIMARY KEY AUTOINCREMENT,
+//         item_id INTEGER NOT NULL, -- Foreign key to inventory_items
+//         month_year TEXT NOT NULL, -- Format: YYYY-MM
+//         stock_start INTEGER NOT NULL, -- Stock at the start of the month
+//         stock_used INTEGER DEFAULT 0, -- Total stock used during the month
+//         stock_added INTEGER DEFAULT 0, -- Total stock added during the month
+//         stock_end INTEGER NOT NULL, -- Stock at the end of the month
+//         remarks TEXT, -- Any observations or notes
+//         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//         FOREIGN KEY (item_id) REFERENCES inventory_items (id) ON DELETE CASCADE
+//     );
+//     `, (err) => {
+//         if (err) {
+//             console.error("Error creating inventory_monthly_summaries table:", err.message);
+//         } else {
+//             console.log("inventory_monthly_summaries table created or already exists.");
+//         }
+//     });
+    
+//     // Create inventory_audit_trail table
+//     db.run(`
+//     CREATE TABLE IF NOT EXISTS inventory_audit_trail (
+//         id INTEGER PRIMARY KEY AUTOINCREMENT,
+//         item_id INTEGER NOT NULL, -- Foreign key to inventory_items
+//         action TEXT NOT NULL CHECK (action IN ('ADD', 'EDIT', 'DELETE', 'RESTOCK')),
+//         changes TEXT NOT NULL, -- Description of the changes made
+//         performed_by INTEGER NOT NULL, -- User ID of the person performing the action
+//         performed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//         FOREIGN KEY (item_id) REFERENCES inventory_items (id) ON DELETE CASCADE,
+//         FOREIGN KEY (performed_by) REFERENCES users (id) ON DELETE SET NULL
+//     );
+//     `, (err) => {
+//         if (err) {
+//             console.error("Error creating inventory_audit_trail table:", err.message);
+//         } else {
+//             console.log("inventory_audit_trail table created or already exists.");
+//         }
+//     });
+    
+//     // Create inventory_categories table
+//     db.run(`
+//     CREATE TABLE IF NOT EXISTS inventory_categories (
+//         id INTEGER PRIMARY KEY AUTOINCREMENT,
+//         name TEXT NOT NULL UNIQUE, -- e.g., 'Medication', 'Consumable', 'Equipment'
+//         description TEXT, -- Optional description of the category
+//         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+//     );
+//     `, (err) => {
+//         if (err) {
+//             console.error("Error creating inventory_categories table:", err.message);
+//         } else {
+//             console.log("inventory_categories table created or already exists.");
+//         }
+//     });
+    
 
 
 module.exports = db;

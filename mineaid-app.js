@@ -14,6 +14,16 @@ const crypto = require('crypto');
 const multer = require('multer');
 const XLSX = require('xlsx');
 // const { console } = require('inspector'); //Causing some r
+// const { nanoid } = require('nanoid'); //For generating unique IDs
+// (async () => {
+//     const { nanoid } = await import('nanoid');
+//     const customId = nanoid(); // Example usage
+// })(); //Dynamic import for nanoID
+// // Generate a unique, short ID
+// const customId = `equip-${nanoid(5)}`; // Generates a 5-character unique ID
+// console.log(customId); // Example: equip-A1b2C
+
+
 
 const app = express();
 
@@ -1556,6 +1566,8 @@ app.get('/error/500', (req, res) => {
 app.get('/error/regis-error', (req, res) => {
     res.render('error/regis-error'); // help.ejs
 });
+
+/* NURSING PORTAL */
 // Route: Nursing Portal Landing Page (GET)
 app.get('/landing-page', (req, res) => {
     res.render('landing-page'); // landing-page.ejs
@@ -1568,14 +1580,501 @@ app.get('/iaid', (req, res) => {
 app.get('/isoup', (req, res) => {
     res.render('isoup'); // landing-page.ejs
 });
-// Route: iSoup Landing Page (GET)
+// Route: iSoup Dashboard (GET)
 app.get('/isoup-dashboard', (req, res) => {
     res.render('isoup-dashboard'); // landing-page.ejs
 });
-// Route: Inventory Mgt Page (GET)
+// Route: iManage Landing Page (GET)
+app.get('/imanage', (req, res) => {
+    res.render('imanage'); // landing-page.ejs
+});
+// Route: iManage Dashboard (GET)
+app.get('/imanage-dashboard', (req, res) => {
+    res.render('imanage-dashboard'); // landing-page.ejs
+});
+// Route: iEmerge Landing Page (GET)
+app.get('/iemerge', (req, res) => {
+    res.render('iemerge'); // landing-page.ejs
+});
+// Route: iEmerge Dashboard (GET)
+app.get('/iemerge-dashboard', (req, res) => {
+    res.render('iemerge-dashboard'); // landing-page.ejs
+});
+
+
+
+/* INVENTORY MANAGEMENT */
+
+// Route: Inventory Management Landing Page (GET)
 app.get('/inventory', (req, res) => {
     res.render('inventory/inventory-mgt'); // landing-page.ejs
 });
+
+
+//MEDICATIONS Start
+// GET Route for Add Medication Form
+app.get('/inventory/add-medication', (req, res) => {
+    db.all('SELECT * FROM medications', [], (err, rows) => {
+        if (err) {
+            console.error('Error fetching medications:', err.message);
+            req.flash('error_msg', 'Error fetching medications.');
+            return res.redirect('/');
+        }
+    res.render('inventory/add-medication', {medications: rows});
+    });
+});
+// POST Route to Add Medication
+app.post('/inventory/add-medication', (req, res) => {
+    const { medication_name, category, dosage_form, unit, reorder_level, expiry_date, manufacturer, description } = req.body;
+
+    const query = `
+        INSERT INTO medications 
+        (medication_id, medication_name, category, dosage_form, unit, reorder_level, expiry_date, manufacturer, description)
+        VALUES ((SELECT 'med-' || IFNULL(MAX(rowid) + 1, 0) FROM medications), ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    db.run(
+        query,
+        [medication_name, category, dosage_form, unit, reorder_level, expiry_date, manufacturer, description],
+        function (err) {
+            if (err) {
+                console.error('Error inserting medication:', err.message);
+                req.flash('error_msg', 'Error adding medication. Please try again.');
+                return res.redirect('/inventory/add-medication');
+            }
+
+            req.flash('success_msg', 'Medication added successfully.');
+            res.redirect('/inventory/medication-inventory');
+        }
+    );
+});
+
+// Route to view the inventory medication management page
+// GET Route for Medications Inventory with Search/Filter
+app.get('/inventory/medication-inventory', (req, res) => {
+    const { search } = req.query; // Extract the search parameter
+
+    let query = 'SELECT * FROM medications';
+    const params = [];
+
+    // Add WHERE clause if search query exists
+    if (search) {
+        query += ' WHERE medication_name LIKE ?';
+        params.push(`%${search}%`);
+    }
+
+    db.all(query, params, (err, rows) => {
+        if (err) {
+            console.error('Error fetching medications:', err.message);
+            req.flash('error_msg', 'Error fetching medications.');
+            return res.redirect('/errors/error');
+        }
+        res.render('inventory/medication-inventory', { medications: rows });
+    });
+});
+
+
+// Route to edit medication details
+app.get('/inventory/edit-medication/:id', (req, res) => {
+    const { id } = req.params;
+    db.get('SELECT * FROM medications WHERE medication_id = ?', [id], (err, row) => {
+        if (err) {
+            console.error('Error fetching medication:', err.message);
+            req.flash('error_msg', 'Error loading medication details.');
+            return res.redirect('/inventory/medication-inventory');
+        }
+        res.render('inventory/edit-medication', { medications: row });
+    });
+});
+
+// Route to update medication
+app.post('/inventory/edit-medication/:id', (req, res) => {
+    const { id } = req.params;
+    const { medication_name, unit, reorder_level, expiry_date, manufacturer, description } = req.body;
+
+    const query = `
+        UPDATE medications SET medication_name = ?, unit = ?, reorder_level = ?, expiry_date = ?, manufacturer = ?, description = ?
+        WHERE medication_id = ?
+    `;
+    db.run(query, [medication_name, unit, reorder_level, expiry_date, manufacturer, description, id], function(err) {
+        if (err) {
+            console.error('Error updating medication:', err.message);
+            req.flash('error_msg', 'Error updating medication.');
+            return res.redirect('/inventory/medication-inventory');
+        }
+        req.flash('success_msg', 'Medication updated successfully.');
+        res.redirect('/inventory/medication-inventory');
+    });
+});
+
+// Route to delete medication
+app.get('/inventory/delete-medication/:id', (req, res) => {
+    const { id } = req.params;
+
+    const query = 'DELETE FROM medications WHERE medication_id = ?';
+    db.run(query, [id], function(err) {
+        if (err) {
+            console.error('Error deleting medication:', err.message);
+            req.flash('error_msg', 'Error deleting medication.');
+            return res.redirect('/inventory/medication-inventory');
+        }
+        req.flash('success_msg', 'Medication deleted successfully.');
+        res.redirect('/inventory/medication-inventory');
+    });
+});
+
+// Medication Ends
+
+
+
+//Consumables begin
+
+// GET Route for Consumables
+app.get('/inventory/add-consumable', (req, res) => {
+    db.all('SELECT * FROM consumables', [], (err, rows) => {
+        if (err) {
+            console.error('Error fetching consumables:', err.message);
+            req.flash('error_msg', 'Error fetching consumables.');
+            return res.redirect('../errors/error');
+        }
+        res.render('inventory/add-consumable', { consumables: rows });
+    });
+});
+
+// POST Route to Add Consumable
+app.post('/inventory/add-consumables', (req, res) => {
+    const { consumable_name, unit, reorder_level, expiry_date, manufacturer, description } = req.body;
+
+    // Get the latest consumable ID
+    db.get('SELECT MAX(CAST(SUBSTR(consumable_id, 5) AS INTEGER)) AS last_id FROM consumables', [], (err, row) => {
+        if (err) {
+            console.error('Error fetching latest consumable ID:', err.message);
+            req.flash('error_msg', 'Error generating custom consumable ID.');
+            return res.redirect('/inventory/add-consumable'); // Redirect back with error
+        }
+
+        const nextId = (row.last_id || 0) + 1;
+        const customId = `cons-${nextId}`;
+
+        // Insert the new consumable
+        const query = `
+            INSERT INTO consumables (consumable_id, consumable_name, unit, reorder_level, expiry_date, manufacturer, description)
+            VALUES ((SELECT 'cons-' || IFNULL(MAX(rowid) + 1, 0) FROM consumables), (?, ?, ?, ?, ?, ?, ?)
+        `;
+        db.run(query, [customId, consumable_name, unit, reorder_level, expiry_date, manufacturer, description], function (err) {
+            if (err) {
+                console.error('Error inserting consumable:', err.message);
+                req.flash('error_msg', 'Error inserting consumable.');
+                return res.redirect('/inventory/add-consumable');
+            }
+            req.flash('success_msg', `Consumable added with ID: ${customId}`);
+            res.redirect('/inventory/consumable-inventory');
+        });
+    });
+});
+
+// Route to view the inventory consumable management page
+// app.get('/inventory/consumable-inventory', (req, res) => {
+//     db.all('SELECT * FROM consumables ORDER BY consumable_id', [], (err, rows) => {
+//         if (err) {
+//             console.error('Error fetching consumable:', err.message);
+//             req.flash('error_msg', 'Error loading consumable list.');
+//             return res.redirect('/inventory/consumable-inventory');
+//         }
+//         res.render('inventory/consumable-inventory', {
+//             consumables: rows
+//         });
+//     });
+// });
+// GET Route for Consumable Inventory with Search/Filter
+app.get('/inventory/consumable-inventory', (req, res) => {
+    const { search } = req.query; // Extract the search parameter
+
+    let query = 'SELECT * FROM consumables';
+    const params = [];
+
+    // Add WHERE clause if search query exists
+    if (search) {
+        query += ' WHERE consumable_name LIKE ?';
+        params.push(`%${search}%`);
+    }
+
+    db.all(query, params, (err, rows) => {
+        if (err) {
+            console.error('Error fetching consumables:', err.message);
+            req.flash('error_msg', 'Error fetching consumables.');
+            return res.redirect('/errors/error');
+        }
+        res.render('inventory/consumable-inventory', { consumables: rows });
+    });
+});
+
+
+// Route to edit consumable details
+app.get('/inventory/edit-consumable/:id', (req, res) => {
+    const { id } = req.params;
+    db.get('SELECT * FROM consumables WHERE consumable_id = ?', [id], (err, row) => {
+        if (err) {
+            console.error('Error fetching consumable:', err.message);
+            req.flash('error_msg', 'Error loading consumable details.');
+            return res.redirect('/inventory/consumable-inventory');
+        }
+        res.render('inventory/edit-consumable', { consumables: row });
+    });
+});
+
+// Route to update consumable
+app.post('/inventory/edit-consumable/:id', (req, res) => {
+    const { id } = req.params;
+    const { consumable_name, unit, reorder_level, expiry_date, manufacturer, description } = req.body;
+
+    const query = `
+        UPDATE consumables SET consumable_name = ?, unit = ?, reorder_level = ?, expiry_date = ?, manufacturer = ?, description = ?
+        WHERE consumable_id = ?
+    `;
+    db.run(query, [consumable_name, unit, reorder_level, expiry_date, manufacturer, description, id], function(err) {
+        if (err) {
+            console.error('Error updating consumable:', err.message);
+            req.flash('error_msg', 'Error updating consumable.');
+            return res.redirect('/inventory/consumable-inventory');
+        }
+        req.flash('success_msg', 'Consumable updated successfully.');
+        res.redirect('/inventory/consumable-inventory');
+    });
+});
+
+// Route to delete consumable
+app.get('/inventory/delete-consumable/:id', (req, res) => {
+    const { id } = req.params;
+
+    const query = 'DELETE FROM consumables WHERE consumable_id = ?';
+    db.run(query, [id], function(err) {
+        if (err) {
+            console.error('Error deleting consumable:', err.message);
+            req.flash('error_msg', 'Error deleting consumable.');
+            return res.redirect('/inventory/consumable-inventory');
+        }
+        req.flash('success_msg', 'Consumable deleted successfully.');
+        res.redirect('/inventory/consumable-inventory');
+    });
+});
+
+
+//Consumables End
+
+
+//Equipment Begins
+// GET Route for Equipment Checklist
+app.get('/inventory/equipment-checklist', (req, res) => {
+    db.all('SELECT * FROM equipment', [], (err, rows) => {
+        if (err) {
+            console.error('Error fetching equipment:', err.message);
+            req.flash('error_msg', 'Error fetching equipment.');
+            return res.redirect('../errors/error');
+        }
+        res.render('inventory/inventory-equipment-checklist', { equipment: rows });
+    });
+});
+
+// POST Route to Add Equipment Checklist
+app.post('/inventory/equipment-checklist', (req, res) => {
+    const { equipment_name, unit, reorder_level, service_date, manufacturer, description } = req.body;
+
+    const query = `
+        INSERT INTO equipment (equipment_id, equipment_name, unit, reorder_level, service_date, manufacturer, description)
+        VALUES ((SELECT 'equip-' || IFNULL(MAX(rowid) + 1, 0) FROM equipment), ?, ?, ?, ?, ?, ?)
+    `;
+    db.run(query, [equipment_name, unit, reorder_level, service_date, manufacturer, description], function (err) {
+        if (err) {
+            console.error('Error inserting equipment:', err.message);
+            req.flash('error_msg', 'Error inserting equipment.');
+            return res.redirect('/inventory/inventory-equipment');
+        }
+        req.flash('success_msg', `Equipment added successfully.`);
+        res.redirect('/inventory/equipment-checklist');
+    });
+});
+
+// Route to view the inventory equipment management page
+// GET Route for Equipment Inventory with Search/Filter
+app.get('/inventory/inventory-equipment', (req, res) => {
+    const { search } = req.query; // Extract the search parameter
+
+    let query = 'SELECT * FROM equipment';
+    const params = [];
+
+    // Add WHERE clause if search query exists
+    if (search) {
+        query += ' WHERE equipment_name LIKE ?';
+        params.push(`%${search}%`);
+    }
+
+    db.all(query, params, (err, rows) => {
+        if (err) {
+            console.error('Error fetching equipment:', err.message);
+            req.flash('error_msg', 'Error fetching equipment.');
+            return res.redirect('/errors/error');
+        }
+        res.render('inventory/inventory-equipment', { equipment: rows });
+    });
+});
+
+
+// Route to edit equipment details
+app.get('/inventory/edit-equipment/:id', (req, res) => {
+    const { id } = req.params;
+    db.get('SELECT * FROM equipment WHERE equipment_id = ?', [id], (err, row) => {
+        if (err) {
+            console.error('Error fetching equipment:', err.message);
+            req.flash('error_msg', 'Error loading equipment details.');
+            return res.redirect('/inventory/inventory-equipment');
+        }
+        res.render('inventory/edit-equipment', { equipment: row });
+    });
+});
+
+// Route to update equipment
+app.post('/inventory/edit-equipment/:id', (req, res) => {
+    const { id } = req.params;
+    const { equipment_name, unit, reorder_level, service_date, manufacturer, description } = req.body;
+
+    const query = `
+        UPDATE equipment SET equipment_name = ?, unit = ?, reorder_level = ?, service_date = ?, manufacturer = ?, description = ?
+        WHERE equipment_id = ?
+    `;
+    db.run(query, [equipment_name, unit, reorder_level, service_date, manufacturer, description, id], function(err) {
+        if (err) {
+            console.error('Error updating equipment:', err.message);
+            req.flash('error_msg', 'Error updating equipment.');
+            return res.redirect('/inventory/inventory-equipment');
+        }
+        req.flash('success_msg', 'Equipment updated successfully.');
+        res.redirect('/inventory/inventory-equipment');
+    });
+});
+
+// Route to delete equipment
+app.get('/inventory/delete-equipment/:id', (req, res) => {
+    const { id } = req.params;
+
+    const query = 'DELETE FROM equipment WHERE equipment_id = ?';
+    db.run(query, [id], function(err) {
+        if (err) {
+            console.error('Error deleting equipment:', err.message);
+            req.flash('error_msg', 'Error deleting equipment.');
+            return res.redirect('/inventory/inventory-equipment');
+        }
+        req.flash('success_msg', 'Equipment deleted successfully.');
+        res.redirect('/inventory/inventory-equipment');
+    });
+});
+//Equipment Ends
+
+
+
+// Route: Daily Checklist Page (GET)
+app.get('/inventory/daily-checklist', (req, res) => {
+    res.render('inventory/daily-checklist'); // Daily Checklist form page
+});
+
+// Route: Submit Daily Checklist (POST)
+app.post('/inventory/daily-checklist', (req, res) => {
+    const { item_id, stock_start, stock_used, stock_added, stock_end, remarks, logged_by } = req.body;
+    
+    // Validate and insert log into database
+    db.run(`
+        INSERT INTO inventory_daily_logs (item_id, stock_start, stock_used, stock_added, stock_end, remarks, logged_by)
+        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [item_id, stock_start, stock_used, stock_added, stock_end, remarks, logged_by],
+        function (err) {
+            if (err) {
+                console.error("Error inserting daily checklist:", err);
+                return res.status(500).send("Error logging inventory checklist");
+            }
+            req.flash('success_msg', 'Checklist uploaded successfully')
+            // Redirect to the inventory dashboard or logs page
+            res.redirect('/inventory/daily-checklist');
+        }
+    );
+});
+
+
+// Route: Add Inventory Item (GET)
+app.get('/inventory/add-inventory-item', (req, res) => {
+    res.render('inventory/add-inventory-item'); // landing-page.ejs
+});
+
+// Route: Add Inventory Item (POST)
+app.post('/inventory/add-inventory-item', (req, res) => {
+    const { 
+        name, 
+        category, 
+        unit, 
+        reorder_level, 
+        expiry_date, 
+        status, 
+        service_date, 
+        initial_stock 
+    } = req.body;
+
+    // Map the category string to the corresponding category ID
+    const categoryMap = {
+        "Medication": 1,
+        "Consumable": 2,
+        "Equipment": 3
+    };
+    const category_id = categoryMap[category];
+
+    db.run(`
+        INSERT INTO inventory_items (item_name, category_id, unit, reorder_level, expiry_date, device_status, service_date, stock)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [name, category_id, unit, reorder_level, expiry_date || null, status || null, service_date || null, initial_stock],
+        function (err) {
+            if (err) {
+                console.error("Error adding inventory item:", err);
+                return res.status(500).send("Failed to add inventory item.");
+            }
+            req.flash('success_msg', 'Inventory item added successfully!');
+            res.redirect('/inventory'); // Redirect to the main inventory dashboard
+        }
+    );
+});
+
+
+// Route: Add Category Page (GET)
+app.get('/inventory/add-inventory-category', (req, res) => {
+    res.render('inventory/add-inventory-category'); // Add Category form page
+});
+
+// Route: Add Category (POST)
+app.post('/inventory/add-inventory-category', (req, res) => {
+    const { category_name } = req.body;
+
+    db.run(`
+        INSERT INTO inventory_categories (category_name)
+        VALUES (?)`,
+        [category_name],
+        function (err) {
+            if (err) {
+                console.error("Error adding category:", err);
+                return res.status(500).send("Failed to add category.");
+            }
+            req.flash('success_msg', 'Category added successfully!');
+            res.redirect('/inventory'); // Redirect to the main inventory dashboard
+        }
+    );
+});
+
+// Route: Monthly Summary Page (GET)
+app.get('/inventory/monthly-summary', (req, res) => {
+    res.render('inventory/monthly-summary'); // Monthly Summary form/page
+});
+
+
+
+
+
+/* DATABASE MANAGEMENT */
 // Route: Database Mgt Page (GET)
 app.get('/database', (req, res) => {
     res.render('admin/db-management'); // landing-page.ejs

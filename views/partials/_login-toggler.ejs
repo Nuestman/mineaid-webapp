@@ -50,7 +50,7 @@
                 <% if (loggedIn === true) { %>
                 <li class="nav-item">Accounts
                     <ul class="nav-links">
-                        <li><a class="user-profile-icon" href="/users/user-profile"><img src="<%= user.profilePicUrl || '../uploads/profile-pic-icon2.png' %>" alt="User Profile Picture" ></a></li>
+                        <li title="User Profile"><a class="user-profile-icon" href="/users/user-profile"><img src="<%= user.profilePicUrl || '../uploads/profile-pic-icon2.png' %>" alt="User Profile Picture" ></a></li>
                         <li><a href="/logout">Logout</a></li>
                         <li><a href="/about">About</a></li>        
                     </ul>

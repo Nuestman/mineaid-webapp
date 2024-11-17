@@ -93,15 +93,17 @@
                   <h2>Schedule Backup</h2>
                   <div class="input-grp btn-grp h-flex">
                       <form action="/schedule-backup" method="post">
-                        <input type="text" name="cronExpression" placeholder="Cron Expression (e.g., 0 0 * * *)" required>
-                        <button class="btn" type="submit">Set Backup Schedule</button>
+                        <div class="input-grp">
+                            <input type="text" name="cronExpression" placeholder="Cron Expression (e.g., 0 0 * * *)" required>
+                            <button class="btn" type="submit">Set Backup Schedule</button>
+                        </div>
                       </form>
                   </div>
                 </div>
                 <section class=" grid-container ">
                     <!-- Logs Card -->
                     <div class="card">
-                      <h2>Security and Logs</h2>
+                      <h3>Security and Logs</h3>
                       <div class="btn-grp h-flex">
                           <form action="/view-logs" method="get">
                             <button class="btn" type="submit">View Logs</button>
@@ -111,7 +113,7 @@
                     <!-- Support Card -->
                     <div class="card">
                         <h3>Resources & Support</h3>
-                        <p>If you need assistance, check out our <a class="accent" href="/support">Support Page</a> or contact us directly.</p>
+                        <p>If you need assistance, <a class="accent" href="/support">check out our Support Page</a> or <a href="/contact"><span class="accent">contact us</span></a> directly.</p>
                     </div>
                 </section>
             </div>

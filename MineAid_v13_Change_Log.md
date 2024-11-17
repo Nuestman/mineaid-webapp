@@ -1,3 +1,28 @@
+# Session 171124 - Morning to afternoon
+1. Fixed routes for inventory meds, equip, cons
+2. Fixed tables for them
+3. Continue later
+
+
+# Session 161124 Morning
+1. Fixed User feedback table overflow issue
+2. Mobile Style Issues
+User feedback 
+Fixed- table overflow hidden
+Fixed- Infinite scroll
+
+Admin Dashboard
+Fixed- Side bar overflows on mobile
+Fixed- Headed, footer looking shorter
+
+Database
+Fixed- Upload, import, schedule are full width 
+All buttons should be full width
+Fixed- Should be space between scheduler button and input
+
+DB mgt
+Fixed- Manage db button should be full width 
+
 # Session 151124 Dawn
 1. Set up Inventory mgt page with its routes
 2. Activated the button in sidebar to open the inv-mtg dashboard
