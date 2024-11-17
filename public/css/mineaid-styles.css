@@ -1240,6 +1240,7 @@ th, td {
 }
 
 .inventory-table-container {
+  padding: var(--padding-y-large);
   flex-grow: 1;
 }
 .inventory-table-container h1, .inventory-table-container h2 {
@@ -1366,12 +1367,12 @@ th, td {
   .options:nth-child(odd) {
     background-color: var(--primary-color-bg);
   }
+  /* Inventory page */
   .main-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: var(--box-shadow-medium);
     width: 100vw;
+  }
+  .landing-page-body {
+    padding: 1rem;
   }
 }
 @media (max-width: 650px) {
@@ -1385,11 +1386,10 @@ th, td {
 /* NURSING-HUB */
 /* Landing Page */
 .landing-page-body {
+  padding: 3rem 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid var(--primary-color-light);
-  height: 100vh;
 }
 
 .landing-page {

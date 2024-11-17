@@ -1250,6 +1250,7 @@ th, td {
 }
 
 .inventory-table-container {
+    padding: var(--padding-y-large);
     flex-grow: 1;
     h1, h2 {
         text-align: left;
@@ -1454,7 +1455,11 @@ th, td {
     /* Inventory page */
     .main-content {
         width: 100vw;
-}
+    }
+
+    .landing-page-body {
+        padding: 1rem;
+    }
 }
   
 
@@ -1476,11 +1481,10 @@ th, td {
 /* Landing Page */
 
 .landing-page-body {
+    padding: 3rem 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid var(--primary-color-light);
-    height: 100vh;
   }
   
   .landing-page {

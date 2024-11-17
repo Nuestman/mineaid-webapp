@@ -3,6 +3,9 @@
 2. Fixed tables for them
 3. Fixed inventory page overflow on wide-screen due to wide-screen fix required on mobile.
 4. Fixed routes to index giving errors
+5. Added sample data for all inventory tables
+6. Fixed padding issue for inventory main
+7. Padding for landing page
 3. Continue later
 
 
