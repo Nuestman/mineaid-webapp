@@ -438,8 +438,8 @@ function ensureAdmin(req, res, next) {
     if (req.user && (req.user.role === 'Admin' || req.user.role === 'Superuser')) {
         return next();
     }
-    req.flash('error_msg', 'Admin access required');
-    res.redirect('index');
+    req.flash('error_msg', 'Admin access required. Contact admin.');
+    res.redirect('contact');
 }
 // Middleware to ensure the user is a Superuser
 function ensureSuperuser(req, res, next) {
@@ -447,8 +447,8 @@ function ensureSuperuser(req, res, next) {
         return next();
     }
     console.log('Superuser access denied: User role is', req.user ? req.user.role : 'undefined');
-    req.flash('error_msg', 'You are not authorized to view this page.');
-    res.redirect('index');
+    req.flash('error_msg', 'You are not authorized to view this page. Contact admin..');
+    res.redirect('contact');
 }
 
 
@@ -702,7 +702,7 @@ app.get('/users/user-profile', (req, res) => {
 app.get('/logout', (req, res) => {
     req.logout(() => {
         req.flash('success_msg', 'You have logged out.');
-        res.redirect('index'); // Redirect to home or any other page
+        res.redirect('login'); // Redirect to home or any other page
     });
 });
 
@@ -1476,7 +1476,7 @@ app.get('/messages', (req, res) => {
         if (err) {
             console.error('Error fetching messages:', err);
             req.flash('error_msg', 'Could not retrieve messages. Please try again.');
-            return res.redirect('index'); // Redirect to a default route if needed
+            return res.redirect('errors/error'); // Redirect to a default route if needed
         }
         res.render('messages', { messages: rows });
     });

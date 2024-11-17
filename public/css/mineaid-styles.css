@@ -331,7 +331,6 @@ button, select, option {
   padding: 20px;
   border-radius: 5px;
   box-shadow: var(--box-shadow-medium);
-  width: 100vw;
 }
 
 .card {
@@ -1366,6 +1365,13 @@ th, td {
   }
   .options:nth-child(odd) {
     background-color: var(--primary-color-bg);
+  }
+  .main-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: var(--box-shadow-medium);
+    width: 100vw;
   }
 }
 @media (max-width: 650px) {

@@ -1,6 +1,8 @@
 # Session 171124 - Morning to afternoon
 1. Fixed routes for inventory meds, equip, cons
 2. Fixed tables for them
+3. Fixed inventory page overflow on wide-screen due to wide-screen fix required on mobile.
+4. Fixed routes to index giving errors
 3. Continue later
 
 

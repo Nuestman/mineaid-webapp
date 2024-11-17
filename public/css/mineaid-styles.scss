@@ -336,7 +336,6 @@ hr {
       padding: 20px;
       border-radius: 5px;
       box-shadow: var(--box-shadow-medium);
-      width: 100vw;
   }
   .card {
       background-color: #f9f9f9;
@@ -1451,6 +1450,11 @@ th, td {
     .options:nth-child(odd) {
         background-color: var(--primary-color-bg);
     }
+
+    /* Inventory page */
+    .main-content {
+        width: 100vw;
+}
 }
   
 
