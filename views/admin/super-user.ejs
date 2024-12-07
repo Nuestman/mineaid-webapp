@@ -58,19 +58,19 @@
                                     <td><%= user.username %></td>
                                     <td><%= user.role %>
                                         <% if (user.role.trim() === 'User') { %>
-                                            <br><a href="/admin/make-admin/<%= user.id %>" data-user-id="<%= user.id %>" class="reg-action btn-approve make-admin">makeAdmin</a>
+                                            <br><a href="/admin/make-admin/<%= user.id %>" data-user-id="<%= user.id %>" class="reg-action success btn-approve make-admin">makeAdmin</a>
                                         <% } %>
                                     </td>
                                     <td><%= user.status.trim() %></td>  <!-- Use trim() to clean up the status -->
                                     <td class="admin-user-action-container">
                                         <% if (user.status.trim() === 'Pending') { %>
-                                            <a class="reg-action btn-approve" data-user-id="<%= user.id %>" href="/admin/approve/<%= user.id %>">Approve</a>
+                                            <a class="reg-action success btn-approve" data-user-id="<%= user.id %>" href="/admin/approve/<%= user.id %>">Approve</a>
                                         <% } %>
                     
                                         <% if (user.status.trim() !== 'Blocked') { %>
-                                            <a class="reg-action btn-block" href="/admin/block/<%= user.id %>" data-user-id="<%= user.id %>">Block</a>
+                                            <a class="reg-action danger btn-block" href="/admin/block/<%= user.id %>" data-user-id="<%= user.id %>">Block</a>
                                         <% } else { %>
-                                            <a class="reg-action btn-unblock" href="/admin/unblock/<%= user.id %>" data-user-id="<%= user.id %>">Unblock</a>
+                                            <a class="reg-action success btn-unblock" href="/admin/unblock/<%= user.id %>" data-user-id="<%= user.id %>">Unblock</a>
                                         <% } %>
                                     </td>
                                     <td><%= user.created_at %></td>

@@ -13,19 +13,9 @@
 <main>
     <div class="inner-flex">
         <div class="container">
-            <div class="message-container">
+            <div class="message-container alert-parent">
                 <!-- Display flash messages if there are any -->
-                <% if (success_msg) { %>
-                    <div class="alert alert-success"><%= success_msg %></div>
-                <% } %>
-        
-                <% if (error_msg) { %>
-                    <div class="alert alert-danger"><%= error_msg %></div>
-                <% } %>
-        
-                <% if (error) { %>
-                    <div class="alert alert-danger"><%= error %></div>
-                <% } %>
+                        <%- include('../partials/_flash-alert') %>
                 <h1>500 - Internal Server Error</h1>
                 <div class="error-text">
                     <p>Oops! Something went wrong on our end.</p>
@@ -40,7 +30,8 @@
     </div>
 </main>
 
-    <%- include('../partials/_footer') %>  <!-- Root-relative to 'views/partials/_footer.ejs' -->
+<%- include('../partials/_footer') %>  <!-- Root-relative to 'views/partials/_footer.ejs' -->
+<script src="js/mineaid-scripts.js"></script>
 
 </body>
 </html>

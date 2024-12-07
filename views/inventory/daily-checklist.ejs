@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory Management</title>
+    <title>Daily Checklist - Inventory Management</title>
     <link rel="stylesheet" href="/css/mineaid-styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -19,6 +19,16 @@
                     <form action="/inventory/daily-checklist" method="POST">
                         <%- include('../partials/_flash-alert') %>
                         <h3>Daily Inventory Checklist</h3>
+                        <div class="input-grp">
+                            <label for="post_location">First Aid Post</label>
+                            <select name="post_location" id="post_location" required>
+                                <option value="ODD">ODD</option>
+                                <option value="STP">STP</option>
+                                <option value="KMS">KMS</option>
+                                <option value="GCS">GCS</option>
+                                <option value="EMS">Central EMS</option>
+                            </select>
+                        </div>
                         <div class="input-grp">
                             <label for="item_id">Select Item</label>
                             <select name="item_id" id="item_id" required>
@@ -49,7 +59,7 @@
                             <label for="remarks">Remarks</label>
                             <textarea name="remarks" id="remarks"></textarea>
                         </div>
-                        <input type="hidden" name="logged_by" value="<%= user.id %>">
+                        <input type="hidden" name="logged_by" value="<%= user.user_id %>">
             
                         <button type="submit" class="btn">Log Checklist</button>
                     </form>

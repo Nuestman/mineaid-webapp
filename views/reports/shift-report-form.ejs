@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - First Aid Portal</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <style>
+        /* 0 */
+        .view-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+
+            label {
+                font-size: 1rem;
+                margin-right: 0.5rem;
+            }
+
+            .view-select {
+                padding: 0.5rem;
+                font-size: 1rem;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                background-color: #f8f9fa;
+            }
+        }
+
+        .report-view {
+            display: none;
+
+            &.active {
+                display: block; 
+            }
+        }
+
+        /* 1 */
+    .reports-page {
+        margin: 3rem 1.5rem;
+        .page-title {
+            text-align: center;
+            margin: 2rem 0;
+            font-size: 2rem;
+            color: #333;
+        }
+
+        .tab-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+
+            .tab-btn {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &.active {
+                background-color: #0056b3;
+            }
+
+            &:hover {
+                background-color: #0056b3;
+            }
+            }
+        }
+
+        .tab-content {
+            .tab-pane {
+            display: none;
+
+                &.active {
+                    display: block;
+                }
+
+                .card-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 1rem;
+
+                    .report-card {
+                    background: #fff;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    padding: 1rem;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    transition: transform 0.3s ease;
+
+                    &:hover {
+                        transform: translateY(-5px);
+                    }
+
+                    .report-title {
+                        font-size: 1.2rem;
+                        margin-bottom: 0.5rem;
+                        color: #333;
+                    }
+
+                    .report-summary {
+                        font-size: 0.9rem;
+                        color: #555;
+                        margin-bottom: 0.5rem;
+                    }
+
+                    .submitted-by {
+                        font-size: 0.8rem;
+                        color: #777;
+                        margin-bottom: 1rem;
+                    }
+
+                    .view-details {
+                        display: inline-block;
+                        padding: 0.5rem 1rem;
+                        font-size: 0.9rem;
+                        color: #fff;
+                        background-color: #007bff;
+                        border-radius: 5px;
+                        text-decoration: none;
+                        transition: background-color 0.3s ease;
+
+                        &:hover {
+                        background-color: #0056b3;
+                        }
+                    }
+                    }
+                }
+            }
+        }
+    }
+
+        /* 3 */
+        .filters {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+
+        label {
+            margin-right: 0.5rem;
+        }
+
+        select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        }
+        .reports-table {
+        width: 100%;
+        border-collapse: collapse;
+
+        th, td {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+        }
+        }
+
+    </style>
+</head>
+<body class="">
+
+<header>
+    <%- include('../partials/_nav') %>
+</header>
+
+<main>
+    <div class="form-container">
+        <div class="alert-parent">
+            <%- include('../partials/_flash-alert') %>
+            <h1><span class="accent"><%= currentPost %></span> First Aid Post - Submit Report</h1>
+            <form id="fap-report-form" method="POST" action="/reports/submit">
+                <!-- Report Date -->
+                <div class="input-grp">
+                  <label for="report_date">Report Date</label>
+                  <input type="date" id="report_date" name="report_date" required>
+                </div>
+              
+                <!-- Shift Type -->
+                <div class="input-grp">
+                  <label for="shift_type">Shift Type</label>
+                  <select id="shift_type" name="shift_type" required>
+                    <option value="">Select Shift</option>
+                    <option value="Day">Day</option>
+                    <option value="Night">Night</option>
+                  </select>
+                </div>
+              
+                <!-- Post Location (Read-Only, from Session) -->
+                <div class="input-grp">
+                  <label for="post_location">Post Location</label>
+                  <input
+                    type="text"
+                    id="post_location"
+                    name="post_location"
+                    value="<%= currentPost %>"
+                    readonly
+                  >
+                </div>
+              
+                <!-- Report ID (Generated Automatically, Read-Only) -->
+                <div class="input-grp">
+                  <label for="report_id">Report ID</label>
+                  <input
+                    type="text"
+                    id="report_id"
+                    name="report_id"
+                    value="<%=  %>" 
+                    readonly
+                  >
+                </div>
+              
+                <!-- Summary / General State -->
+                <div class="input-grp">
+                  <label for="summary">General State of the Post</label>
+                  <textarea
+                    id="summary"
+                    name="summary"
+                    placeholder="Provide a brief summary of the overall state, e.g., 'Post running smoothly with minor equipment issues.'"
+                    required
+                  ></textarea>
+                </div>
+              
+                <!-- Details Section -->
+                
+                <!-- Details -->
+                <div class="input-grp">
+                    <label for="details">Details</label>
+                    <textarea
+                    id="details"
+                    name="details"
+                    placeholder="Include any incidents, state of equipment, and issues needing follow-up."
+                    required
+                    ></textarea>
+                </div>
+              
+                <!-- Submit Button -->
+                <button class="btn" type="submit">Submit Report</button>
+            </form>
+              
+        </div>
+    </div>
+</main>
+<%- include('../partials/_footer') %>
+
+</body>
+
+
+<script src="/js/mineaid-scripts.js"></script>
+
+</html>

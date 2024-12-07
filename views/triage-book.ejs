@@ -6,6 +6,44 @@
     <title>Triage Book</title>
     <link rel="stylesheet" href="/css/mineaid-styles.css">
     <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+    </style>
 </head>
 <body id="records_page">
         <header><%- include('partials/_nav') %></header>
@@ -37,6 +75,7 @@
                             <tr>
                             <th>ID</th>
                             <th>Post</th>
+                            <th>Entry ID</th>
                             <th>Date</th>
                             <th>Time</th>
                             <th>Company</th>
@@ -55,6 +94,7 @@
                             <th>Oxygen Saturation</th>
                             <th>Glucose</th>
                             <th>Pain Score</th>
+                            <th>Total TEWS</th>
                             <th>Final Triage</th>
                             <th>Detained?</th>
                             <th>TreatmentGiven</th>
@@ -71,7 +111,8 @@
                             <% triagebook.forEach(entry => { %>
                             <tr>
                                 <td><%= entry.id %></td>
-                                <td><%= entry.post %></td>
+                                <td><%= entry.post_location %></td>
+                                <td><%= entry.entry_id %></td>
                                 <td><%= entry.date %></td>
                                 <td><%= entry.time_of_arrival %></td>
                                 <td><%= entry.company %></td>
@@ -90,6 +131,7 @@
                                 <td><%= entry.oxygen_saturation %></td>
                                 <td><%= entry.glucose %></td>
                                 <td><%= entry.pain_score %></td>
+                                <td><%= entry.tews_score %></td>
                                 <td><%= entry.final_triage %></td>
                                 <td><%= entry.detained %></td>
                                 <td><%= entry.treatment_given %></td>
@@ -97,25 +139,25 @@
                                 <td><%= entry.disposition_time %></td>
                                 <td><%= entry.condition %></td>
                                 <td><%= entry.reporting %></td>
-                                <td><%= user.firstname %></td>
+                                <td><%= entry.entry_by %></td>
                         
                                 <!-- Edit button, only shown if the entry was created by the logged-in user -->
-                                
-                               
                                 <!-- Edit Button: Shown for entry owners or admins -->
-                                <!-- Allow the user to edit only if the "entry by" matches their firstname -->
-                                <% if (entry['entry by'] === user.firstname) { %>
-                                    <td><a class="reg-action btn-approve" href="/edit/triagebook/<%= entry.id %>">Edit</a></td>
-                                <% } else { %>
-                                    <td>Uneditable</td>
-                                <% } %>
+                                <td>
+                                    <% if (entry.entry_by === user.user_id || user.role === 'Admin' || user.role === 'Superuser') { %>
+                                      <button class="reg-action success" onclick="openModal(<%= JSON.stringify(entry) %>)">Edit</button>
+                                      <% } else { %>
+                                        <button title="Inactive: Can't edit another person's entry." style="
+                                            text-decoration: line-through;" class="reg-action alert-success">Edit</button>
+                                    <% } %>
+                                </td>
 
 
                                 <!-- Delete Button: Shown for admins only -->
                                 <% if (user.role === 'Admin' || user.role === 'Superuser') { %>
-                                    <td><a class="reg-action btn-block" href="/delete/triagebook/<%= entry.id %>">Delete</a></td>
+                                    <td><a class="reg-action danger" href="/delete/triagebook/<%= entry.id %>">Delete</a></td>
                                 <% } else { %>
-                                    <td>No Access</td>
+                                    <td> <button title="Inactive: Can't delete another person's entry." style="text-decoration: line-through;" class="reg-action alert-danger">Delete</button></td>
                                 <% } %>
                             </tr>
                             <% }) %>
@@ -132,10 +174,262 @@
                 <a href="/" class="btn btn-outline">Home</a>
             </div>
             
+
+            <div class="form-container">
+                <div id="editModal" class="modal">
+                    <div class="modal-content">
+                      <span class="close" onclick="closeModal()"><i class="fas fa-close"> </i></span>
+                      <form id="editForm" method="POST" action="/edit/triagebook">
+                        <input type="hidden" id="id" name="id">
+                        <div class="post-date-time">
+                            <!-- Post -->
+                            <div class="input-grp">
+                                <label for="post_location">Post:</label>
+                                <select id="post_location" name="post_location" required>
+                                    <option disabled selected>Client reported to...</option>
+                                    <option value="ODD">ODD</option>
+                                    <option value="STP">STP</option>
+                                    <option value="KMS">KMS</option>
+                                    <option value="GCS">GCS</option>
+                                    <option value="EMS">EMS</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <!-- Date -->
+                            <div class="input-grp">
+                                <label for="date">Date:</label>
+                                <input type="date" id="date" name="date" required>
+                            </div>
+                            <!-- Time of Arrival -->
+                            <div class="input-grp">
+                                <label for="time_of_arrival">Time of Arrival:</label>
+                                <input type="time" id="time_of_arrival" name="time_of_arrival" required>
+                            </div>
+                        </div>
+                        <div class="company-badge grid-2">
+                            <!-- Company (Select) -->
+                            <div class="input-grp">
+                                <label for="company">Company:</label>
+                                <select id="company" name="company" required>
+                                    <option disabled selected>Client works with...</option>
+                                    <option value="AGA">AGA</option>
+                                    <option value="UMA">UMA</option>
+                                    <option value="MFS">Magnum</option>
+                                    <option value="Berves">Berves</option>
+                                    <option value="Rammoth">Rammoth</option>
+                                    <option value="MTG">Mining Tools</option>
+                                    <option value="Pamicor">Pamicor</option>
+                                    <option value="Ampcor">Ampcor</option>
+                                    <option value="MCS">Mining and Construction</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <!-- Badge (Text) -->
+                            <div class="input-grp">
+                                <label for="badge">Badge Number:</label>
+                                <input type="text" id="badge" name="badge" required>
+                            </div>
+                        </div>
+                        <!-- Name (Text) -->
+                        <div class="input-grp">
+                            <label for="name">Name:</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="grid-2">
+                            <!-- Age (Text) -->
+                            <div class="input-grp">
+                                <label for="age">Age:</label>
+                                <input type="number" id="age" name="age" required>
+                            </div>
+                            <!-- Gender (Select) -->
+                            <div class="input-grp">
+                                <label for="gender">Gender:</label>
+                                <select id="gender" name="gender" required>
+                                    <option disabled selected>Client is a...</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Presenting Complaints (Textarea) -->
+                         <div class="input-grp">
+                            <label>Incident?</label>
+                            <div>
+                                <input type="radio" name="incident" id="is_incident" value="Yes" required>
+                                <label for="is_incident">Yes</label>
+                            </div>
+                            <div>
+                                <input type="radio" name="incident" id="not_incident" value="No" required>
+                                <label for="not_incident">No</label>
+                            </div>
+                         </div>
+                        <div class="input-grp">
+                            <label for="complaints">Presenting Complaints:</label>
+                            <textarea id="complaints" name="complaints" rows="4" cols="50" required></textarea>
+                        </div>
+                        <!-- Vital Signs -->
+                            <h3>Triage: Adult TEWS:</h3>
+                            <div class="tews">
+                                <div class="input-grp">
+                                    <label for="mobility">Mobility:</label>
+                                    <select id="mobility" name="mobility" required>
+                                        <option disabled selected>Client came...</option>
+                                        <option value="Walking">Walking</option>
+                                        <option value="with_help">With Help</option>
+                                        <option value="stretcher">Stretcher/Immobile</option>
+                                    </select>
+                                </div>
+                                <div class="input-grp">
+                                    <label for="respiratory_rate">Respiratory Rate:</label>
+                                    <input type="text" id="respiratory_rate" name="respiratory_rate">
+                                </div>
+                                <div class="input-grp">
+                                    <label for="pulse">Pulse:</label>
+                                    <input type="text" id="pulse" name="pulse">
+                                </div>
+                                <div class="input-grp">
+                                    <label for="blood_pressure">Blood Pressure:</label>
+                                    <input type="text" id="blood_pressure" name="blood_pressure">
+                                </div>
+                                <div class="input-grp">
+                                    <label for="temperature">Temperature:</label>
+                                    <input type="text" id="temperature" name="temperature">
+                                </div>
+                                <div class="input-grp">
+                                    <label for="avpu">AVPU:</label>
+                                    <select id="avpu" name="avpu" required>
+                                        <option disabled selected>Client was...</option>
+                                        <option value="alert">Alert</option>
+                                        <option value="confused">Confused</option>
+                                        <option value="voice">Reacts to Voice</option>
+                                        <option value="pain">Reacts to Pain</option>
+                                        <option value="unresponsive">Unresponsive</option>
+                                    </select>
+                                </div>
+                                <div class="input-grp">
+                                    <label for="oxygen_saturation">Oxygen Saturation:</label>
+                                    <input type="text" id="oxygen_saturation" name="oxygen_saturation">
+                                </div>
+                                <div class="input-grp">
+                                    <label for="glucose">Glucose:</label>
+                                    <input type="text" id="glucose" name="glucose">
+                                </div>
+                                <div class="input-grp">
+                                    <label for="pain_score">Pain Score:</label>
+                                    <input type="text" id="pain_score" name="pain_score">
+                                </div>
+                            </div>
+                            <!-- Final Triage -->
+                            <div class="grid-2">
+                                <div class="input-grp">
+                                    <label for="tews_score">Total TEWS:</label>
+                                    <input type="text" id="tews_score" name="tews_score">
+                                </div>
+                                <div class="input-grp">
+                                    <label for="final_triage">Final Triage:</label>
+                                    <select id="final_triage" name="final_triage" required>
+                                        <option disabled selected>Client's Final Triage</option>
+                                        <option value="Red">Red</option>
+                                        <option value="Orange">Orange</option>
+                                        <option value="Yellow">Yellow</option>
+                                        <option value="Green">Green</option>
+                                        <option value="Blue">Blue</option>
+                                    </select>
+                                </div>
+                            </div>
+                
+                        <!-- Treatment Given / Procedure -->
+                        <!-- Detention status -->
+                        <div class="input-grp">
+                            <label>Detained?</label>
+                            <div>
+                                <input type="radio" name="detained" id="is_detained" value="Yes" required>
+                                <label for="is_detained">Yes</label>
+                            </div>
+                            <div>
+                                <input type="radio" name="detained" id="not_detained" value="No" required>
+                                <label for="not_detained">No</label>
+                            </div>
+                         </div>
+                         <!-- Treatment given -->
+                        <div class="input-grp">
+                            <label for="treatment_given">Treatment Given / Procedure:</label>
+                            <textarea name="treatment_given" id="treatment_given" cols="30" rows="4" required></textarea>
+                        </div>
+                        <!-- Disposition (Radio Buttons) -->
+                        <div class="input-grp">
+                            <label>Disposition:</label>
+                            <div>
+                                <input type="radio" id="back_to_work" name="disposition" value="Back to work" required>
+                                <label for="back_to_work">Back to work</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="sent_to_employee_clinic" name="disposition" value="Sent to Employee Clinic" required>
+                                <label for="sent_to_employee_clinic">Sent to Employee Clinic</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="sent_to_agahf" name="disposition" value="Sent to AGAHF" required>
+                                <label for="sent_to_agahf">Sent to AGAHF</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="sent_to_hospital" name="disposition" value="Sent to Hospital (Other)" required>
+                                <label for="sent_to_hospital">Sent to Hospital (Other)</label>
+                            </div>
+                        </div>
+                        <div class="grid-2">
+                            <!-- Time of Disposition -->
+                            <div class="input-grp">
+                                <label for="disposition_time">Time of Disposition:</label>
+                                <input type="time" id="disposition_time" name="disposition_time" required>
+                            </div>
+                            <!-- Condition at Disposition -->
+                            <div class="input-grp">
+                                <label for="condition">Condition Before Leaving:</label>
+                                <select id="condition" name="condition" required>
+                                    <option disabled selected>Client's condition was...</option>
+                                    <option value="Satisfactory">Satisfactory</option>
+                                    <option value="Stable">Stable</option>
+                                    <option value="Ill">Ill</option>
+                                    <option value="Unconscious">Unconscious</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Reporting (Checkboxes) -->
+                        <div class="input-grp">
+                            <label>Reporting:</label>
+                            <div>
+                                <input type="checkbox" id="not_rep" name="reporting" value="Unreported">
+                                <label for="not_rep">Not Reportable</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="uma" name="reporting" value="UMA">
+                                <label for="uma">UMA Informed</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="ems" name="reporting" value="EMS">
+                                <label for="ems">EMS Informed</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="employee_clinic" name="reporting" value="Employee Clinic">
+                                <label for="employee_clinic">Employee Clinic Informed</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="agahf" name="reporting" value="AGAHF">
+                                <label for="agahf">AGAHF Informed</label>
+                            </div>
+                        </div>
+                
+                        <button class="btn" type="submit">Save Changes</button>
+                      </form>
+                    </div>
+                </div>
+            </div>
+              
         </div>
     </main>
 
     <%- include('partials/_footer') %>
-    <script src="js/mineaid-scripts.js"></script>
+    <script src="/js/mineaid-scripts.js"></script>
 </body>
 </html>

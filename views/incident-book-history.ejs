@@ -37,6 +37,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Post</th>
+                                <th>Entry ID</th>
                                 <th>Incident Date</th>
                                 <th>Time of Incident</th>
                                 <th>Company</th>
@@ -60,7 +61,8 @@
                             <% incidents.forEach(incident => { %>
                             <tr>
                                 <td><%= incident.id %></td>
-                                <td><%= incident.post %></td>
+                                <td><%= incident.post_location %></td>
+                                <td><%= incident.entry_id%></td>
                                 <td><%= incident.incident_date %></td>
                                 <td><%= incident.incident_time %></td>
                                 <td><%= incident.company %></td>

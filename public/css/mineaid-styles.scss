@@ -260,6 +260,14 @@ hr {
   .accent {
     color: var(--accent-color);
   }
+  .success {
+    background-color: var(--success-color);
+    color: var(--white-color);
+  }
+  .danger {
+    background-color: var(--error-color);
+    color: var(--white-color);
+  }
 
   
 /* Admin Dashboard Main Layout */
@@ -1108,6 +1116,7 @@ th, td {
     margin-inline: auto;
 }
 .alert {
+    z-index: 100;
     padding: 8px 16px;
     border-radius: 5px;
     width: 100%;
@@ -1229,12 +1238,19 @@ th, td {
 
 
 /* INVENTORY MGT */
-.search-container {
-    input, button {
+.filter-container {
+    input, button, select {
         width: fit-content;
     }
     .filter-grp {
         flex-direction: row;
+        select {
+            height: auto;
+        }
+        option {
+            color: var(--text-color);
+            background-color: var(--primary-color-subtle);
+        }
     }
     .btn {
         background-color: var(--primary-color-subtle);
@@ -1244,19 +1260,281 @@ th, td {
             color: var(--white-color);
         }
     }
-    input {
+    input, select {
         border: 1px solid var(--primary-color-subtle);
     }
 }
 
 .inventory-table-container {
-    padding: var(--padding-y-large);
+    padding: var(--padding-large);
     flex-grow: 1;
     h1, h2 {
         text-align: left;
     }
 }
 
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.breadcrumb span {
+    margin-right: 8px;
+}
+
+.breadcrumb .badge {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 12px;
+}
+
+.breadcrumb .badge-primary {
+    background-color: var(--text-color);
+    color: var(--white-color);
+}
+
+.breadcrumb .badge-info {
+    background-color: var(--primary-color-subtle);
+    color: var(--text-color);
+}
+
+.no-items {
+    margin: 20px 0;
+    text-align: center;
+    font-size: 18px;
+    color: var(--error-color);
+    font-weight: bold;
+}
+
+
+/* Items Register Page */
+.items-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+.item-card {
+    overflow: visible;
+    transition: box-shadow 0.2s ease;
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 300px;
+    transition: transform 0.2s ease;
+    position: relative;
+    img {
+        margin-right: 10px;
+        border: 1px solid #f4f4f4;
+        border-radius: 8px;
+    }
+    .mod-reg-item {
+        position: absolute;
+        right: 10px;
+        .mod-reg-link {
+            padding: 0.65rem;
+        }
+    }
+}
+
+.item-card:hover {
+    transform: scale(1.05);
+}
+
+.item-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
+
+.item-card .item-text h4 {
+    margin: 0;
+    font-size: 1.2em;
+}
+.item-card:hover {
+    box-shadow: var(--box-shadow-light);
+}
+.item-card-content {
+    display: flex;
+    padding: 10px;
+    width: 100%;
+}
+.item-icon {
+    width: 80px;
+    height: 80px;
+    margin-right: 16px;
+}
+.item-text h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+.item-text p {
+    margin: 5px 0 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+.item-cards {
+display: flex;
+flex-wrap: wrap;
+gap: 15px;
+}
+
+
+.items-register {
+    position: relative;
+}
+
+.modal {
+    display: none;
+}
+
+#item-modal, #edit-modal {
+    inset: 50%;
+    translate: -50% -50%;
+    width: 40%;
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* margin-inline: auto; */
+    position: absolute;
+    color: var(--text-color);
+    
+    .h-flex {
+        justify-content: left;
+        margin-top: 1rem;
+        button {
+            padding: .2rem .5rem;
+        }
+    }
+    .modal-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        .item-details {
+            flex: 1;
+            padding:10px;
+        }
+    }
+    
+    .modal-close {
+        background: transparent;
+        font-size: 1em;
+        cursor: pointer;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+}
+
+// Modify Register Items
+.items-register main {
+    position: relative;
+}
+.modify-register {
+    position: sticky; 
+    bottom: 2rem;
+    right: 2rem;
+    margin-bottom: 1rem;
+    z-index: 1000;
+    place-self:end ;
+}
+
+.mod-reg-items {
+    display: none;
+}
+.mod-reg-item {
+    display: inline-block;
+    z-index: 100;
+    &:hover > .mod-reg-items {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        position: absolute;
+        top: -13rem;
+    }
+}
+.top-gap {
+    padding-top: 1rem;
+}
+.mod-reg-link {
+    display: inline-block;
+    padding: 1rem;
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-light);
+    &:hover {
+        background-color: var(--primary-color-subtle);
+    }
+}
+
+/* Hide menu by default */
+.hidden {
+    display: none;
+}
+.card-edit-items.hidden {
+    display: none;
+}
+.card-edit-items {
+    position: relative;
+    top: 5px;
+    right: 208%;
+    z-index: 100;
+    display: block;
+    .card-edit-items-inner {
+        width: 100%;
+        display: flex;
+        gap: 5px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        .mod-reg-link {
+            padding: .8rem;
+            border: 1px solid var(--primary-color-subtle);
+            box-shadow: none;
+            background-color: var(--white-color);
+            &:hover {
+                color: var(--accent-color);
+            }
+        }
+    }
+}
+
+/* Style the menu */
+// .card-edit-items {
+//     position: absolute;
+//     background-color: #fff;
+//     border: 1px solid #ccc;
+//     border-radius: 4px;
+//     z-index: 1000;
+// }
+
+
+@media (max-width: 668px) {
+    .item-card {
+        max-width: 100%;
+    }
+    #item-modal, #edit-modal {
+        width: 100%;
+    }
+    .modal-content {
+        button {
+            width: unset;
+        }
+        .h-flex {
+            flex-direction: row;
+        }
+    }
+}
   
   /* Responsive layout */
 @media (max-width: 950px) {
@@ -1359,6 +1637,9 @@ th, td {
     /* Buttons*/
     button, input[type="button"], .btn {
     width: 100%;
+    }
+    button.modal-close {
+        width: unset;
     }
 
     .dashboard {

@@ -17,9 +17,13 @@
 
             <!-- Add Category Form -->
             <form action="/inventory/add-inventory-category" method="POST" class="form">
-                <div class="form-group">
-                    <label for="category_name">Category Name</label>
-                    <input type="text" id="category_name" name="category_name" placeholder="Enter category name" required>
+                <div class="input-grp">
+                    <label for="name">Category Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter category name" required>
+                </div>
+                <div class="input-grp">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description" placeholder="Enter category description" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Add Category</button>

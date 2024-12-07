@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nursing Portal</title>
+  <!-- Link to FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Link to the custom stylesheet -->
+  <link rel="stylesheet" href="/css/mineaid-styles.css">
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+</head>
+<body class="landing-page-body">
+  <div class="landing-page">
+    <!-- Fun question prompt -->
+    <section>
+        <p class="head">SouthSide FirstAid Portal</p>
+        <h1 class="hub-prompt">Choose your location:</h1>
+    </section>
+    
+    <main class="post-selection">
+        <div class="container">
+            <h1>Where are you working today?</h1>
+            <form action="/post-selection" method="POST" class="form">
+                <div class="input-grp">
+                    <label for="post">Work Post</label>
+                    <select name="selected_post" id="post" required>
+                        <option value="" disabled selected>Where are you working today?</option>
+                        <option value="ODD">ODD</option>
+                        <option value="STP">STP</option>
+                        <option value="KMS">KMS</option>
+                        <option value="GCS">GCS</option>
+                        <option value="EMS">EMS</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Continue</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    
+
+    <main>
+        <!-- Option cards with icons and centered content -->
+        <div class="options">
+          <a href="/ODD" class="option-card iAid odd">
+            <div class="">
+                <div class="icon"><i class="fas fa-kit-medical"></i></div>
+                <div class="option-text"><h3>ODD</h3></div>
+            </div>
+          </a>
+          <a href="/STP" class="option-card iEmerge stp">
+            <div class="">
+                <div class="icon"><i class="fas fa-briefcase-medical"></i></div>
+                <div class="option-text"><h3>STP</h3></div>
+            </div>
+          </a>
+          <a href="/KMS" class="option-card iSoup kms">
+            <div class="">
+                <div class="icon"><i class="fas fa-file-medical"></i></div>
+                <div class="option-text"><h3>KMS</h3></div>
+            </div>
+          </a>
+          <a href="/GCS" class="option-card iManage gcs">
+            <div class="">
+                <div class="icon"><i class="fas fa-notes-medical"></i></div>
+                <div class="option-text"><h3>GCS</h3></div>
+            </div>
+          </a>
+          <a href="/EMS" class="option-card iaid ems">
+            <div class="">
+                <div class="icon"><i class="fas fa-cogs"></i></div>
+                <div class="option-text"><h3>EMS</h3></div>
+            </div>
+          </a>
+        </div>
+    </main>
+  </div>
+  
+  <!-- Link to JavaScript file for animations -->
+  <script src="js/mineaid-scripts.js"></script>
+</body>
+</html>

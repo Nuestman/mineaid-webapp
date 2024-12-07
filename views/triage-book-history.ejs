@@ -11,8 +11,8 @@
         <header><%- include('partials/_nav') %></header>
     <section class="prim-header table-page-head">
         <div class="container">
-            <h1>Triage Book:</h1>
-            <h2>FIRST AID POST DAILY RECORDS</h2>
+            <h1>TRIAGE BOOK:</h1>
+            <h2>Find all deleted and previously edited triage entries here.</h2>
         </div>
     </section>
 
@@ -37,6 +37,7 @@
                             <tr>
                             <th>ID</th>
                             <th>Post</th>
+                            <th>Entry ID</th>
                             <th>Date</th>
                             <th>Time</th>
                             <th>Company</th>
@@ -71,7 +72,8 @@
                             <% triagebook.forEach(entry => { %>
                             <tr>
                                 <td><%= entry.id %></td>
-                                <td><%= entry.post %></td>
+                                <td><%= entry.post_location %></td>
+                                <td><%= entry.entry_id %></td>
                                 <td><%= entry.date %></td>
                                 <td><%= entry.time_of_arrival %></td>
                                 <td><%= entry.company %></td>
@@ -97,15 +99,12 @@
                                 <td><%= entry.disposition_time %></td>
                                 <td><%= entry.condition %></td>
                                 <td><%= entry.reporting %></td>
-                                <td><%= user.firstname %></td>
+                                <td><%= entry.entry_by %></td>
                         
                                 <!-- Edit button, only shown if the entry was created by the logged-in user -->
-                                
-                               
                                 <!-- Edit Button: Shown for entry owners or admins -->
-                                <!-- Allow the user to edit only if the "entry by" matches their firstname -->
-                                <% if (entry['entry by'] === user.firstname) { %>
-                                    <td><a class="btn-approve" href="/edit/triagebook/<%= entry.id %>">Edit</a></td>
+                                <% if (entry.entry_by === user.user_id || user.role === 'Admin' || user.role === 'Superuser') { %>
+                                    <td><a class="reg-action success btn-approve" href="/edit/triagebook/<%= entry.id %>">Edit</a></td>
                                 <% } else { %>
                                     <td>Uneditable</td>
                                 <% } %>
@@ -113,7 +112,7 @@
 
                                 <!-- Delete Button: Shown for admins only -->
                                 <% if (user.role === 'Admin' || user.role === 'Superuser') { %>
-                                    <td><a class="btn-block" href="/delete/triagebook/<%= entry.id %>">Delete</a></td>
+                                    <td><a class="reg-action danger btn-block" href="/delete/triagebook/<%= entry.id %>">Delete</a></td>
                                 <% } else { %>
                                     <td>No Access</td>
                                 <% } %>

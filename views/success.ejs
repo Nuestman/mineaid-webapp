@@ -15,29 +15,31 @@
     <main>
         <div class="container">
             <!-- Display flash messages if there are any -->
-            <% if (success_msg) { %>
-                <div class="alert alert-success"><%= success_msg %></div>
-            <% } %>
-            
-            <% if (error_msg) { %>
-                <div class="alert alert-danger"><%= error_msg %></div>
-            <% } %>
-            
-            <% if (error) { %>
-                <div class="alert alert-danger"><%= error %></div>
-            <% } %>
-            <div class="logo-large">
-                <img src="/images/first-aid-kit.png" alt="">
-            </div>
-            <section class="intro">
-                <h1>Form Submitted Successfully!</h1>
-                <h3>Your record has been added.</h3>
-            </section>
-            <!-- Button Section -->
-            <div class="btn-grp">
-                <a href="/triage" class="btn">Add Triage</a>
-                <a href="/form" class="btn">Add Incident</a>
-                <a href="/triage-book" class="btn">Triagebook</a>
+            <div class="alert-parent">
+                <% if (success_msg) { %>
+                    <div class="alert alert-success"><%= success_msg %></div>
+                <% } %>
+                
+                <% if (error_msg) { %>
+                    <div class="alert alert-danger"><%= error_msg %></div>
+                <% } %>
+                
+                <% if (error) { %>
+                    <div class="alert alert-danger"><%= error %></div>
+                <% } %>
+                <div class="logo-large">
+                    <img src="/images/first-aid-kit.png" alt="">
+                </div>
+                <section class="intro">
+                    <h1>Form Submitted Successfully!</h1>
+                    <h3>Your record has been added.</h3>
+                </section>
+                <!-- Button Section -->
+                <div class="btn-grp">
+                    <a href="/triage" class="btn">Add Triage</a>
+                    <a href="/form" class="btn">Add Incident</a>
+                    <a href="/triage-book" class="btn">Triagebook</a>
+                </div>
             </div>
         </div>
     </main>

@@ -6,18 +6,56 @@
     <title>Consumables - Inventory</title>
     <link rel="stylesheet" href="/css/mineaid-styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    width: 50%;
+    border-radius: 8px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    </style>
 </head>
 <body class="inventory-table-body full-height">
     <header><%- include('../partials/_nav') %></header>
 
-    <div class="container">
+    <main class="">
         
         <div class="inventory-table-container wide-table alert-parent">
             <h2>Manage Consumables</h2>
             <%- include('../partials/_flash-alert') %>
             
             <!-- Consumable Search and Filter -->
-            <div class="search-container">
+            <div class="filter-container search-container">
                 <form action="/inventory/consumable-inventory" method="GET">
                     <div class="input-grp filter-grp">
                         <input type="text" name="search" placeholder="Search by name..." class="form-control">
@@ -29,6 +67,7 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
+                        <th>Consumable Location</th>
                         <th>Consumable ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -44,6 +83,7 @@
                 <tbody>
                     <% consumables.forEach(item => { %>
                         <tr>
+                            <td><%= item.consumable_location %></td>
                             <td><%= item.consumable_id %></td>
                             <td><%= item.consumable_name %></td>
                             <td><%= item.category %></td>
@@ -54,8 +94,15 @@
                             <td><%= item.description %></td>
                             <td><%= item.created_at %></td>
                             <td>
-                                <a href="/inventory/edit-consumable/<%= item.consumable_id %>" class="reg-action btn-approve">Edit</a>
-                                <a href="/inventory/delete-consumable/<%= item.consumable_id %>" class="reg-action btn-block" onclick="return confirm('Are you sure you want to delete this consumable?')">Delete</a>
+                                <button 
+                                    type="button" 
+                                    class="reg-action success" 
+                                    onclick='openModal(<%= JSON.stringify(item) %>)'>Edit</button> <br>
+                                <a href="/inventory/delete-inventory-consumable/<%= item.consumable_id %>" 
+                                   class="reg-action danger" 
+                                   onclick="return confirm('Are you sure you want to delete this consumable?')">
+                                    Delete
+                                </a>
                             </td>
                         </tr>
                     <% }) %>
@@ -63,32 +110,69 @@
             </table>
         </div>
 
+        
+        <!-- Edit consumable Modal -->
+        <div id="editConsumableModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Edit consumable</h2>
+                <form id="editConsumableForm" action="/inventory/edit-inventory-consumable/:id" method="POST">
+                    <input type="hidden" id="consumable_id" name="consumable_id">
+                    <div class="input-grp">
+                        <label for="consumable_name">Consumable Name:</label>
+                        <input type="text" id="consumable_name" name="consumable_name" required>
+                    </div>
+                    <div class="input-grp">
+                        <label for="unit">Unit:</label>
+                        <input type="text" id="unit" name="unit" required>
+                    </div>
+                    <div class="input-grp">
+                        <label for="reorder_level">Reorder Level:</label>
+                        <input type="number" id="reorder_level" name="reorder_level" required>
+                    </div>
+                    <div class="input-grp">
+                        <label for="expiry_date">Expiry Date:</label>
+                        <input type="date" id="expiry_date" name="expiry_date" required>
+                    </div>
+                    <div class="input-grp">
+                        <label for="manufacturer">Manufacturer:</label>
+                        <input type="text" id="manufacturer" name="manufacturer" class="form-control">
+                    </div>
+                    <div class="input-grp">
+                        <label for="description">Description:</label>
+                        <textarea id="description" name="description" class="form-control"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+
         <!-- Form to add new consumable -->
         <!-- <h2>Add New Medication</h2>
         <form action="/inventory/add-consumable" method="POST">
             <div class="input-grp">
                 <label for="consumable_name">Consumable Name:</label>
-                <input type="text" id="consumable_name" name="consumable_name" class="form-control" required>
+                <input type="text" id="consumable_name" name="consumable_name" required>
             </div>
             <div class="input-grp">
                 <label for="category">Category</label>
                 <select name="category" id="category" required>
                     <option value="Medication">Medication</option>
                     <option value="Consumable">Consumable</option>
-                    <option value="Equipment">Equipment</option>
+                    <option value="consumable">consumable</option>
                 </select>
             </div>
             <div class="input-grp">
                 <label for="unit">Unit:</label>
-                <input type="text" id="unit" name="unit" class="form-control" required>
+                <input type="text" id="unit" name="unit" required>
             </div>
             <div class="input-grp">
                 <label for="reorder_level">Reorder Level:</label>
-                <input type="number" id="reorder_level" name="reorder_level" class="form-control" required>
+                <input type="number" id="reorder_level" name="reorder_level" required>
             </div>
             <div class="input-grp">
                 <label for="expiry_date">Expiry Date:</label>
-                <input type="date" id="expiry_date" name="expiry_date" class="form-control" required>
+                <input type="date" id="expiry_date" name="expiry_date" required>
             </div>
             <div class="input-grp">
                 <label for="manufacturer">Manufacturer:</label>
@@ -100,8 +184,9 @@
             </div>
             <button type="submit" class="btn btn-primary">Add Consumable</button>
         </form> -->
-    </div>
+    </main>
 
     <footer><%- include('../partials/_footer') %></footer>
+    <script src="/js/mineaid-scripts.js"></script>
 </body>
 </html>

@@ -18,6 +18,10 @@
                         <%- include('../partials/_flash-alert') %>
                         <h3>Add Inventory Item</h3>
                         <div class="input-grp">
+                            <label for="facility_name">First Aid Post</label>
+                            <input type="text" name="facility_name" id="facility_name" value="<%= userPost %>" readonly>
+                        </div>
+                        <div class="input-grp">
                             <label for="name">Item Name</label>
                             <input type="text" name="name" id="name" required>
                         </div>
@@ -32,8 +36,17 @@
                         </div>
                     
                         <div class="input-grp">
-                            <label for="unit">Unit (e.g., tablets, pieces)</label>
-                            <input type="text" name="unit" id="unit" required>
+                            <label for="unit">Unit (e.g., Tablets, Pieces)</label>
+                            <select name="unit" id="unit" required>
+                                <option value="Ampoule">Ampoules</option>
+                                <option value="Bottle">Bottles</option>
+                                <option value="Infusion">Infusions</option>
+                                <option value="Nebule">Nebule</option>
+                                <option value="Packets">Packets</option>
+                                <option value="Pieces" selected>Pieces</option>
+                                <option value="Tablet">Tablets</option>
+                                <option value="Vial">Vials</option>
+                            </select>
                         </div>
                     
                         <div class="input-grp">
@@ -77,5 +90,50 @@
     <footer><%- include('../partials/_footer') %></footer>
     <!-- Include scripts for interaction -->
     <script src="/js/mineaid-scripts.js"></script>
+    <script>
+    // JavaScript for dynamic field behavior
+        document.getElementById('category').addEventListener('change', function () {
+            const category = this.value;
+    
+            // Field elements
+            const expiryDate = document.getElementById('expiry_date');
+            const equipStatus = document.getElementById('equip_status');
+            const serviceDate = document.getElementById('service_date');
+            const reorderLevel = document.getElementById('reorder_level');
+    
+            // Reset all fields
+            [expiryDate, equipStatus, serviceDate, reorderLevel].forEach(field => {
+                field.disabled = false;
+                field.required = true;
+                if (field.tagName === 'INPUT') field.value = '';
+                if (field.tagName === 'SELECT') field.value = '';
+            });
+    
+            // Apply rules based on category
+            switch (category) {
+                case 'Medication':
+                    serviceDate.disabled = true;
+                    serviceDate.value = 'N/A';
+                    equipStatus.disabled = true;
+                    equipStatus.value = 'N/A';
+                    break;
+    
+                case 'Consumable':
+                    serviceDate.disabled = true;
+                    serviceDate.value = 'N/A';
+                    equipStatus.disabled = true;
+                    equipStatus.value = 'N/A';
+                    expiryDate.disabled = false;
+                    break;
+    
+                case 'Equipment':
+                    expiryDate.disabled = true;
+                    expiryDate.value = 'N/A';
+                    reorderLevel.disabled = true;
+                    reorderLevel.value = 'N/A';
+                    break;
+            }
+        });
+    </script>
 </body>
 </html>

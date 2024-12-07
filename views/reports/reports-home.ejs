@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - First Aid Portal</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <style>
+        /* 0 */
+        .view-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+
+            label {
+                font-size: 1rem;
+                margin-right: 0.5rem;
+            }
+
+            .view-select {
+                padding: 0.5rem;
+                font-size: 1rem;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                background-color: #f8f9fa;
+            }
+        }
+
+        .report-view {
+            display: none;
+
+            &.active {
+                display: block; 
+            }
+        }
+
+        /* 1 */
+    .reports-page {
+        margin: 3rem 1.5rem;
+        .page-title {
+            text-align: center;
+            margin: 2rem 0;
+            font-size: 2rem;
+            color: #333;
+        }
+
+        .tab-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+
+            .tab-btn {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &.active {
+                background-color: #0056b3;
+            }
+
+            &:hover {
+                background-color: #0056b3;
+            }
+            }
+        }
+
+        .tab-content {
+            .tab-pane {
+            display: none;
+
+                &.active {
+                    display: block;
+                }
+
+                .card-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 1rem;
+
+                    .report-card {
+                    background: #fff;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    padding: 1rem;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    transition: transform 0.3s ease;
+
+                    &:hover {
+                        transform: translateY(-5px);
+                    }
+
+                    .report-title {
+                        font-size: 1.2rem;
+                        margin-bottom: 0.5rem;
+                        color: #333;
+                    }
+
+                    .report-summary {
+                        font-size: 0.9rem;
+                        color: #555;
+                        margin-bottom: 0.5rem;
+                    }
+
+                    .submitted-by {
+                        font-size: 0.8rem;
+                        color: #777;
+                        margin-bottom: 1rem;
+                    }
+
+                    .view-details {
+                        display: inline-block;
+                        padding: 0.5rem 1rem;
+                        font-size: 0.9rem;
+                        color: #fff;
+                        background-color: #007bff;
+                        border-radius: 5px;
+                        text-decoration: none;
+                        transition: background-color 0.3s ease;
+
+                        &:hover {
+                        background-color: #0056b3;
+                        }
+                    }
+                    }
+                }
+            }
+        }
+    }
+
+        /* 3 */
+        .filters {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+
+        label {
+            margin-right: 0.5rem;
+        }
+
+        select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        }
+        .reports-table {
+        width: 100%;
+        border-collapse: collapse;
+
+        th, td {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+        }
+        }
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .modal-body {
+            padding: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body class="dashboard-page full-height">
+
+<header>
+    <%- include('../partials/_nav') %>
+</header>
+
+<main class="dashboard">
+    <div class="container">
+        <div class="alert-parent">
+            <%- include('../partials/_flash-alert') %>
+            <h1><span class="accent"><%= currentPost %></span> First Aid Post Dashboard</h1>
+        </div>
+    </div>
+</main>
+
+<main class="main-1 reports-page">
+    <h1 class="page-title">Shift Reports</h1>
+
+    <!-- Tabs Navigation -->
+    <div class="tab-nav">
+        <p>Filter by:</p>
+        <button class="tab-btn active" data-tab="recent">Recent</button>
+        <button class="tab-btn" data-tab="odd">ODD</button>
+        <button class="tab-btn" data-tab="stp">STP</button>
+        <button class="tab-btn" data-tab="kms">KMS</button>
+        <button class="tab-btn" data-tab="gcs">GCS</button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+
+        <!-- RECENT Reports -->
+        <section id="recent" class="tab-pane active">
+            <h2>Recent Reports for <%= currentDate %></h2>
+            <div class="card-grid-column v-flex">
+                
+                <!-- Day Report -->
+                <div class="card-grid-row h-flex row-1">
+                    <h2>Day Report</h2>
+                    <div class="card-grid">
+                        <% ['ODD', 'STP', 'KMS', 'GCS'].forEach((post) => { %>
+                            <% const report = groupedReports.recent.day.find(r => r.post_location === post); %>
+                            <div class="report-card">
+                                <h3 class="report-title">
+                                    <%= post %> Day Shift Report
+                                </h3>
+                                <% if (report) { %>
+                                    <p class="report-summary"><%= report.summary %></p>
+                                    <p class="submitted-by">Submitted by: <%= report.submitted_by %></p>
+                                    <a href="javascript:void(0);" 
+                                        class="view-details" 
+                                        onclick="openModal(<%= JSON.stringify(report) %>)">
+                                        View Details
+                                    </a>
+
+                                <% } else { %>
+                                    <p class="report-summary">No report entered</p>
+                                <% } %>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+
+                <!-- Night Report -->
+                <div class="card-grid-row h-flex row-1">
+                    <h2>Night Report</h2>
+                    <div class="card-grid">
+                        <% ['ODD', 'STP', 'KMS', 'GCS'].forEach((post) => { %>
+                            <% const report = groupedReports.recent.night.find(r => r.post_location === post); %>
+                            <div class="report-card">
+                                <h3 class="report-title">
+                                    <%= post %> Night Shift Report
+                                </h3>
+                                <% if (report) { %>
+                                    <p class="report-summary"><%= report.summary %></p>
+                                    <p class="submitted-by">Submitted by: <%= report.submitted_by %></p>
+                                    <a href="javascript:void(0);" 
+                                        class="view-details" 
+                                        onclick="openModal(<%= JSON.stringify(report) %>)">
+                                        View Details
+                                    </a>
+                                <% } else { %>
+                                    <p class="report-summary">No report entered</p>
+                                <% } %>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+
+
+        <!-- ODD Reports -->
+        <section id="odd" class="tab-pane">
+            <h2>ODD Reports</h2>
+            <div class="card-grid">
+                <% groupedReports.odd.forEach((report)=> { %>
+                    <div class="report-card">
+                        <h3 class="report-title">
+                            <%= report.shift_type %> Shift Report
+                        </h3>
+                        <p class="report-summary">
+                            <%= report.summary %>
+                        </p>
+                        <p class="submitted-by">Submitted by: <%= report.submitted_by %>
+                        </p>
+                        <a href="javascript:void(0);" 
+                            class="view-details" 
+                            onclick="openModal(<%= JSON.stringify(report) %>)">
+                            View Details
+                        </a>
+
+                    </div>
+                    <% }); %>
+            </div>
+        </section>
+
+        <!-- Repeat for STP, KMS, and GCS -->
+        <% ['stp', 'kms' , 'gcs' ].forEach((location)=> { %>
+            <section id="<%= location %>" class="tab-pane">
+                <h2>
+                    <%= location.toUpperCase() %> Reports
+                </h2>
+                <div class="card-grid">
+                    <% groupedReports[location].forEach((report)=> { %>
+                        <div class="report-card">
+                            <h3 class="report-title">
+                                <%= report.shift_type %> Shift Report
+                            </h3>
+                            <p class="report-summary">
+                                <%= report.summary %>
+                            </p>
+                            <p class="submitted-by">Submitted by: <%= report.submitted_by %>
+                            </p>
+                            <a href="javascript:void(0);" 
+                                class="view-details" 
+                                onclick="openModal(<%= JSON.stringify(report) %>)">
+                                View Details
+                            </a>
+
+                        </div>
+                        <% }); %>
+                </div>
+            </section>
+            <% }); %>
+    </div>
+</main>
+
+<!-- Modal for Viewing Report Details -->
+<div id="reportModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-body">
+            <h2 id="modal-title">Shift Report</h2>
+            <p id="modal-summary">Summary goes here</p>
+            <p><strong>Details:</strong> <span id="modal-details">Details go here</span></p>
+            <p><strong>Submitted by:</strong> <span id="modal-submitted-by">Submitted by</span></p>
+            <p><strong>Date:</strong> <span id="modal-date">Date goes here</span></p>
+            <p><strong>Post Location:</strong> <span id="modal-post-location">Location goes here</span></p>
+            <button id="prev-btn" onclick="navigateReport(-1)">&#9664; Previous</button>
+            <button id="next-btn" onclick="navigateReport(1)">Next &#9654;</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<main class="main-3 reports-page">
+  <h1 class="page-title">Shift Reports</h1>
+
+  <!-- Filters -->
+  <div class="filters">
+    <label for="post-filter">Post:</label>
+    <select id="post-filter">
+      <option value="all">All</option>
+      <option value="odd">ODD</option>
+      <option value="stp">STP</option>
+      <option value="kms">KMS</option>
+      <option value="gcs">GCS</option>
+    </select>
+
+    <label for="shift-filter">Shift:</label>
+    <select id="shift-filter">
+      <option value="all">All</option>
+      <option value="day">Day</option>
+      <option value="night">Night</option>
+    </select>
+  </div>
+
+  <!-- Table -->
+  <table class="reports-table">
+    <thead>
+      <tr>
+        <th>Post</th>
+        <th>Shift</th>
+        <th>Summary</th>
+        <th>Submitted By</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% const sampleReports = [ // Mock data for demo
+        { post: 'ODD', shift: 'Day', summary: 'Summary 1', submittedBy: 'John' },
+        { post: 'STP', shift: 'Night', summary: 'Summary 2', submittedBy: 'Jane' }
+      ]; %>
+
+      <% sampleReports.forEach((report, i) => { %>
+        <tr data-post="<%= report.post.toLowerCase() %>" data-shift="<%= report.shift.toLowerCase() %>">
+          <td><%= report.post %></td>
+          <td><%= report.shift %></td>
+          <td><%= report.summary %></td>
+          <td><%= report.submittedBy %></td>
+          <td><a href="/reports/<%= report.post.toLowerCase() %>/<%= i %>">View</a></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</main>
+<%- include('../partials/_footer') %>
+
+</body>
+
+
+<script src="/js/mineaid-scripts.js"></script>
+<script>
+
+    // For main 1
+    document.addEventListener('DOMContentLoaded', () => {
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panes = document.querySelectorAll('.tab-pane');
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      // Remove active class from all tabs and panes
+      tabs.forEach((t) => t.classList.remove('active'));
+      panes.forEach((p) => p.classList.remove('active'));
+
+      // Add active class to clicked tab and corresponding pane
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+  });
+});
+
+const groupedReports = <%= JSON.stringify(groupedReports) %>; // Ensure groupedReports is passed correctly
+let currentReportIndex = null;
+let reportsArray = [];
+
+/**
+ * Opens the modal and populates it with report details.
+ * @param {Object} report - The selected report object.
+ */
+function openModal(report) {
+    const modal = document.getElementById("reportModal");
+
+    // Populate modal fields
+    document.getElementById("modal-title").textContent = `${report.post_location} ${report.shift_type} Shift Report`;
+    document.getElementById("modal-summary").textContent = report.summary || "No summary available.";
+    document.getElementById("modal-details").textContent = report.details || "No additional details provided.";
+    document.getElementById("modal-submitted-by").textContent = report.submitted_by || "Unknown";
+    document.getElementById("modal-date").textContent = report.report_date || "Unknown date";
+    document.getElementById("modal-post-location").textContent = report.post_location || "Unknown";
+
+    // Determine the array of reports for the current group (e.g., day/night)
+    const locationKey = report.post_location.toLowerCase(); // e.g., "odd", "stp"
+    const shiftKey = report.shift_type.toLowerCase(); // e.g., "day", "night"
+    reportsArray = groupedReports[locationKey]?.[shiftKey] || []; // Get relevant reports group
+
+    // Find the index of the current report in the array
+    currentReportIndex = reportsArray.findIndex((r) => r.report_id === report.report_id);
+
+    // Update navigation button visibility
+    updateNavigationButtons();
+
+    // Show the modal
+    modal.style.display = "block";
+}
+
+/**
+ * Updates the visibility of "Previous" and "Next" buttons based on the current index.
+ */
+function updateNavigationButtons() {
+    document.getElementById("prev-btn").style.display = currentReportIndex > 0 ? "inline-block" : "none";
+    document.getElementById("next-btn").style.display =
+        currentReportIndex < reportsArray.length - 1 ? "inline-block" : "none";
+}
+
+/**
+ * Navigates to the next or previous report in the array.
+ * @param {number} direction - -1 for previous, 1 for next.
+ */
+function navigateReport(direction) {
+    currentReportIndex += direction;
+
+    // Get the new report
+    const report = reportsArray[currentReportIndex];
+
+    // Populate modal with the new report details
+    document.getElementById("modal-title").textContent = `${report.post_location} ${report.shift_type} Shift Report`;
+    document.getElementById("modal-summary").textContent = report.summary || "No summary available.";
+    document.getElementById("modal-details").textContent = report.details || "No additional details provided.";
+    document.getElementById("modal-submitted-by").textContent = report.submitted_by || "Unknown";
+    document.getElementById("modal-date").textContent = report.report_date || "Unknown date";
+    document.getElementById("modal-post-location").textContent = report.post_location || "Unknown";
+
+    // Update navigation buttons
+    updateNavigationButtons();
+}
+
+/**
+ * Closes the modal.
+ */
+function closeModal() {
+    document.getElementById("reportModal").style.display = "none";
+}
+
+/**
+ * Closes the modal if clicked outside the content.
+ */
+window.onclick = function (event) {
+    const modal = document.getElementById("reportModal");
+    if (event.target === modal) {
+        closeModal();
+    }
+};
+
+
+
+
+
+    // For main 3
+    document.addEventListener('DOMContentLoaded', () => {
+    const postFilter = document.getElementById('post-filter');
+    const shiftFilter = document.getElementById('shift-filter');
+    const rows = document.querySelectorAll('.reports-table tbody tr');
+
+    function filterReports() {
+        const postValue = postFilter.value;
+        const shiftValue = shiftFilter.value;
+
+        rows.forEach((row) => {
+        const matchesPost = postValue === 'all' || row.dataset.post === postValue;
+        const matchesShift = shiftValue === 'all' || row.dataset.shift === shiftValue;
+        row.style.display = matchesPost && matchesShift ? '' : 'none';
+        });
+    }
+
+    postFilter.addEventListener('change', filterReports);
+    shiftFilter.addEventListener('change', filterReports);
+    });
+
+</script>
+</html>

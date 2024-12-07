@@ -1,3 +1,7 @@
+# Session 181124 - Morning 
+1. Fixed admin routes redirect to 404 with (/)
+2. Added script tag to all error routes to fix stuck alert issue
+
 # Session 171124 - Morning to afternoon
 1. Fixed routes for inventory meds, equip, cons
 2. Fixed tables for them

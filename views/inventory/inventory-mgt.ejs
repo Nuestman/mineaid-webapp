@@ -37,6 +37,24 @@
                         <h2>Inventory Management</h2>
                         <p>Monitor and manage stock levels, expiry dates, and service schedules for all first aid posts.</p>
                     </section>
+                    <!-- Quick Access Actions -->
+                    <section class="quick-actions card-container">
+                        <h3>Quick Actions</h3>
+                        <div class="grid-container">
+                            <div class="btn-grp h-flex">
+                                <div class="card"><button onclick="location.href='/inventory/add-new-item'" class="btn"><i class="fas fa-file"></i> Add New Items to Register </button></div>
+                                <div class="card"><button onclick="location.href='/inventory/items-register'" class="btn"><i class="fas fa-file"></i> Items Register</button></div>
+                                <div class="card"><button onclick="location.href='/inventory/user-activity-logs'" class="btn"><i class="fas fa-file"></i> User Activity Logs</button></div>
+                                <div class="card"><button onclick="location.href='/inventory/inventory-items-all'" class="btn"><i class="fas fa-file"></i> Inventory Items</button></div>
+                                <div class="card"><button onclick="location.href='/inventory/inventory-log'" class="btn"><i class="fas fa-list"></i> Inventory Log</button></div>
+                                <div class="card"><button onclick="location.href='/inventory/add-inventory-category'" class="btn"><i class="fas fa-plus"></i> Add Inventory Cat</button></div>
+                                <div class="card"><button onclick="location.href='/inventory/daily-checklist'" class="btn"><i class="fas fa-list"></i> Daily Checklist</button></div>
+                                <div class="card"><button onclick="location.href='/inventory/daily-checklist-data'" class="btn"><i class="fas fa-list"></i> Daily Checklist Data</button></div>
+                                <div class="card"><button onclick="location.href='/inventory/export'" class="btn"><i class="fas fa-file-export"></i> Export Data</button></div>
+                                <div class="card"><button onclick="location.href='/inventory/import'" class="btn"><i class="fas fa-file-import"></i> Import Data</button></div>
+                            </div>
+                        </div>
+                    </section>
     
                     <!-- Inventory Summary Dashboard -->
                     <section class="inventory-summary card-container">
@@ -51,7 +69,6 @@
                                     <p><strong>Low Stock:</strong> 3 items</p> <!-- Placeholder: Replace with DB-driven count -->
                                 </div>
                                 <div class="btn-grp">
-                                    <a href="inventory/daily-checklist" class="btn">Daily Checklist</a>
                                     <button onclick="location.href='/inventory/add-medication'" class="btn">
                                         <i class="fa fa-plus-circle"></i> Add Medication
                                     </button>
@@ -71,7 +88,7 @@
                                     <p><strong>Low Stock:</strong> 2 items</p> <!-- Placeholder: Replace with DB-driven count -->
                                 </div>
                                 <div class="btn-grp">
-                                    <button onclick="location.href='/inventory/add-consumable'" class="btn"><i class="fa fa-check-circle"></i>Daily Checklist</button>
+                                    <button onclick="location.href='/inventory/add-consumable'" class="btn"><i class="fa fa-check-circle"></i>Add Consumable</button>
                                     <button onclick="location.href='/inventory/consumable-inventory'" class="btn"><i class="fa fa-cogs"></i>Manage Consumables</button>
                                 </div>
                             </div>
@@ -84,8 +101,8 @@
                                     <p><strong>Out of Service:</strong> 1 item</p> <!-- Placeholder: Replace with DB-driven count -->
                                 </div>
                                 <div class="btn-grp">
-                                    <button onclick="location.href='/inventory/equipment-checklist'" class="btn"><i class="fa fa-check-circle"></i>Daily Checklist</button>
-                                    <button onclick="location.href='/inventory/inventory-equipment'" class="btn"><i class="fa fa-cogs"></i>Manage Equipment</button>
+                                    <button onclick="location.href='/inventory/add-equipment'" class="btn"><i class="fa fa-check-circle"></i>Add Equipment</button>
+                                    <button onclick="location.href='/inventory/equipment-inventory'" class="btn"><i class="fa fa-cogs"></i>Manage Equipment</button>
                                 </div>
                             </div>
                         </div>
@@ -140,7 +157,7 @@
                             </ul>
                             <button onclick="location.href='/inventory/monthly-summary'" class="btn"><i class="fas fa-file-alt"></i> View Full Monthly Report</button>
                         </section>
-                    </section>n>
+                    </section>
 
                     <!-- Reports Section on the Inventory Dashboard -->
                     <section class="reports card-container">

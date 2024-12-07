@@ -235,4 +235,65 @@ document.addEventListener("DOMContentLoaded", () => {
       iEmergeCard.classList.add("animate");
       iManageCard.classList.add("animate");
   });
-  
+
+
+/* Toggler for Inventory card edit ham-menu */
+document.addEventListener('DOMContentLoaded', () => {
+    let activeMenu = null; // Keep track of the currently open menu
+
+    // Add event listeners to all menu buttons
+    document.querySelectorAll('.card-edit-menu .fas.fa-bars').forEach((menuIcon) => {
+        menuIcon.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent this click from propagating to the document
+
+            const menu = menuIcon.nextElementSibling; // The associated menu (ul element)
+
+            // Close the previously active menu if it's not the current one
+            if (activeMenu && activeMenu !== menu) {
+                activeMenu.classList.add('hidden');
+            }
+
+            // Toggle the current menu and update activeMenu
+            menu.classList.toggle('hidden');
+            activeMenu = menu.classList.contains('hidden') ? null : menu;
+        });
+    });
+
+    // Close the menu if clicking anywhere outside
+    document.addEventListener('click', () => {
+        if (activeMenu) {
+            activeMenu.classList.add('hidden');
+            activeMenu = null;
+        }
+    });
+});
+
+
+
+// Detect the correct modal and form dynamically based on the page type
+const modal = document.querySelector("[id$='Modal']");
+const form = document.querySelector("[id$='Form']");
+
+function openModal(item) {
+    modal.style.display = "block";
+
+    // Loop through item properties and populate matching fields in the modal
+    for (const key in item) {
+        const inputField = document.getElementById(key);
+        if (inputField) {
+            inputField.value = item[key]; // Assign value to matching input field
+        }console.log(`Key: ${key}, Value: ${item[key]}, Field: ${inputField}`);
+
+    }
+}
+
+function closeModal() {
+    modal.style.display = "none";
+}
+
+// Close the modal if clicked outside
+window.onclick = function (event) {
+    if (event.target === modal) {
+        closeModal();
+    }
+};

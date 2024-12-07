@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - First Aid Portal</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <style>
+        /* 0 */
+        .view-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+
+            label {
+                font-size: 1rem;
+                margin-right: 0.5rem;
+            }
+
+            .view-select {
+                padding: 0.5rem;
+                font-size: 1rem;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                background-color: #f8f9fa;
+            }
+        }
+
+        .report-view {
+            display: none;
+
+            &.active {
+                display: block; 
+            }
+        }
+
+        /* 1 */
+        .reports-page {
+            margin: 3rem 1.5rem;
+        .page-title {
+            text-align: center;
+            margin: 2rem 0;
+            font-size: 2rem;
+        }
+
+        .tab-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+
+            .tab-btn {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+                &.active {
+                    background-color: #0056b3;
+                }
+
+                &:hover {
+                    background-color: #0056b3;
+                }
+            }
+        }
+
+        .tab-content {
+            .tab-pane {
+            display: none;
+
+                &.active {
+                    display: block;
+                }
+
+                .card-grid {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 1rem;
+
+                    .report-card {
+                        background: #fff;
+                        border: 1px solid #ddd;
+                        border-radius: 8px;
+                        padding: 1rem;
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                        transition: transform 0.3s ease;
+
+                        &:hover {
+                            transform: translateY(-5px);
+                        }
+
+                        .report-title {
+                            font-size: 1.2rem;
+                            margin-bottom: 0.5rem;
+                            color: #333;
+                        }
+
+                        .report-summary {
+                            font-size: 0.9rem;
+                            color: #555;
+                            margin-bottom: 0.5rem;
+                        }
+
+                        .submitted-by {
+                            font-size: 0.8rem;
+                            color: #777;
+                            margin-bottom: 1rem;
+                        }
+
+                        .view-details {
+                            display: inline-block;
+                            padding: 0.5rem 1rem;
+                            font-size: 0.9rem;
+                            color: #fff;
+                            background-color: #007bff;
+                            border-radius: 5px;
+                            text-decoration: none;
+                            transition: background-color 0.3s ease;
+
+                            &:hover {
+                            background-color: #0056b3;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        }
+        /* 2 */
+        .accordion {
+        .accordion-item {
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+
+            .accordion-header {
+            width: 100%;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border: none;
+            font-size: 1.2rem;
+            text-align: left;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+                background-color: #e9ecef;
+            }
+            }
+
+            .accordion-content {
+            display: none;
+            padding: 1rem;
+            background-color: #fff;
+
+            .card-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+            }
+
+            &.active .accordion-content {
+            display: block;
+            }
+        }
+        }
+        /* 3 */
+        .filters {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+
+        label {
+            margin-right: 0.5rem;
+        }
+
+        select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        }
+        .reports-table {
+        width: 100%;
+        border-collapse: collapse;
+
+        th, td {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+        }
+        }
+        /* 4 */
+        /* .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1rem;
+
+            .tab-button {
+                padding: 0.75rem 1.5rem;
+                border: 1px solid #ddd;
+                background-color: #f8f9fa;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 1rem;
+
+                &.active {
+                background-color: #e9ecef;
+                font-weight: bold;
+                }
+
+                &:hover {
+                background-color: #e9ecef;
+                }
+            }
+        }
+
+        .tab-content {
+            display: none;
+
+            &.active {
+                display: block;
+            }
+
+            .card-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 1rem;
+                }
+        } */
+
+        /* 5 */
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+
+            .calendar-day {
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 0.5rem;
+                text-align: center;
+                background-color: #f8f9fa;
+
+                .day-number {
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    margin-bottom: 0.5rem;
+                }
+
+                .reports-summary {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.25rem;
+
+                    a {
+                        color: #007bff;
+                        text-decoration: none;
+
+                        &:hover {
+                        text-decoration: underline;
+                        }
+                    }
+                }
+            }
+        }
+
+    </style>
+</head>
+<body class="dashboard-page full-height">
+
+<header>
+    <%- include('../partials/_nav') %>
+</header>
+
+<main class="dashboard">
+    <div class="container">
+        <div class="alert-parent">
+            <%- include('../partials/_flash-alert') %>
+            <h1><span class="accent"><%= currentPost %></span> First Aid Post Dashboard</h1>
+        </div>
+    </div>
+</main>
+
+<%- include('../partials/_header') %>
+<main class="main-0 reports-page">
+  <h1 class="page-title">Shift Reports</h1>
+
+  <!-- View Selector -->
+  <div class="view-selector">
+    <label for="view-select">Choose a View:</label>
+    <select id="view-select" class="view-select">
+      <option value="grid" selected>Grid View</option>
+      <option value="tabs">Tabbed View</option>
+      <option value="calendar">Calendar View</option>
+    </select>
+  </div>
+
+  <!-- View Containers -->
+  <div id="grid-view" class="report-view active">
+    <div class="card-grid">
+      <% for (let i = 1; i <= 4; i++) { %>
+        <div class="report-card">
+          <h3 class="report-title">Post <%= i %> Report</h3>
+          <p class="report-summary">Summary for Post <%= i %>...</p>
+          <a href="/reports/post-<%= i %>" class="view-details">View Details</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <div id="tabs-view" class="report-view">
+    <div class="tabs">
+      <button class="tab-button active" data-tab="odd">ODD</button>
+      <button class="tab-button" data-tab="stp">STP</button>
+      <button class="tab-button" data-tab="kms">KMS</button>
+      <button class="tab-button" data-tab="gcs">GCS</button>
+    </div>
+    <div class="tab-content active" id="odd">
+      <p>ODD reports...</p>
+    </div>
+    <div class="tab-content" id="stp">
+      <p>STP reports...</p>
+    </div>
+    <div class="tab-content" id="kms">
+      <p>KMS reports...</p>
+    </div>
+    <div class="tab-content" id="gcs">
+      <p>GCS reports...</p>
+    </div>
+  </div>
+
+  <div id="calendar-view" class="report-view">
+    <div class="calendar">
+      <% for (let i = 1; i <= 30; i++) { %>
+        <div class="calendar-day">
+          <div class="day-number"><%= i %></div>
+          <div class="reports-summary">
+            <a href="/reports/odd/<%= i %>">ODD</a>
+            <a href="/reports/stp/<%= i %>">STP</a>
+            <a href="/reports/kms/<%= i %>">KMS</a>
+            <a href="/reports/gcs/<%= i %>">GCS</a>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</main>
+<%- include('../partials/_footer') %>
+
+
+<%- include('../partials/_header') %>
+<main class="main-1 reports-page">
+  <h1 class="page-title">Shift Reports</h1>
+
+  <!-- Tabs Navigation -->
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="odd">ODD</button>
+    <button class="tab-btn" data-tab="stp">STP</button>
+    <button class="tab-btn" data-tab="kms">KMS</button>
+    <button class="tab-btn" data-tab="gcs">GCS</button>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <!-- ODD Reports -->
+    <section id="odd" class="tab-pane active">
+      <h2>ODD Reports</h2>
+      <div class="card-grid">
+        <% // Sample Report Cards for ODD %>
+        <% for (let i = 0; i < 3; i++) { %>
+          <div class="report-card">
+            <h3 class="report-title">Day Shift Report</h3>
+            <p class="report-summary">Brief summary of the ODD report. Details can go here...</p>
+            <p class="submitted-by">Submitted by: John Doe</p>
+            <a href="/reports/odd/<%= i %>" class="view-details">View Details</a>
+          </div>
+        <% } %>
+      </div>
+    </section>
+
+    <!-- STP Reports -->
+    <section id="stp" class="tab-pane">
+      <h2>STP Reports</h2>
+      <div class="card-grid">
+        <% for (let i = 0; i < 2; i++) { %>
+          <div class="report-card">
+            <h3 class="report-title">Night Shift Report</h3>
+            <p class="report-summary">STP report summary goes here...</p>
+            <p class="submitted-by">Submitted by: Jane Smith</p>
+            <a href="/reports/stp/<%= i %>" class="view-details">View Details</a>
+          </div>
+        <% } %>
+      </div>
+    </section>
+
+    <!-- Repeat for KMS and GCS -->
+    <section id="kms" class="tab-pane">
+      <h2>KMS Reports</h2>
+      <div class="card-grid">
+        <% for (let i = 0; i < 4; i++) { %>
+          <div class="report-card">
+            <h3 class="report-title">Shift Report</h3>
+            <p class="report-summary">KMS report content...</p>
+            <p class="submitted-by">Submitted by: Supervisor Name</p>
+            <a href="/reports/kms/<%= i %>" class="view-details">View Details</a>
+          </div>
+        <% } %>
+      </div>
+    </section>
+
+    <section id="gcs" class="tab-pane">
+      <h2>GCS Reports</h2>
+      <div class="card-grid">
+        <% for (let i = 0; i < 5; i++) { %>
+          <div class="report-card">
+            <h3 class="report-title">Day Shift Report</h3>
+            <p class="report-summary">GCS-specific report details...</p>
+            <p class="submitted-by">Submitted by: Name</p>
+            <a href="/reports/gcs/<%= i %>" class="view-details">View Details</a>
+          </div>
+        <% } %>
+      </div>
+    </section>
+  </div>
+</main>
+
+<%- include('../partials/_footer') %>
+
+<%- include('../partials/_header') %>
+<main class="main-2 reports-page">
+  <h1 class="page-title">Shift Reports</h1>
+
+  <!-- Accordion Structure -->
+  <div class="accordion">
+    <!-- ODD Section -->
+    <div class="accordion-item">
+      <button class="accordion-header" data-accordion="odd">ODD Reports</button>
+      <div class="accordion-content" id="odd">
+        <div class="card-grid">
+          <% for (let i = 0; i < 3; i++) { %>
+            <div class="report-card">
+              <h3 class="report-title">Day Shift Report</h3>
+              <p class="report-summary">Brief summary of the ODD report...</p>
+              <a href="/reports/odd/<%= i %>" class="view-details">View Details</a>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- STP Section -->
+    <div class="accordion-item">
+      <button class="accordion-header" data-accordion="stp">STP Reports</button>
+      <div class="accordion-content" id="stp">
+        <div class="card-grid">
+          <% for (let i = 0; i < 2; i++) { %>
+            <div class="report-card">
+              <h3 class="report-title">Night Shift Report</h3>
+              <p class="report-summary">STP report summary...</p>
+              <a href="/reports/stp/<%= i %>" class="view-details">View Details</a>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Repeat for KMS and GCS -->
+    <div class="accordion-item">
+      <button class="accordion-header" data-accordion="kms">KMS Reports</button>
+      <div class="accordion-content" id="kms">
+        <div class="card-grid">
+          <% for (let i = 0; i < 3; i++) { %>
+            <div class="report-card">
+              <h3 class="report-title">KMS Report</h3>
+              <p class="report-summary">KMS report content...</p>
+              <a href="/reports/kms/<%= i %>" class="view-details">View Details</a>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-header" data-accordion="gcs">GCS Reports</button>
+      <div class="accordion-content" id="gcs">
+        <div class="card-grid">
+          <% for (let i = 0; i < 3; i++) { %>
+            <div class="report-card">
+              <h3 class="report-title">Day Shift Report</h3>
+              <p class="report-summary">GCS-specific report details...</p>
+              <a href="/reports/gcs/<%= i %>" class="view-details">View Details</a>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<%- include('../partials/_footer') %>
+
+<%- include('../partials/_header') %>
+<main class="main-3 reports-page">
+  <h1 class="page-title">Shift Reports</h1>
+
+  <!-- Filters -->
+  <div class="filters">
+    <label for="post-filter">Post:</label>
+    <select id="post-filter">
+      <option value="all">All</option>
+      <option value="odd">ODD</option>
+      <option value="stp">STP</option>
+      <option value="kms">KMS</option>
+      <option value="gcs">GCS</option>
+    </select>
+
+    <label for="shift-filter">Shift:</label>
+    <select id="shift-filter">
+      <option value="all">All</option>
+      <option value="day">Day</option>
+      <option value="night">Night</option>
+    </select>
+  </div>
+
+  <!-- Table -->
+  <table class="reports-table">
+    <thead>
+      <tr>
+        <th>Post</th>
+        <th>Shift</th>
+        <th>Summary</th>
+        <th>Submitted By</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% const sampleReports = [ // Mock data for demo
+        { post: 'ODD', shift: 'Day', summary: 'Summary 1', submittedBy: 'John' },
+        { post: 'STP', shift: 'Night', summary: 'Summary 2', submittedBy: 'Jane' }
+      ]; %>
+
+      <% sampleReports.forEach((report, i) => { %>
+        <tr data-post="<%= report.post.toLowerCase() %>" data-shift="<%= report.shift.toLowerCase() %>">
+          <td><%= report.post %></td>
+          <td><%= report.shift %></td>
+          <td><%= report.summary %></td>
+          <td><%= report.submittedBy %></td>
+          <td><a href="/reports/<%= report.post.toLowerCase() %>/<%= i %>">View</a></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</main>
+<%- include('../partials/_footer') %>
+
+<%- include('../partials/_header') %>
+<main class="main-4 reports-page">
+  <h1 class="page-title">Shift Reports</h1>
+
+  <!-- Tab Navigation -->
+  <div class="tabs">
+    <button class="tab-button active" data-tab="odd">ODD</button>
+    <button class="tab-button" data-tab="stp">STP</button>
+    <button class="tab-button" data-tab="kms">KMS</button>
+    <button class="tab-button" data-tab="gcs">GCS</button>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-content active" id="odd">
+    <div class="card-grid">
+      <% for (let i = 0; i < 3; i++) { %>
+        <div class="report-card">
+          <h3 class="report-title">ODD Shift Report</h3>
+          <p class="report-summary">Summary of report for ODD...</p>
+          <a href="/reports/odd/<%= i %>" class="view-details">View Details</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="tab-content" id="stp">
+    <div class="card-grid">
+      <% for (let i = 0; i < 2; i++) { %>
+        <div class="report-card">
+          <h3 class="report-title">STP Shift Report</h3>
+          <p class="report-summary">Summary of report for STP...</p>
+          <a href="/reports/stp/<%= i %>" class="view-details">View Details</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Repeat tab content for KMS and GCS -->
+  <div class="tab-content" id="kms">
+    <div class="card-grid">
+      <% for (let i = 0; i < 3; i++) { %>
+        <div class="report-card">
+          <h3 class="report-title">KMS Shift Report</h3>
+          <p class="report-summary">KMS-specific report details...</p>
+          <a href="/reports/kms/<%= i %>" class="view-details">View Details</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="tab-content" id="gcs">
+    <div class="card-grid">
+      <% for (let i = 0; i < 3; i++) { %>
+        <div class="report-card">
+          <h3 class="report-title">GCS Shift Report</h3>
+          <p class="report-summary">GCS-specific report details...</p>
+          <a href="/reports/gcs/<%= i %>" class="view-details">View Details</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</main>
+<%- include('../partials/_footer') %>
+
+<%- include('../partials/_header') %>
+<main class="reports-page">
+  <h1 class="page-title">Shift Reports</h1>
+
+  <!-- Calendar View -->
+  <div class="calendar">
+    <% for (let i = 1; i <= 30; i++) { %>
+      <div class="calendar-day">
+        <div class="day-number"><%= i %></div>
+        <div class="reports-summary">
+          <a href="/reports/odd/<%= i %>">ODD</a>
+          <a href="/reports/stp/<%= i %>">STP</a>
+          <a href="/reports/kms/<%= i %>">KMS</a>
+          <a href="/reports/gcs/<%= i %>">GCS</a>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</main>
+<%- include('../partials/_footer') %>
+
+
+</body>
+
+
+<script src="/js/mineaid-scripts.js"></script>
+<script>
+
+    // For main 1
+    document.addEventListener('DOMContentLoaded', () => {
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panes = document.querySelectorAll('.tab-pane');
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      // Remove active class from all tabs and panes
+      tabs.forEach((t) => t.classList.remove('active'));
+      panes.forEach((p) => p.classList.remove('active'));
+
+      // Add active class to clicked tab and corresponding pane
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+  });
+});
+
+
+    // For Main 2
+    document.addEventListener('DOMContentLoaded', () => {
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+    accordionHeaders.forEach((header) => {
+        header.addEventListener('click', () => {
+        const parent = header.parentElement;
+
+        // Toggle the current accordion
+        parent.classList.toggle('active');
+
+        // Close others
+        accordionHeaders.forEach((otherHeader) => {
+            if (otherHeader !== header) {
+            otherHeader.parentElement.classList.remove('active');
+            }
+        });
+        });
+    });
+    });
+
+    // For main 3
+    document.addEventListener('DOMContentLoaded', () => {
+    const postFilter = document.getElementById('post-filter');
+    const shiftFilter = document.getElementById('shift-filter');
+    const rows = document.querySelectorAll('.reports-table tbody tr');
+
+    function filterReports() {
+        const postValue = postFilter.value;
+        const shiftValue = shiftFilter.value;
+
+        rows.forEach((row) => {
+        const matchesPost = postValue === 'all' || row.dataset.post === postValue;
+        const matchesShift = shiftValue === 'all' || row.dataset.shift === shiftValue;
+        row.style.display = matchesPost && matchesShift ? '' : 'none';
+        });
+    }
+
+    postFilter.addEventListener('change', filterReports);
+    shiftFilter.addEventListener('change', filterReports);
+    });
+
+    // For main 4
+    document.addEventListener('DOMContentLoaded', () => {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+        const target = button.dataset.tab;
+
+        // Remove active class from all tabs and contents
+        tabButtons.forEach((btn) => btn.classList.remove('active'));
+        tabContents.forEach((content) => content.classList.remove('active'));
+
+        // Activate the clicked tab and corresponding content
+        button.classList.add('active');
+        document.getElementById(target).classList.add('active');
+        });
+    });
+    });
+
+    // For main 0
+    document.addEventListener('DOMContentLoaded', () => {
+  const viewSelect = document.getElementById('view-select');
+  const reportViews = document.querySelectorAll('.report-view');
+
+  viewSelect.addEventListener('change', () => {
+    const selectedView = viewSelect.value;
+
+    // Hide all views
+    reportViews.forEach((view) => view.classList.remove('active'));
+
+    // Show the selected view
+    document.getElementById(`${selectedView}-view`).classList.add('active');
+  });
+});
+
+</script>
+</html>

@@ -13,17 +13,6 @@ const db = require('./database/mineaid');  // Load the database setup
 const crypto = require('crypto');
 const multer = require('multer');
 const XLSX = require('xlsx');
-// const { console } = require('inspector'); //Causing some r
-// const { nanoid } = require('nanoid'); //For generating unique IDs
-// (async () => {
-//     const { nanoid } = await import('nanoid');
-//     const customId = nanoid(); // Example usage
-// })(); //Dynamic import for nanoID
-// // Generate a unique, short ID
-// const customId = `equip-${nanoid(5)}`; // Generates a 5-character unique ID
-// console.log(customId); // Example: equip-A1b2C
-
-
 
 const app = express();
 
@@ -112,8 +101,7 @@ passport.use(new LocalStrategy(
             });
         });
     }
-  )); 
-// Above Code working
+));
 
 // Serialize user into session
 passport.serializeUser((user, done) => {
@@ -127,17 +115,74 @@ passport.deserializeUser((id, done) => {
     });
 });
 
+
+// Middleware: Ensure Post is Selected & Filter Queries
+function attachPostFilter(req, res, next) {
+    if (!req.session.current_post) {
+        req.flash('error_msg', 'Please select your post before proceeding.');
+        return res.redirect('/post-selection');
+    }
+    
+    // Attach post to res.locals for views
+    res.locals.post = req.session.current_post;
+
+    // Attach post to req for backend filtering
+    req.postLocation = req.session.current_post;
+
+    next();
+}
+
 // Multer Configuration
 
 // Set up multer storage configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/uploads/'); // Directory for storing uploaded images
+        let uploadPath = 'public/uploads/';
+
+        // Determine subdirectory based on route or field name
+        if (file.fieldname === 'profilePic') {
+            uploadPath += 'profile-pics/';
+        } else if (file.fieldname === 'itemImage') {
+            uploadPath += 'item-images/';
+        }
+
+        cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
+
+
+// 4. Optional: Refactor for Multiple Upload Types
+
+// If you anticipate handling more types of uploads in the future, you can generalize the logic for better scalability. For instance, pass the subdirectory or field-specific logic as options to a helper function:
+
+// const createMulterConfig = (subDir) => {
+//     return multer({
+//         storage: multer.diskStorage({
+//             destination: (req, file, cb) => {
+//                 const uploadPath = `public/uploads/${subDir}`;
+//                 cb(null, uploadPath);
+//             },
+//             filename: (req, file, cb) => {
+//                 cb(null, `${Date.now()}-${file.originalname}`);
+//             }
+//         }),
+//         fileFilter,
+//         limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+//     });
+// };
+
+// // Create separate upload configurations
+// const uploadProfilePic = createMulterConfig('profile-pics');
+// const uploadItemImage = createMulterConfig('item-images');
+
+// // Use them in routes
+// app.post('/profile/upload-pic', uploadProfilePic.single('profilePic'), ...);
+// app.post('/inventory/add-new-item', uploadItemImage.single('itemImage'), ...);
+
+
 
 // Filter for image uploads only
 const fileFilter = (req, file, cb) => {
@@ -164,12 +209,12 @@ app.get('/users/user-update', (req, res) => {
 // Route to add Socials
 app.post('/profile/update-social', (req, res) => {
     const { linkedInAccount, githubAccount } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.user_id;
 
     // Helper function to save or update an account link
     const saveOrUpdateAccount = (platform, url) => {
         if (url) {
-            db.get(`SELECT * FROM connected_accounts WHERE userId = ? AND platform = ?`, [userId, platform], (err, row) => {
+            db.get(`SELECT * FROM connected_accounts WHERE user_id = ? AND platform = ?`, [userId, platform], (err, row) => {
                 if (err) {
                     console.error(`Error checking ${platform} account:`, err);
                     req.flash('error_msg', `Error checking ${platform} account.`);
@@ -186,7 +231,7 @@ app.post('/profile/update-social', (req, res) => {
                     });
                 } else {
                     // Insert new record
-                    db.run(`INSERT INTO connected_accounts (userId, platform, url) VALUES (?, ?, ?)`, [userId, platform, url], (err) => {
+                    db.run(`INSERT INTO connected_accounts (user_id, platform, url) VALUES (?, ?, ?)`, [userId, platform, url], (err) => {
                         if (err) {
                             console.error(`Error connecting ${platform} account:`, err);
                             req.flash('error_msg', `Error connecting ${platform} account.`);
@@ -220,7 +265,7 @@ app.post('/profile/upload-pic', upload.single('profilePic'), (req, res) => {
     }
 
     // Update profilePicUrl in the database
-    const profilePicUrl = `/uploads/${req.file.filename}`;
+    const profilePicUrl = `/uploads/profile-pics/${req.file.filename}`;
     db.run(`UPDATE users SET profilePicUrl = ? WHERE id = ?`, [profilePicUrl, req.user.id], (err) => {
         if (err) {
             req.flash('error_msg', 'Error updating profile picture.');
@@ -301,10 +346,11 @@ app.post('/profile/update-theme', (req, res) => {
 // Activity Logging Middleware
 function logActivity(req, res, next) {
     if (req.user) { // Log only if user is authenticated
-        const userId = req.user.id;
+        const userId = req.user.user_id;
+        const currentPost = req.session.current_post;
         const activity = `${req.method} ${req.originalUrl}`;
-        db.run('INSERT INTO recent_activities (userId, activity, timestamp) VALUES (?, ?, datetime("now", "localtime"))',
-            [userId, activity],
+        db.run('INSERT INTO recent_activities (user_id, post_location, activity, timestamp) VALUES (?, ?, ?, datetime("now", "localtime"))',
+            [userId, currentPost, activity],
             (err) => {
                 if (err) console.error('Activity log failed:', err);
             });
@@ -312,11 +358,6 @@ function logActivity(req, res, next) {
     next();
 }
 app.use(logActivity); // Apply globally, or to specific routes if preferred
-
-
-
-
-
 
 
 // LOGIN/LOGOUT TOGGLER
@@ -344,30 +385,65 @@ app.get('/coming-soon', (req, res) => {
 
 // TRIAGE BOOK
 // Route: Triage (GET) form page
-app.get('/triage', (req, res) => {
-    res.render('triage'); // This will render triage.ejs (the form page)
+app.get('/triage', attachPostFilter, (req, res) => {
+    const userPost = res.locals.post || ''; // Fetch from session or DB
+    res.render('triage', { userPost }); // This will render triage.ejs (the form page)
 });
 
 // Route to handle form submission 
-app.post('/submit', (req, res) => {
-    const { post, date, time_of_arrival, company, badge, name, age, gender, incident, complaints, mobility, respiratory_rate, pulse, blood_pressure, temperature, avpu, oxygen_saturation, glucose, pain_score, final_triage, detained, treatment_given, disposition, disposition_time, condition, reporting, entry_by } = req.body;
+app.post('/triage', attachPostFilter, (req, res) => {
+    const { post_location, date, time_of_arrival, company, badge, name, age, gender, incident, complaints, mobility, respiratory_rate, pulse, blood_pressure, temperature, avpu, oxygen_saturation, glucose, pain_score, final_triage, detained, treatment_given, disposition, disposition_time, condition, reporting } = req.body;
+
+    const userId = req.user.user_id; // From authentication middleware
+    const currentPost = req.session.current_post; // From session middleware
     
-    const query = `INSERT INTO triagebook (post, date, time_of_arrival, company, badge, name, age, gender, incident, complaints, mobility, respiratory_rate, pulse, blood_pressure, temperature, avpu, oxygen_saturation, glucose, pain_score, final_triage, detained, treatment_given, disposition, disposition_time, condition, reporting, entry_by) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const entry_by = req.user.user_id; // Or req.user.user_id if using a foreign key
+    const query = `INSERT INTO triagebook (post_location, entry_id, date, time_of_arrival, company, badge, name, age, gender, incident, complaints, mobility, respiratory_rate, pulse, blood_pressure, temperature, avpu, oxygen_saturation, glucose, pain_score, final_triage, detained, treatment_given, disposition, disposition_time, condition, reporting, entry_by) 
+    VALUES (?, (SELECT 'tri-0' || IFNULL(MAX(rowid) + 1, 0) FROM triagebook), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     
-    db.run(query, [post, date, time_of_arrival, company, badge, name, age, gender, incident, complaints, mobility, respiratory_rate, pulse, blood_pressure, temperature, avpu, oxygen_saturation, glucose, pain_score, final_triage, detained, treatment_given, disposition, disposition_time, condition, reporting, entry_by], function(err) {
+    db.run(query, [post_location, date, time_of_arrival, company, badge, name, age, gender, incident, complaints, mobility, respiratory_rate, pulse, blood_pressure, temperature, avpu, oxygen_saturation, glucose, pain_score, final_triage, detained, treatment_given, disposition, disposition_time, condition, reporting, entry_by], function(err) {
         if (err) {
             console.error('Error inserting into triagebook:', err.message);
-            res.status(500).render('error', { message: 'Submission failed' });
-        } else {
-            res.render('success', { title: 'Triage Submission Successful' });
+            res.status(500).render('error/error', { message: 'Submission failed' });
         }
-    });
+
+            // Log the update action into recent_activities
+            const activity = `Added a new triagebook entry.`;
+            db.run(
+                'INSERT INTO recent_activities (user_id, post_location, activity, timestamp) VALUES (?, ?, ?, datetime("now", "localtime"))',
+                [userId, currentPost, activity],
+                (err) => {
+                    if (err) {
+                        console.error('Activity log failed:', err);
+                    }
+                }
+            );
+            // Log user activity
+            const logActivityQuery = `
+            INSERT INTO user_activity_logs (user_id, action, table_name, record_id, logged_by)
+            VALUES (?, ?, ?, ?, ?)
+            `;
+
+            db.run(
+                logActivityQuery,
+                [userId, activity, 'triagebook', 'entry_id', req.user.username],
+                (logErr) => {
+                    if (logErr) {
+                        console.error('Error logging activity:', logErr.message);
+                        req.flash('error_msg', 'Triage entry submitted, but activity log failed.');
+                        console.log('error_msg', 'Triage entry submitted, but activity log failed.');
+                    } else {
+                        req.flash('success_msg', `Triage entry ${name} submitted successfully.`);
+                        res.render('success', { title: 'Triage Submission Successful' });
+                    }
+                }
+            );
+        });
 });
 
 // Route to display triage book
-app.get('/triage-book', (req, res) => {
-    const query = 'SELECT * FROM triagebook ORDER BY date DESC';
+app.get('/triage-book', attachPostFilter, (req, res) => {
+    const query = 'SELECT * FROM triagebook';
 
     db.all(query, [], (err, rows) => {
         if (err) {
@@ -381,33 +457,69 @@ app.get('/triage-book', (req, res) => {
 
 // INCIDENT REPORTING
 // Display incident form
-app.get('/incident-form', (req, res) => {
-    res.render('incident-form');
+app.get('/incident-form', attachPostFilter, (req, res) => {
+    const userPost = res.locals.post || ''; // Fetch from session or DB
+    res.render('incident-form', { userPost });
 })
 
 // Route to handle incident form submission 
-app.post('/incident/submit', (req, res) => {
+app.post('/incident/submit', attachPostFilter, (req, res) => {
     
-    const { post, incident_date, incident_time, company, badge, name, incident_type, incident_location, incident_details, first_aid, detained, treatment_given, disposition, disposition_time, reporting } = req.body;
+    const { post_location, incident_date, incident_time, company, badge, name, incident_type, incident_location, incident_details, first_aid, detained, treatment_given, disposition, disposition_time, reporting } = req.body;
+
+    const userId = req.user.user_id; // From authentication middleware
+    const currentPost = req.session.current_post; // From session middleware
     
     // Convert reporting checkboxes to a single string, if multiple are selected
     const reportingStr = Array.isArray(reporting) ? reporting.join(', ') : reporting;
 
-    const query = `INSERT INTO incident_book (post, incident_date, incident_time, company, badge, name, incident_type, incident_location, incident_details, first_aid, detained, treatment_given, disposition, disposition_time, reporting) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const entry_by = req.user.user_id;
+    const query = `INSERT INTO incident_book (post_location, entry_id, incident_date, incident_time, company, badge, name, incident_type, incident_location, incident_details, first_aid, detained, treatment_given, disposition, disposition_time, reporting, entry_by) 
+    VALUES (?, (SELECT 'inci-0' || IFNULL(MAX(rowid) + 1, 0) FROM incident_book), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-    db.run(query, [post, incident_date, incident_time, company, badge, name, incident_type, incident_location, incident_details, first_aid, detained, treatment_given, disposition, disposition_time, reportingStr], function(err) {
+    db.run(query, [post_location, incident_date, incident_time, company, badge, name, incident_type, incident_location, incident_details, first_aid, detained, treatment_given, disposition, disposition_time, reportingStr, entry_by], function(err) {
         if (err) {
             console.error('Error inserting into incident_book:', err.message);
             res.status(500).render('error/500', { message: 'Incident submission failed' });
-        } else {
-            res.render('success', { title: 'Incident Submission Successful' });
-        }
-    });
+        } 
+        
+        
+            // Log the update action into recent_activities
+            const activity = `Added a new incident_book entry.`;
+            db.run(
+                'INSERT INTO recent_activities (user_id, post_location, activity, timestamp) VALUES (?, ?, ?, datetime("now", "localtime"))',
+                [userId, currentPost, activity],
+                (err) => {
+                    if (err) {
+                        console.error('Activity log failed:', err);
+                    }
+                }
+            );
+            // Log user activity
+            const logActivityQuery = `
+            INSERT INTO user_activity_logs (user_id, post_location, action, table_name, record_id, logged_by)
+            VALUES (?, ?, ?, ?, ?, ?)
+            `;
+
+            db.run(
+                logActivityQuery,
+                [userId, post_location, activity, 'incident_book', 'entry_id', req.user.username],
+                (logErr) => {
+                    if (logErr) {
+                        console.error('Error logging activity:', logErr.message);
+                        req.flash('error_msg', 'Incident entry submitted, but activity log failed.');
+                        console.log('error_msg', 'Incident entry submitted, but activity log failed.');
+                    } else {
+                        req.flash('success_msg', `Incident entry ${name} submitted successfully.`);
+                        res.render('success', { title: 'Incident Submission Successful' });
+                    }
+                }
+            );
+        });
 });
 
 // Route to display incident book
-app.get('/incident-book', ensureAuthenticated, ensureAdmin, (req, res) => {
+app.get('/incident-book', ensureAuthenticated, ensureAdmin, attachPostFilter, (req, res) => {
     const query = 'SELECT * FROM incident_book ORDER BY incident_date DESC';
 
     db.all(query, [], (err, rows) => {
@@ -439,7 +551,7 @@ function ensureAdmin(req, res, next) {
         return next();
     }
     req.flash('error_msg', 'Admin access required. Contact admin.');
-    res.redirect('contact');
+    res.redirect('/contact');
 }
 // Middleware to ensure the user is a Superuser
 function ensureSuperuser(req, res, next) {
@@ -448,7 +560,7 @@ function ensureSuperuser(req, res, next) {
     }
     console.log('Superuser access denied: User role is', req.user ? req.user.role : 'undefined');
     req.flash('error_msg', 'You are not authorized to view this page. Contact admin..');
-    res.redirect('contact');
+    res.redirect('/contact');
 }
 
 
@@ -504,45 +616,6 @@ app.get('/login', (req, res) => {
     res.render('login', { errors: [] });
 });
 
-// COME BACK
-// Route: Login (POST) - Handles login form submission
-// app.post('/login', (req, res, next) => {
-//     passport.authenticate('local', (err, user, info) => {
-//         if (err) {
-//             return next(err); // Handle unexpected errors
-//         }
-//         if (!user) {
-//             // Authentication fails, set flash message and redirect
-//             req.flash('error_msg', info.message);
-
-//             // Redirect based on specific failure messages
-//             if (info.message === 'Your account is pending approval. Contact Admin.' || 'Your account has been blocked. Contact Admin.') {
-//                 return res.redirect('/contact');
-//             } else if (info.message === 'No user found with that username. Please Register.') {
-//                 // Check user status after successful authentication and restrict if needed
-//                 return res.redirect('/register'); // For pending/block
-//             }
-//         }
-
-//         // If authentication and status checks pass, log the user in
-//         req.logIn(user, (err) => {
-//             if (err) {
-//                 return next(err);
-//             }
-//             // Set success message upon successful login
-//             req.flash('success_msg', 'Successfully logged in!');
-//             console.log('User logged in successfully:', req.user.username);
-
-//             // Redirect to the original URL or fallback to dashboard
-//             console.log('Session ID on login:', req.sessionID);
-//             console.log('Redirecting to:', req.session.returnTo || '/dashboard');
-//             const redirectUrl = req.session.returnTo || '/dashboard';
-//             delete req.session.returnTo; // Clean up the session
-//             res.redirect(redirectUrl); console.log(redirectUrl);
-//         });
-//     })(req, res, next);
-// });
-// COME BACK
 
 app.post('/login', (req, res, next) => {
     // Route: Login (POST) - Handles login form submission
@@ -592,11 +665,55 @@ app.post('/login', (req, res, next) => {
             console.log('Session ID on login:', req.sessionID);
             console.log('Redirecting to:', redirectUrl);
             delete req.session.returnTo; // Clean up the session
-            res.redirect(redirectUrl);
+            res.redirect(redirectUrl); console.log(redirectUrl);
         });
     })(req, res, next);
 });
 
+
+/* -----------------POST MANAGEMENT--------------------- */
+// // Middleware: Ensure Post Location is Selected
+// // Middleware to check and set the user's working post
+// function ensurePostSelected(req, res, next) {
+//     if (!req.session.current_post) {
+//         req.flash('error_msg', 'Please select your post before proceeding.');
+//         return res.redirect('/post-selection');
+//     }
+//  // Redirect if post is not selected
+//     res.locals.post = req.session.post; // Make post available to views
+//     next();
+// }
+
+
+
+// Route: Display Post-Selection Page
+app.get('/post-selection', ensureAuthenticated, (req, res) => {
+    res.render('post-selection', { posts: ['ODD', 'STP', 'KMS', 'GCS', 'EMS'] });
+});
+
+// Route: Handle Post Selection
+app.post('/post-selection', ensureAuthenticated, (req, res) => {
+    const { selected_post } = req.body;
+
+    // Validate the selected post
+    const validPosts = ['ODD', 'STP', 'KMS', 'GCS', 'EMS'];
+    if (!validPosts.includes(selected_post)) {
+        req.flash('error_msg', 'Invalid post selected. Please try again.');
+        return res.redirect('/post-selection');
+    }
+
+    // Save selected post to session
+    req.session.current_post = selected_post;
+
+    req.flash('success_msg', `Welcome, You are now logged into ${selected_post}.`);
+    // Redirect to the post-specific dashboard
+    res.redirect(`/dashboard`);
+});
+
+
+
+
+/* ------------------END OF POST MGT */
 
 
 // Route: Register (GET)
@@ -607,11 +724,11 @@ app.get('/register', (req, res) => {
 // Route: Register (POST) - Handles registration form submission
 app.post('/register', (req, res) => {
     console.log(req.body);
-    const { firstname, surname, email, username, password, confirm_password } = req.body;
+    const { user_id, firstname, surname, email, username, password, confirm_password } = req.body;
     let validationError = null;
 
     // Server-side validations
-    if (!firstname || !surname || !email || !username || !password || !confirm_password) {
+    if (!user_id, firstname || !surname || !email || !username || !password || !confirm_password) {
         validationError = 'Please fill in all fields';
     } else if (password !== confirm_password) {
         validationError = 'Passwords do not match';
@@ -653,8 +770,8 @@ app.post('/register', (req, res) => {
                 }
 
                 // Insert new user into the database
-                const query = 'INSERT INTO users (firstname, surname, email, username, password) VALUES (?, ?, ?, ?, ?)';
-                db.run(query, [firstname, surname, email, username, hash], function (err) {
+                const query = 'INSERT INTO users (user_id, firstname, surname, email, username, password) VALUES (?, ?, ?, ?, ?, ?)';
+                db.run(query, [user_id, firstname, surname, email, username, hash], function (err) {
                     if (err) {
                         console.error('Database error:', err.message);
                         req.flash('error_msg', 'Registration failed. Please try again.');
@@ -675,15 +792,19 @@ app.post('/register', (req, res) => {
 // Route: User Profile (GET)
 app.get('/users/user-profile', (req, res) => {
     // Fetch user data from session or DB
-    const userId = req.user.id;
+    const userId = req.user.user_id;
+    if (!userId) {
+        console.log('Please log in.');
+        return res.redirect('/login');
+    }
     
-    db.all('SELECT activity, timestamp FROM recent_activities WHERE userId = ? ORDER BY timestamp DESC LIMIT 5', [userId], (err, recent_activity) => {
+    db.all('SELECT activity, timestamp FROM recent_activities WHERE user_id = ? ORDER BY timestamp DESC LIMIT 5', [userId], (err, recent_activity) => {
         if (err) {
             console.error('Error fetching recent activities:', err);
             recent_activity = [];
         }
 
-        db.all('SELECT platform, linkedAt FROM connected_accounts WHERE userId = ?', [userId], (err, connected_accounts) => {
+        db.all('SELECT platform, url, linkedAt FROM connected_accounts WHERE user_id = ?', [userId], (err, connected_accounts) => {
             if (err) {
                 console.error('Error fetching connected accounts:', err);
                 connected_accounts = [];
@@ -710,7 +831,8 @@ app.get('/logout', (req, res) => {
 
 // Route: Dashboard (GET)
 // Dashboard route (requires login)
-app.get('/dashboard', ensureAuthenticated, (req, res) => {
+app.get('/dashboard', ensureAuthenticated, attachPostFilter, (req, res) => {
+    const current_post = req.session.current_post;// Assuming you have a session variable for the current post
     
     // Fetch all users from DB    
     // Fetch recent activities
@@ -727,11 +849,31 @@ app.get('/dashboard', ensureAuthenticated, (req, res) => {
                 if (err) return console.error(err.message);
 
                 // Render the admin-users page
-                res.render('dashboard', { recent_activity,  statistics, user: req.user });
+                res.render('dashboard', { recent_activity,  statistics, user: req.user, current_post });
             });
 
     });
 });
+// app.get('/dashboard', ensurePostSelected, (req, res) => {
+//     const currentPost = req.session.current_post;
+
+//     const query = `
+//         SELECT * FROM recent_activities WHERE post_location = ?
+//     `;
+//     db.all(query, [currentPost], (err, rows) => {
+//         if (err) {
+//             console.error('Error fetching dashboard data:', err.message);
+//             req.flash('error_msg', 'Unable to load dashboard.');
+//             return res.redirect('/');
+//         }
+
+//         res.render('dashboard', {
+//             recent_activity: rows,
+//             currentPost, // Pass the current post to the frontend
+//         });
+//     });
+// });
+
 
 // Route for the admin page (only for authenticated users)
 app.get('/admin', ensureAuthenticated, ensureAdmin,  (req, res) => {
@@ -746,7 +888,7 @@ app.get('/admin', ensureAuthenticated, ensureAdmin,  (req, res) => {
 });
 
 // Protect Senior Admin routes with ensureSuperuser
-app.get('/admin/super-user', ensureSuperuser, (req, res) => {
+app.get('/admin/super-user', ensureSuperuser, attachPostFilter, (req, res) => {
     // Fetch all users from DB    
     const query = 'SELECT * FROM users'; 
     db.all(query, [], (err, rows) => {
@@ -760,7 +902,7 @@ app.get('/admin/super-user', ensureSuperuser, (req, res) => {
     });
 });
 
-app.get('/admin/admin-home', ensureAuthenticated, ensureAdmin, (req, res) => {
+app.get('/admin/admin-home', ensureAuthenticated, ensureAdmin, attachPostFilter, (req, res) => {
     // Fetch all users from DB    
     // Fetch recent activities
     db.all(`SELECT activity FROM recent_activities ORDER BY timestamp DESC LIMIT 5`, (err, recent_activity) => {
@@ -804,13 +946,13 @@ app.get('/admin/users', ensureAuthenticated, ensureAdmin, (req, res) => {
 // Route to approve a user
 app.get('/admin/approve/:id', ensureAuthenticated, ensureAdmin, ensureSuperuser, (req, res) => {
     const userId = req.params.id;
-    db.run('UPDATE users SET status = ? WHERE id = ?', ['Approved'.trim(), userId], (err) => {
+    db.run('UPDATE users SET status = ? WHERE user_id = ?', ['Approved'.trim(), userId], (err) => {
         if (err) {
             return res.status(500).json({ message: 'Error approving user' });
         }
 
         // Fetch the user details for sending email
-        db.get('SELECT * FROM users WHERE id = ?', [userId], (err, user) => {
+        db.get('SELECT * FROM users WHERE user_id = ?', [userId], (err, user) => {
             if (err) {
                 return res.status(500).json({ message: 'User approved, but email sending failed' });
             }
@@ -886,186 +1028,252 @@ app.get('/admin/unblock/:id', ensureAuthenticated, ensureAdmin, (req, res) => {
 /* ------------------------------ EDIT ROUTES -----------------------------------*/
 
 /* TRIAGE EDIT */
-// Route to edit a triagebook entry
-app.get('/edit/triagebook/:id', ensureAuthenticated, (req, res) => {
-    const id = req.params.id;
-    db.get('SELECT * FROM triagebook WHERE id = ? AND user_id = ?', [id, req.user.id], (err, row) => {
-        if (err || !row) {
-            req.flash('error_msg', 'You do not have permission to edit this entry.');
+// POST route to handle the form submission and update the entry
+app.post('/edit/triagebook', (req, res) => {
+    const { 
+        id, post_location, date, time_of_arrival, company, badge, name, age, 
+        gender, incident, complaints, mobility, respiratory_rate, pulse, 
+        blood_pressure, temperature, avpu, oxygen_saturation, glucose, 
+        pain_score, tews_score, final_triage, detained, treatment_given, 
+        disposition, disposition_time, condition, reporting 
+    } = req.body; // Extract values from req.body
+    itemId = req.params.id;
+
+    const userId = req.user.user_id; // From authentication middleware
+    const currentPost = req.session.current_post; // From session middleware
+
+    // Start a transaction to ensure atomicity
+    db.serialize(() => {
+        // Fetch the old entry
+        db.get(`SELECT * FROM triagebook WHERE id = ?`, [id], (err, oldEntry) => {
+            if (err) {
+                console.error(err);
+                req.flash('error_msg', 'An error occurred while fetching the old entry.');
+                return res.redirect('/triage-book');
+            }
+
+            if (!oldEntry) {
+                req.flash('error_msg', 'Entry not found.');
+                return res.redirect('/triage-book');
+            }
+
+            // Log the old entry into the triagebook_history table
+            const columns = Object.keys(oldEntry).join(", ");
+            const placeholders = Object.keys(oldEntry).map(() => "?").join(", ");
+            const values = Object.values(oldEntry);
+
+            db.run(
+                `INSERT INTO triagebook_history (${columns}, date_modified) VALUES (${placeholders}, datetime('now', 'localtime'))`,
+                [...values],
+                (err) => {
+                    if (err) {
+                        console.error(err);
+                        req.flash('error_msg', 'An error occurred while saving the old entry to history.');
+                        return res.redirect('/triage-book');
+                    }
+
+                    // Update the entry in the triagebook table
+                    db.run(
+                        `UPDATE triagebook 
+                         SET post_location = ?, date = ?, time_of_arrival = ?, company = ?, 
+                             badge = ?, name = ?, age = ?, gender = ?, incident = ?, 
+                             complaints = ?, mobility = ?, respiratory_rate = ?, pulse = ?, 
+                             blood_pressure = ?, temperature = ?, avpu = ?, oxygen_saturation = ?, 
+                             glucose = ?, pain_score = ?, tews_score = ?, final_triage = ?, 
+                             detained = ?, treatment_given = ?, disposition = ?, disposition_time = ?, 
+                             condition = ?, reporting = ?
+                         WHERE id = ?`, 
+                        [
+                            post_location, date, time_of_arrival, company, badge, name, age, 
+                            gender, incident, complaints, mobility, respiratory_rate, pulse, 
+                            blood_pressure, temperature, avpu, oxygen_saturation, glucose, 
+                            pain_score, tews_score, final_triage, detained, treatment_given, 
+                            disposition, disposition_time, condition, reporting, id
+                        ],
+                        function (err) {
+                            if (err) {
+                                console.error(err);
+                                req.flash('error_msg', 'An error occurred while updating the entry.');
+                                return res.redirect('/triage-book');
+                            }
+
+                            // Log the update action into recent_activities
+                            const activity = `edited triagebook entry (ID: ${id})`;
+                            db.run(
+                                'INSERT INTO recent_activities (user_id, post_location, activity, timestamp) VALUES (?, ?, ?, datetime("now", "localtime"))',
+                                [userId, currentPost, activity],
+                                (err) => {
+                                    if (err) {
+                                        console.error('Activity log failed:', err);
+                                    }
+                                }
+                            );
+                            // Log user activity
+                            const logActivityQuery = `
+                            INSERT INTO user_activity_logs (user_id, action, table_name, record_id, logged_by)
+                            VALUES (?, ?, ?, ?, ?)
+                            `;
+
+                            db.run(
+                                logActivityQuery,
+                                [req.user.id, activity, 'triagebook', `${id}`, req.user.username],
+                                (logErr) => {
+                                    if (logErr) {
+                                        console.error('Error logging activity:', logErr.message);
+                                        req.flash('error_msg', 'Triage entry modified but activity log failed.');
+                                    } else {
+                                        req.flash('success_msg', `Triage entry ${name} modified successfully.`);
+                                    }
+                                }
+                            );
+
+                            // Check if any rows were edited
+                            if (this.changes > 0) {
+                                req.flash('success_msg', 'Entry edited successfully.');
+                                console.log('success_msg', 'Entry edited successfully.');
+                            } else {
+                                req.flash('error_msg', 'Update failed. Entry not found.');
+                            }
+
+                            // Redirect after the operation
+                            return res.redirect('/triage-book');
+                        }
+                    );
+                }
+            );
+        });
+    });
+});
+// View triage history book
+app.get('/triage/book/history', ensureAuthenticated, ensureAdmin, attachPostFilter, (req, res) => {
+    db.all('SELECT * FROM triagebook_history ORDER BY modified_at DESC', [], (error, results) => {
+        if (error) {
+            req.flash('error_msg', 'Error loading triage history.');
             return res.redirect('/triage-book');
         }
-        res.render('editTriage', { entry: row }); // Render edit form with entry data
-    });
-});
 
-// GET route to load the edit form with existing data
-app.get('/edit/triagebook/:id', ensureAuthenticated, (req, res) => {
-    const entryId = req.params.id;
-
-    // Fetch the triage entry from the database using the entryId
-    db.query('SELECT * FROM triagebook WHERE id = ?', [entryId], (error, results) => {
-        if (error) {
-            req.flash('error_msg', 'Error loading entry for editing.');
-            return res.redirect('/triagebook');
-        }
-
-        if (results.length === 0) {
-            req.flash('error_msg', 'Entry not found.');
-            return res.redirect('/triagebook');
-        }
-
-        const entry = results[0];
-        res.render('editTriage', { entry, user: req.user, success_msg: req.flash('success_msg'), error_msg: req.flash('error_msg') });
-    });
-});
-
-// POST route to handle the form submission and update the entry
-app.post('/edit/triagebook/:id', ensureAuthenticated, (req, res) => {
-    const entryId = req.params.id;
-    const updatedEntry = {
-        post: req.body.post,
-        date: req.body.date,
-        time_of_arrival: req.body.time_of_arrival,
-        company: req.body.company,
-        badge: req.body.badge,
-        name: req.body.name,
-        age: req.body.age,
-        gender: req.body.gender,
-        incident: req.body.incident,
-        complaints: req.body.complaints,
-        mobility: req.body.mobility,
-        respiratory_rate: req.body.respiratory_rate,
-        pulse: req.body.pulse,
-        blood_pressure: req.body.blood_pressure,
-        temperature: req.body.temperature,
-        avpu: req.body.avpu,
-        oxygen_saturation: req.body.oxygen_saturation,
-        glucose: req.body.glucose,
-        pain_score: req.body.pain_score,
-        tews_score: req.body.tews_score,
-        final_triage: req.body.final_triage,
-        detained: req.body.detained,
-        treatment_given: req.body.treatment_given,
-        disposition: req.body.disposition,
-        disposition_time: req.body.disposition_time,
-        condition: req.body.condition,
-        reporting: req.body.reporting
-    };
-
-    // Update the database with new values
-    db.query('UPDATE triagebook SET ? WHERE id = ?', [updatedEntry, entryId], (error) => {
-        if (error) {
-            req.flash('error_msg', 'Error updating entry.');
-            return res.redirect(`/edit/triagebook/${entryId}`);
-        }
-
-        req.flash('success_msg', 'Entry updated successfully!');
-        res.redirect('/triagebook');
+        res.render('triage-book-history', { entries: results, user: req.user });
     });
 });
 
 
 /* INCIDENT EDIT */
-// Route to edit an incident_book entry
-app.get('/edit/incident/:id', ensureAuthenticated, (req, res) => {
-    const incidentId = req.params.id;
-    db.get('SELECT * FROM incident_book WHERE id = ?', [incidentId], (error, result) => {
-        if (error) {
-            req.flash('error_msg', 'Error loading incident.');
-            return res.redirect('/incident-book');
-        }
-        if (!result) {  // No incident found
-            req.flash('error_msg', 'Incident not found.');
-            return res.redirect('/incident-book');
-        }
-        
-        // Log the retrieved incident
-        console.log(result);
-        
-        res.render('incident-edit-form', { incident: result, user: req.user });
-    });
-});
+// POST route to handle the incident form submission and update the entry
+app.post('/edit/incident-book', ensureAuthenticated, attachPostFilter, (req, res) => {
+    const {
+        id, post_location, incident_date, incident_time, company, badge, name,
+        incident_type, incident_location, incident_details, first_aid, detained,
+        treatment_given, disposition, disposition_time, reporting
+    } = req.body;
 
-// Edit route (POST)
-app.post('/incident/edit/:id', ensureAuthenticated, (req, res) => {
-    const incidentId = req.params.id;
+    // Debug incoming request
+    console.log("Incoming request:", req.body);
 
-    // Fetch the existing incident before editing (for history)
-    db.get('SELECT * FROM incident_book WHERE id = ?', [incidentId], (error, incident) => {
-        if (error || !incident) {
-            req.flash('error_msg', 'Error loading incident for history.');
-            return res.redirect('/incident-book');
-        }
+    // Validate ID
+    if (!id) {
+        req.flash('error_msg', 'No entry ID provided.');
+        return res.redirect('/incident-book');
+    }
 
-        // Store original data in incident_book_history before updating
-        const historySql = `
-            INSERT INTO incident_book_history (
-                id, post, incident_date, incident_time, company, badge, name,
-                incident_type, incident_location, incident_details, first_aid, detained,
-                treatment_given, disposition, disposition_time, reporting
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    // Convert reporting checkboxes to a single string
+    const reportingStr = Array.isArray(reporting) ? reporting.join(', ') : reporting;
 
-        db.run(historySql, [
-            incidentId, incident.post, incident.incident_date, incident.incident_time, incident.company,
-            incident.badge, incident.name, incident.incident_type, incident.incident_location, incident.incident_details,
-            incident.first_aid, incident.detained, incident.treatment_given, incident.disposition,
-            incident.disposition_time, incident.reporting
-        ], function(error) {
-            if (error) {
-                console.log('Error saving incident history.');
-                req.flash('error_msg', 'Error saving incident history.');
+    const userId = req.user.user_id; // From authentication middleware
+    const currentPost = req.session.current_post; // From session middleware
+
+    db.serialize(() => {
+        // Fetch the old entry
+        db.get(`SELECT * FROM incident_book WHERE id = ?`, [id], (err, oldEntry) => {
+            if (err) {
+                console.error("Error fetching old entry:", err);
+                req.flash('error_msg', 'Error fetching old entry.');
                 return res.redirect('/incident-book');
             }
 
-            console.log(req.body); // Log the form data to verify
-            // Now proceed with the update
-            const updatedIncident = {
-                id: req.body.id,
-                post: req.body.post,
-                incident_date: req.body.incident_date,
-                incident_time: req.body.incident_time,
-                company: req.body.company,
-                badge: req.body.badge,
-                name: req.body.name,
-                incident_type: req.body.incident_type,
-                incident_location: req.body.incident_location,
-                incident_details: req.body.incident_details,
-                first_aid: req.body.first_aid,
-                detained: req.body.detained,
-                treatment_given: req.body.treatment_given,
-                disposition: req.body.disposition,
-                disposition_time: req.body.disposition_time,
-                reporting: req.body.reporting
-            };
+            if (!oldEntry) {
+                req.flash('error_msg', 'Entry not found.');
+                return res.redirect('/incident-book');
+            }
 
-            const sql = `
-                UPDATE incident_book
-                SET post = ?, incident_date = ?, incident_time = ?, company = ?, badge = ?, name = ?,
-                    incident_type = ?, incident_location = ?, incident_details = ?, first_aid = ?, detained = ?,
-                    treatment_given = ?, disposition = ?, disposition_time = ?, reporting = ?
-                WHERE id = ?`;
+            // Log the old entry into the incident_book_history table
+            const columns = Object.keys(oldEntry).join(", ");
+            const placeholders = Object.keys(oldEntry).map(() => "?").join(", ");
+            const values = Object.values(oldEntry);
 
-            db.run(sql, [
-                updatedIncident.post, updatedIncident.incident_date, updatedIncident.incident_time,
-                updatedIncident.company, updatedIncident.badge, updatedIncident.name, updatedIncident.incident_type,
-                updatedIncident.incident_location, updatedIncident.incident_details, updatedIncident.first_aid,
-                updatedIncident.detained, updatedIncident.treatment_given, updatedIncident.disposition,
-                updatedIncident.disposition_time, updatedIncident.reporting, incidentId
-            ], function(error) {
-                if (error) {
-                    req.flash('error_msg', 'Error updating incident.');
-                    return res.redirect('/incident-book');
+            db.run(
+                `INSERT INTO incident_book_history (${columns}, modified_at) VALUES (${placeholders}, datetime('now', 'localtime'))`,
+                [...values],
+                (err) => {
+                    if (err) {
+                        console.error("Error saving to history:", err);
+                        req.flash('error_msg', 'Error saving to history.');
+                        return res.redirect('/incident-book');
+                    }
+
+                    // Update the entry in the incident_book table
+                    db.run(
+                        `UPDATE incident_book 
+                         SET post_location = ?, incident_date = ?, incident_time = ?, company = ?, 
+                             badge = ?, name = ?, incident_type = ?, incident_location = ?, 
+                             incident_details = ?, first_aid = ?, detained = ?, treatment_given = ?, 
+                             disposition = ?, disposition_time = ?, reporting = ? 
+                         WHERE id = ?`,
+                        [
+                            post_location, incident_date, incident_time, company, badge, name,
+                            incident_type, incident_location, incident_details, first_aid,
+                            detained, treatment_given, disposition, disposition_time, reportingStr, id
+                        ],
+                        function (err) {
+                            if (err) {
+                                console.error("Error updating entry:", err);
+                                req.flash('error_msg', 'Error updating entry.');
+                                return res.redirect('/incident-book');
+                            }
+
+                            // Log activity
+                            const activity = `Edited incident_book entry (ID: ${id})`;
+                            db.run(
+                                'INSERT INTO recent_activities (user_id, post_location, activity, timestamp) VALUES (?, ?, ?, datetime("now", "localtime"))',
+                                [userId, currentPost, activity],
+                                (err) => {
+                                    if (err) console.error('Activity log failed:', err);
+                                }
+                            );
+
+                            db.run(
+                                `INSERT INTO user_activity_logs (user_id, post_location, action, table_name, record_id, logged_by)
+                                 VALUES (?, ?, ?, ?, ?, ?)`,
+                                [userId, currentPost, activity, 'incident_book', id, req.user.username],
+                                (err) => {
+                                    if (err) {
+                                        console.error('Error logging activity:', err);
+                                        req.flash('error_msg', 'Incident updated, but logging failed.');
+                                    } else {
+                                        req.flash('success_msg', 'Incident updated and logged successfully.');
+                                    }
+                                }
+                            );
+
+                            // Check if any rows were updated
+                            if (this.changes > 0) {
+                                req.flash('success_msg', `Incident ID: ${name} modified successfully.`);
+                                console.log('success_msg:', 'Entry edited successfully.');
+                            } else {
+                                req.flash('error_msg', 'Update failed. Entry not found.');
+                            }
+
+                            // Redirect after the operation
+                            return res.redirect('/incident-book');
+                        }
+                    );
                 }
-
-                req.flash('success_msg', 'Incident updated successfully!');
-                res.redirect('/incident-book');
-            });
+            );
         });
     });
 });
 
 // Incident delete
-app.post('/delete/incident/:id', ensureAdmin, (req, res) => {
+app.post('/delete/incident/:id', ensureAdmin, attachPostFilter, (req, res) => {
     const incidentId = req.params.id;
 
     // Fetch the existing incident before deleting (for history)
@@ -1078,13 +1286,13 @@ app.post('/delete/incident/:id', ensureAdmin, (req, res) => {
         // Store the incident data in incident_book_history with deleted_on set
         const historySql = `
             INSERT INTO incident_book_history (
-                id, post, incident_date, incident_time, company, badge, name,
+                id, history_id, post_location, incident_date, incident_time, company, badge, name,
                 incident_type, incident_location, incident_details, first_aid, detained,
                 treatment_given, disposition, disposition_time, reporting, created_at, deleted_on
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
         db.run(historySql, [
-            incident.id, incident.post, incident.incident_date, incident.incident_time, incident.company,
+            incident.id, history_id, incident.post_location, incident.incident_date, incident.incident_time, incident.company,
             incident.badge, incident.name, incident.incident_type, incident.incident_location, incident.incident_details,
             incident.first_aid, incident.detained, incident.treatment_given, incident.disposition,
             incident.disposition_time, incident.reporting, incident.created_at, new Date().toISOString() // Record the deletion time
@@ -1109,11 +1317,8 @@ app.post('/delete/incident/:id', ensureAdmin, (req, res) => {
     });
 });
 
-
-
-
-// Update incident history book
-app.get('/incident/book/history', ensureAuthenticated, (req, res) => {
+// View incident history book
+app.get('/incident/book/history', ensureAuthenticated, ensureAdmin, attachPostFilter, (req, res) => {
     db.all('SELECT * FROM incident_book_history ORDER BY modified_at DESC', [], (error, results) => {
         if (error) {
             req.flash('error_msg', 'Error loading incident history.');
@@ -1128,7 +1333,7 @@ app.get('/incident/book/history', ensureAuthenticated, (req, res) => {
 
 /* ------------------------------ ROUTES TO DELETE RECORDS ---------------------------------*/
 // Route to delete a record from triagebook (Admin only)
-app.get('/delete/triagebook/:id', ensureAdmin, (req, res) => {
+app.get('/delete/triagebook/:id', ensureAdmin, attachPostFilter, (req, res) => {
     const id = req.params.id;
     db.run('DELETE FROM triagebook WHERE id = ?', id, (err) => {
         if (err) {
@@ -1139,7 +1344,7 @@ app.get('/delete/triagebook/:id', ensureAdmin, (req, res) => {
 });
 
 // Route to delete a record from users table (Admin only)
-app.get('/delete/user/:id', ensureAdmin, (req, res) => {
+app.get('/delete/user/:id', ensureAdmin, attachPostFilter, (req, res) => {
     const id = req.params.id;
     db.run('DELETE FROM users WHERE id = ?', id, (err) => {
         if (err) {
@@ -1150,7 +1355,7 @@ app.get('/delete/user/:id', ensureAdmin, (req, res) => {
 });
 
 // Route to delete a record from contact_messages (Admin only)
-app.get('/delete/contact/:id', ensureAdmin, (req, res) => {
+app.get('/delete/contact/:id', ensureAdmin, attachPostFilter, (req, res) => {
     const id = req.params.id;
     db.run('DELETE FROM contact_messages WHERE id = ?', id, (err) => {
         if (err) {
@@ -1159,35 +1364,6 @@ app.get('/delete/contact/:id', ensureAdmin, (req, res) => {
         res.redirect('/messages'); // Redirect to messages page
     });
 });
-
-// Route to delete a record from incident_book (Admin only)
-app.get('/delete/incident/:id', ensureAdmin, (req, res) => {
-    const id = req.params.id;
-    db.run('DELETE FROM incident_book WHERE id = ?', id, (err) => {
-        if (err) {
-            console.error('Error deleting incident record:', err.message);
-        }
-        res.redirect('/incident-book'); // Redirect to incidents page
-    });
-});
-
-// Delete route (POST)
-app.post('/delete/incident/:id', ensureAdmin, (req, res) => {
-    const incidentId = req.params.id;
-    db.get('DELETE FROM incident_book WHERE id = ?', [incidentId], (error) => {
-        if (error) {
-            req.flash('error_msg', 'Error deleting incident.');
-            return res.redirect('/incident-book');
-        }
-        req.flash('success_msg', 'Incident deleted successfully.');
-        res.redirect('/incident-book');
-    });
-});
-
-
-
-
-
 
 
 
@@ -1345,7 +1521,7 @@ app.post('/reset/:token', (req, res) => {
         function hashPassword(password) {
             const saltRounds = 10; // Number of hashing rounds, can adjust for security vs speed
             return bcrypt.hashSync(password, saltRounds);
-}
+        }
 
         const hashedPassword = hashPassword(password); // Implement this function to hash the password
 
@@ -1363,7 +1539,7 @@ app.post('/reset/:token', (req, res) => {
 
 
 // Route to export records to Excel
-app.get('/export', ensureAuthenticated, (req, res) => {
+app.get('/export', ensureAuthenticated, attachPostFilter, (req, res) => {
     db.all('SELECT * FROM triagebook', (err, rows) => {
         if (err) {
             console.error('Error fetching records:', err.message);
@@ -1392,7 +1568,7 @@ app.get('/export', ensureAuthenticated, (req, res) => {
 /* ROUTE TO DOWNLOAD LIVE DATABASE FILE FROM RENDER */
 
 // Temporary download endpoint for SQLite backup
-app.get('/download-sqlite-backup', ensureSuperuser, (req, res) => {
+app.get('/download-sqlite-backup', ensureSuperuser, attachPostFilter, (req, res) => {
     const dbPath = path.join(__dirname, 'database', 'mineaid.db'); // Update the path if needed
 
     // // Set up a basic check to restrict access (change as needed)
@@ -1525,6 +1701,141 @@ app.get('/feedback/results', (req, res) => {
 });
 
 
+/* ----------------------------- REPORTS ------------------------------ */
+
+// Route: Reports and Analytics (GET)
+// app.get('/reports', ensureAuthenticated, ensureAdmin, (req, res) => {
+//     const userId = req.user.user_id;
+//     const currentPost = req.session.current_post;
+//     res.render('reports/reports-home', { currentPost, userId }); // reports.ejs
+// });
+app.get('/reports/form', ensureAuthenticated, (req, res) => {
+    const userId = req.user.user_id;
+    const currentPost = req.session.current_post;
+    res.render('reports/shift-report-form', { currentPost, userId }); // reports.ejs
+});
+
+// Route to handle FAP report submission
+app.post('/reports/submit', ensureAuthenticated, attachPostFilter, (req, res) => {
+    const { report_date, shift_type, post_location, summary, details } = req.body;
+    const currentPost = req.session.current_post;
+    // Generate report_id dynamically (use a trigger or a function in production)
+    
+    // Format today's date as YY-MM-DD
+    const todaysDate = new Date();
+    const formattedDate = todaysDate
+    .toISOString()
+    .slice(2, 10)
+    .replace(/-/g, '-'); // Converts "2024-12-06" to "24-12-06"
+
+    // Generate report_id dynamically
+    const report_id = `fap-${shift_type}-${formattedDate}-${currentPost}`;
+  
+    const query = `
+      INSERT INTO fap_reports (report_id, post_location, shift_type, report_date, summary, details, submitted_by)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+  
+    db.run(
+      query,
+      [report_id, post_location, shift_type, report_date, summary, details, req.user.username],
+      function (err) {
+        if (err) {
+          console.error('Error inserting into fap_reports:', err.message);
+          res.status(500).render('error/500', { message: 'FAP report submission failed' });
+          return;
+        }
+  
+        // Log activity
+        const activity = `Submitted a new FAP report for ${shift_type} shift at ${currentPost}.`;
+        const logQuery = `
+          INSERT INTO user_activity_logs (user_id, post_location, action, table_name, record_id, logged_by)
+          VALUES (?, ?, ?, ?, ?, ?)
+        `;
+  
+        db.run(
+          logQuery,
+          [req.user.user_id, post_location, activity, 'fap_reports', report_id, req.user.username],
+          (logErr) => {
+            if (logErr) {
+              console.error('Error logging activity:', logErr.message);
+              req.flash('error_msg', 'Report submitted, but activity log failed.');
+            } else {
+              req.flash('success_msg', `Report for ${shift_type} submitted successfully.`);
+            }
+  
+            // Redirect back to the reports page or dashboard
+            res.redirect('/reports');
+          }
+        );
+      }
+    );
+});
+
+// Route to view Reports in reports-hom.ejs
+app.get('/reports', ensureAuthenticated, attachPostFilter, (req, res) => {
+    const userId = req.user.user_id;
+    const currentPost = req.session.current_post;
+
+    const query = `
+      SELECT * FROM fap_reports
+      ORDER BY report_date DESC, shift_type ASC, post_location ASC
+    `;
+
+    db.all(query, (err, reports) => {
+        if (err) {
+            console.error('Error fetching reports:', err);
+            req.flash('error_msg', 'Failed to load reports. Please try again later.');
+            return res.redirect('/');
+        }
+
+        if (!reports || reports.length === 0) {
+            console.warn('No reports found in the database.');
+            req.flash('error_msg', 'No reports available to display.');
+            return res.redirect('/');
+        }
+
+        console.log('Reports successfully fetched:', reports.length, 'records found.');
+
+        // Format the current date to match the database date format (YYYY-MM-DD)
+        const currentDate = new Date().toISOString().split('T')[0];
+        console.log('Current Date:', currentDate);
+
+        // Group reports for the recent tab (Day and Night for the current date)
+        const recentReports = reports.filter((r) => r.report_date === currentDate);
+        const groupedReports = {
+            recent: {
+                day: recentReports.filter((r) => r.shift_type === 'Day'),
+                night: recentReports.filter((r) => r.shift_type === 'Night'),
+            },
+            odd: reports.filter((r) => r.post_location === 'ODD'),
+            stp: reports.filter((r) => r.post_location === 'STP'),
+            kms: reports.filter((r) => r.post_location === 'KMS'),
+            gcs: reports.filter((r) => r.post_location === 'GCS'),
+        };
+
+        console.log('Grouped Reports:', groupedReports);
+
+        res.render('reports/reports-home', {
+            title: 'Shift Reports',
+            groupedReports,
+            currentDate,
+            currentPost,
+            userId,
+        });
+
+        console.log('GET /reports - Rendered reports-home.ejs successfully');
+    });
+});
+
+
+
+  
+  
+
+
+
+
 
 // Route: Help/Support (GET)
 app.get('/help', (req, res) => {
@@ -1606,25 +1917,26 @@ app.get('/iemerge-dashboard', (req, res) => {
 /* INVENTORY MANAGEMENT */
 
 // Route: Inventory Management Landing Page (GET)
-app.get('/inventory', (req, res) => {
+app.get('/inventory', attachPostFilter, (req, res) => {
     res.render('inventory/inventory-mgt'); // landing-page.ejs
 });
 
 
 //MEDICATIONS Start
 // GET Route for Add Medication Form
-app.get('/inventory/add-medication', (req, res) => {
+app.get('/inventory/add-medication', attachPostFilter, (req, res) => {
     db.all('SELECT * FROM medications', [], (err, rows) => {
         if (err) {
             console.error('Error fetching medications:', err.message);
             req.flash('error_msg', 'Error fetching medications.');
             return res.redirect('/');
         }
-    res.render('inventory/add-medication', {medications: rows});
+        const userPost = res.locals.post || ''; // Fetch from session or DB
+        res.render('inventory/add-medication', {medications: rows, userPost });
     });
 });
 // POST Route to Add Medication
-app.post('/inventory/add-medication', (req, res) => {
+app.post('/inventory/add-medication', attachPostFilter, (req, res) => {
     const { medication_name, category, dosage_form, unit, reorder_level, expiry_date, manufacturer, description } = req.body;
 
     const query = `
@@ -1651,7 +1963,7 @@ app.post('/inventory/add-medication', (req, res) => {
 
 // Route to view the inventory medication management page
 // GET Route for Medications Inventory with Search/Filter
-app.get('/inventory/medication-inventory', (req, res) => {
+app.get('/inventory/medication-inventory', attachPostFilter, (req, res) => {
     const { search } = req.query; // Extract the search parameter
 
     let query = 'SELECT * FROM medications';
@@ -1673,9 +1985,8 @@ app.get('/inventory/medication-inventory', (req, res) => {
     });
 });
 
-
 // Route to edit medication details
-app.get('/inventory/edit-medication/:id', (req, res) => {
+app.get('/inventory/edit-inventory-medication/:id', attachPostFilter, (req, res) => {
     const { id } = req.params;
     db.get('SELECT * FROM medications WHERE medication_id = ?', [id], (err, row) => {
         if (err) {
@@ -1683,20 +1994,19 @@ app.get('/inventory/edit-medication/:id', (req, res) => {
             req.flash('error_msg', 'Error loading medication details.');
             return res.redirect('/inventory/medication-inventory');
         }
-        res.render('inventory/edit-medication', { medications: row });
+        res.render('inventory/edit-inventory-medication', { medications: [row] });
     });
 });
 
 // Route to update medication
-app.post('/inventory/edit-medication/:id', (req, res) => {
-    const { id } = req.params;
-    const { medication_name, unit, reorder_level, expiry_date, manufacturer, description } = req.body;
+app.post('/inventory/edit-inventory-medication/:id', attachPostFilter, (req, res) => {
+    const { medication_id, medication_name, dosage_form, unit, reorder_level, expiry_date, manufacturer, description } = req.body;
 
     const query = `
-        UPDATE medications SET medication_name = ?, unit = ?, reorder_level = ?, expiry_date = ?, manufacturer = ?, description = ?
+        UPDATE medications SET medication_name = ?, dosage_form = ?, unit = ?, reorder_level = ?, expiry_date = ?, manufacturer = ?, description = ?
         WHERE medication_id = ?
     `;
-    db.run(query, [medication_name, unit, reorder_level, expiry_date, manufacturer, description, id], function(err) {
+    db.run(query, [medication_name, dosage_form, unit, reorder_level, expiry_date, manufacturer, description, medication_id], function(err) {
         if (err) {
             console.error('Error updating medication:', err.message);
             req.flash('error_msg', 'Error updating medication.');
@@ -1708,11 +2018,9 @@ app.post('/inventory/edit-medication/:id', (req, res) => {
 });
 
 // Route to delete medication
-app.get('/inventory/delete-medication/:id', (req, res) => {
-    const { id } = req.params;
-
+app.get('/inventory/delete-inventory-medication/:id', attachPostFilter, (req, res) => {
     const query = 'DELETE FROM medications WHERE medication_id = ?';
-    db.run(query, [id], function(err) {
+    db.run(query, function(err) {
         if (err) {
             console.error('Error deleting medication:', err.message);
             req.flash('error_msg', 'Error deleting medication.');
@@ -1730,64 +2038,39 @@ app.get('/inventory/delete-medication/:id', (req, res) => {
 //Consumables begin
 
 // GET Route for Consumables
-app.get('/inventory/add-consumable', (req, res) => {
+app.get('/inventory/add-consumable', attachPostFilter, (req, res) => {
     db.all('SELECT * FROM consumables', [], (err, rows) => {
         if (err) {
             console.error('Error fetching consumables:', err.message);
             req.flash('error_msg', 'Error fetching consumables.');
             return res.redirect('../errors/error');
         }
-        res.render('inventory/add-consumable', { consumables: rows });
+        const userPost = res.locals.post || ''; // Fetch from session or DB
+        res.render('inventory/add-consumable', { consumables: rows, userPost });
     });
 });
 
 // POST Route to Add Consumable
-app.post('/inventory/add-consumables', (req, res) => {
-    const { consumable_name, unit, reorder_level, expiry_date, manufacturer, description } = req.body;
+app.post('/inventory/add-consumable', attachPostFilter, (req, res) => {
+    const { consumable_location, consumable_name, unit, reorder_level, expiry_date, manufacturer, description } = req.body;
 
-    // Get the latest consumable ID
-    db.get('SELECT MAX(CAST(SUBSTR(consumable_id, 5) AS INTEGER)) AS last_id FROM consumables', [], (err, row) => {
+    const query = `
+        INSERT INTO consumables (consumable_id, consumable_location, consumable_name, unit, reorder_level, expiry_date, manufacturer, description)
+        VALUES ((SELECT 'cons-' || IFNULL(MAX(rowid) + 1, 0) FROM consumables), ?, ?, ?, ?, ?, ?, ?)
+    `;
+    db.run(query, [consumable_location, consumable_name, unit, reorder_level, expiry_date, manufacturer, description], function (err) {
         if (err) {
-            console.error('Error fetching latest consumable ID:', err.message);
-            req.flash('error_msg', 'Error generating custom consumable ID.');
-            return res.redirect('/inventory/add-consumable'); // Redirect back with error
+            console.error('Error inserting consumable:', err.message);
+            req.flash('error_msg', 'Error adding consumable.');
+            return res.redirect('/inventory/consumable-inventory');
         }
-
-        const nextId = (row.last_id || 0) + 1;
-        const customId = `cons-${nextId}`;
-
-        // Insert the new consumable
-        const query = `
-            INSERT INTO consumables (consumable_id, consumable_name, unit, reorder_level, expiry_date, manufacturer, description)
-            VALUES ((SELECT 'cons-' || IFNULL(MAX(rowid) + 1, 0) FROM consumables), (?, ?, ?, ?, ?, ?, ?)
-        `;
-        db.run(query, [customId, consumable_name, unit, reorder_level, expiry_date, manufacturer, description], function (err) {
-            if (err) {
-                console.error('Error inserting consumable:', err.message);
-                req.flash('error_msg', 'Error inserting consumable.');
-                return res.redirect('/inventory/add-consumable');
-            }
-            req.flash('success_msg', `Consumable added with ID: ${customId}`);
-            res.redirect('/inventory/consumable-inventory');
-        });
+        req.flash('success_msg', 'Consumable added successfully.');
+        res.redirect('/inventory/consumable-inventory');
     });
 });
 
-// Route to view the inventory consumable management page
-// app.get('/inventory/consumable-inventory', (req, res) => {
-//     db.all('SELECT * FROM consumables ORDER BY consumable_id', [], (err, rows) => {
-//         if (err) {
-//             console.error('Error fetching consumable:', err.message);
-//             req.flash('error_msg', 'Error loading consumable list.');
-//             return res.redirect('/inventory/consumable-inventory');
-//         }
-//         res.render('inventory/consumable-inventory', {
-//             consumables: rows
-//         });
-//     });
-// });
 // GET Route for Consumable Inventory with Search/Filter
-app.get('/inventory/consumable-inventory', (req, res) => {
+app.get('/inventory/consumable-inventory', attachPostFilter, (req, res) => {
     const { search } = req.query; // Extract the search parameter
 
     let query = 'SELECT * FROM consumables';
@@ -1809,9 +2092,8 @@ app.get('/inventory/consumable-inventory', (req, res) => {
     });
 });
 
-
 // Route to edit consumable details
-app.get('/inventory/edit-consumable/:id', (req, res) => {
+app.get('/inventory/edit-inventory-consumable/:id', attachPostFilter, (req, res) => {
     const { id } = req.params;
     db.get('SELECT * FROM consumables WHERE consumable_id = ?', [id], (err, row) => {
         if (err) {
@@ -1819,20 +2101,19 @@ app.get('/inventory/edit-consumable/:id', (req, res) => {
             req.flash('error_msg', 'Error loading consumable details.');
             return res.redirect('/inventory/consumable-inventory');
         }
-        res.render('inventory/edit-consumable', { consumables: row });
+        res.render('inventory/edit-inventory-consumable', { consumables: [row] });
     });
 });
 
 // Route to update consumable
-app.post('/inventory/edit-consumable/:id', (req, res) => {
-    const { id } = req.params;
-    const { consumable_name, unit, reorder_level, expiry_date, manufacturer, description } = req.body;
+app.post('/inventory/edit-inventory-consumable/:id', attachPostFilter, (req, res) => {
+    const { consumable_id, consumable_name, unit, reorder_level, expiry_date, manufacturer, description } = req.body;
 
     const query = `
         UPDATE consumables SET consumable_name = ?, unit = ?, reorder_level = ?, expiry_date = ?, manufacturer = ?, description = ?
         WHERE consumable_id = ?
     `;
-    db.run(query, [consumable_name, unit, reorder_level, expiry_date, manufacturer, description, id], function(err) {
+    db.run(query, [consumable_name, unit, reorder_level, expiry_date, manufacturer, description, consumable_id], function(err) {
         if (err) {
             console.error('Error updating consumable:', err.message);
             req.flash('error_msg', 'Error updating consumable.');
@@ -1844,11 +2125,9 @@ app.post('/inventory/edit-consumable/:id', (req, res) => {
 });
 
 // Route to delete consumable
-app.get('/inventory/delete-consumable/:id', (req, res) => {
-    const { id } = req.params;
-
+app.get('/inventory/delete-inventory-consumable/:id', attachPostFilter, (req, res) => {
     const query = 'DELETE FROM consumables WHERE consumable_id = ?';
-    db.run(query, [id], function(err) {
+    db.run(query, function(err) {
         if (err) {
             console.error('Error deleting consumable:', err.message);
             req.flash('error_msg', 'Error deleting consumable.');
@@ -1859,45 +2138,77 @@ app.get('/inventory/delete-consumable/:id', (req, res) => {
     });
 });
 
-
 //Consumables End
 
 
 //Equipment Begins
-// GET Route for Equipment Checklist
-app.get('/inventory/equipment-checklist', (req, res) => {
+// GET Route for Adding Equipment Form
+app.get('/inventory/add-equipment', attachPostFilter, (req, res) => {
+    // Show the current equipment after the form with code below
     db.all('SELECT * FROM equipment', [], (err, rows) => {
         if (err) {
             console.error('Error fetching equipment:', err.message);
             req.flash('error_msg', 'Error fetching equipment.');
             return res.redirect('../errors/error');
         }
-        res.render('inventory/inventory-equipment-checklist', { equipment: rows });
+        const userPost = res.locals.post || ''; // Fetch from session or DB
+        res.render('inventory/add-equipment', { equipment: rows, userPost });
     });
 });
 
-// POST Route to Add Equipment Checklist
-app.post('/inventory/equipment-checklist', (req, res) => {
-    const { equipment_name, unit, reorder_level, service_date, manufacturer, description } = req.body;
+// POST Route to Add New Equipment
+app.post('/inventory/add-equipment', attachPostFilter, (req, res) => {
+    const {
+        equipment_location, 
+        equipment_name,
+        unit,
+        reorder_level,
+        service_date,
+        manufacturer,
+        description
+    } = req.body;
 
-    const query = `
-        INSERT INTO equipment (equipment_id, equipment_name, unit, reorder_level, service_date, manufacturer, description)
-        VALUES ((SELECT 'equip-' || IFNULL(MAX(rowid) + 1, 0) FROM equipment), ?, ?, ?, ?, ?, ?)
+    const userId = req.user.user_id; // Assuming req.user contains the logged-in user's details
+
+    const insertEquipmentQuery = `
+        INSERT INTO equipment (equipment_id, equipment_location, equipment_name, unit, reorder_level, service_date, manufacturer, description)
+        VALUES ((SELECT 'equip-' || IFNULL(MAX(rowid) + 1, 0) FROM equipment), ?, ?, ?, ?, ?, ?, ?)
     `;
-    db.run(query, [equipment_name, unit, reorder_level, service_date, manufacturer, description], function (err) {
-        if (err) {
-            console.error('Error inserting equipment:', err.message);
-            req.flash('error_msg', 'Error inserting equipment.');
-            return res.redirect('/inventory/inventory-equipment');
+
+    db.run(
+        insertEquipmentQuery,
+        [equipment_location, equipment_name, unit, reorder_level, service_date, manufacturer, description],
+        function (err) {
+            if (err) {
+                console.error('Error inserting equipment:', err.message);
+                req.flash('error_msg', 'Error inserting equipment.');
+                return res.redirect('/inventory/equipment-inventory');
+            }
+
+            // Log user activity
+            const logActivityQuery = `
+                INSERT INTO user_activity_logs (user_id, action, table_name, record_id)
+                VALUES (?, ?, ?, ?)
+            `;
+            db.run(
+                logActivityQuery,
+                [userId, 'Add', 'equipment', this.lastID],
+                (logErr) => {
+                    if (logErr) {
+                        console.error('Error logging activity:', logErr.message);
+                        // Proceed without interrupting user flow
+                    }
+                }
+            );
+
+            req.flash('success_msg', `Equipment added successfully.`);
+            res.redirect('/inventory/equipment-inventory');
         }
-        req.flash('success_msg', `Equipment added successfully.`);
-        res.redirect('/inventory/equipment-checklist');
-    });
+    );
 });
 
-// Route to view the inventory equipment management page
-// GET Route for Equipment Inventory with Search/Filter
-app.get('/inventory/inventory-equipment', (req, res) => {
+// Route to view the Equipment Inventory with Search/Filter
+app.get('/inventory/equipment-inventory', attachPostFilter, (req, res) => {
     const { search } = req.query; // Extract the search parameter
 
     let query = 'SELECT * FROM equipment';
@@ -1915,46 +2226,62 @@ app.get('/inventory/inventory-equipment', (req, res) => {
             req.flash('error_msg', 'Error fetching equipment.');
             return res.redirect('/errors/error');
         }
-        res.render('inventory/inventory-equipment', { equipment: rows });
+        res.render('inventory/equipment-inventory', { equipment: rows });
     });
 });
 
-
 // Route to edit equipment details
-app.get('/inventory/edit-equipment/:id', (req, res) => {
+app.get('/inventory/edit-inventory-equipment/:id', attachPostFilter, (req, res) => {
     const { id } = req.params;
     db.get('SELECT * FROM equipment WHERE equipment_id = ?', [id], (err, row) => {
         if (err) {
             console.error('Error fetching equipment:', err.message);
             req.flash('error_msg', 'Error loading equipment details.');
-            return res.redirect('/inventory/inventory-equipment');
+            return res.redirect('/inventory/equipment-inventory');
         }
-        res.render('inventory/edit-equipment', { equipment: row });
+        res.render('inventory/edit-inventory-equipment', { equipment: [row] });
     });
 });
 
 // Route to update equipment
-app.post('/inventory/edit-equipment/:id', (req, res) => {
-    const { id } = req.params;
-    const { equipment_name, unit, reorder_level, service_date, manufacturer, description } = req.body;
+app.post('/inventory/edit-inventory-equipment', attachPostFilter, (req, res) => {
+    const {
+        equipment_id,
+        equipment_name,
+        unit,
+        reorder_level,
+        service_date,
+        manufacturer,
+        description
+    } = req.body;
 
     const query = `
-        UPDATE equipment SET equipment_name = ?, unit = ?, reorder_level = ?, service_date = ?, manufacturer = ?, description = ?
+        UPDATE equipment SET 
+            equipment_name = ?, 
+            unit = ?, 
+            reorder_level = ?, 
+            service_date = ?, 
+            manufacturer = ?, 
+            description = ?
         WHERE equipment_id = ?
     `;
-    db.run(query, [equipment_name, unit, reorder_level, service_date, manufacturer, description, id], function(err) {
+
+    db.run(query, [equipment_name, unit, reorder_level, service_date, manufacturer, description, equipment_id], function(err) {
         if (err) {
-            console.error('Error updating equipment:', err.message);
-            req.flash('error_msg', 'Error updating equipment.');
-            return res.redirect('/inventory/inventory-equipment');
+            console.error('Failed to update equipment:', err.message);
+            req.flash('error_msg', 'Failed to update equipment.');
+            return res.redirect('/inventory/equipment-inventory');
         }
+
         req.flash('success_msg', 'Equipment updated successfully.');
-        res.redirect('/inventory/inventory-equipment');
+        res.redirect('/inventory/equipment-inventory');
     });
 });
 
+
+
 // Route to delete equipment
-app.get('/inventory/delete-equipment/:id', (req, res) => {
+app.get('/inventory/delete-inventory-equipment/:id', attachPostFilter, (req, res) => {
     const { id } = req.params;
 
     const query = 'DELETE FROM equipment WHERE equipment_id = ?';
@@ -1962,10 +2289,10 @@ app.get('/inventory/delete-equipment/:id', (req, res) => {
         if (err) {
             console.error('Error deleting equipment:', err.message);
             req.flash('error_msg', 'Error deleting equipment.');
-            return res.redirect('/inventory/inventory-equipment');
+            return res.redirect('/inventory/equipment-inventory');
         }
         req.flash('success_msg', 'Equipment deleted successfully.');
-        res.redirect('/inventory/inventory-equipment');
+        res.redirect('/inventory/equipment-inventory');
     });
 });
 //Equipment Ends
@@ -1973,19 +2300,19 @@ app.get('/inventory/delete-equipment/:id', (req, res) => {
 
 
 // Route: Daily Checklist Page (GET)
-app.get('/inventory/daily-checklist', (req, res) => {
+app.get('/inventory/daily-checklist', attachPostFilter, (req, res) => {
     res.render('inventory/daily-checklist'); // Daily Checklist form page
 });
 
 // Route: Submit Daily Checklist (POST)
-app.post('/inventory/daily-checklist', (req, res) => {
-    const { item_id, stock_start, stock_used, stock_added, stock_end, remarks, logged_by } = req.body;
+app.post('/inventory/daily-checklist', attachPostFilter, (req, res) => {
+    const { item_id, item_name, stock_start, stock_used, stock_added, stock_end, remarks, logged_by } = req.body;
     
     // Validate and insert log into database
     db.run(`
-        INSERT INTO inventory_daily_logs (item_id, stock_start, stock_used, stock_added, stock_end, remarks, logged_by)
-        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [item_id, stock_start, stock_used, stock_added, stock_end, remarks, logged_by],
+        INSERT INTO daily_checklist_data (item_id, item_name, stock_start, stock_used, stock_added, stock_end, remarks, logged_by)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [item_id, item_name, stock_start, stock_used, stock_added, stock_end, remarks, logged_by],
         function (err) {
             if (err) {
                 console.error("Error inserting daily checklist:", err);
@@ -1993,19 +2320,52 @@ app.post('/inventory/daily-checklist', (req, res) => {
             }
             req.flash('success_msg', 'Checklist uploaded successfully')
             // Redirect to the inventory dashboard or logs page
-            res.redirect('/inventory/daily-checklist');
+            res.redirect('/inventory/daily-checklist-data');
         }
     );
 });
 
+// Route: View Daily Checklist Logs (GET)
+app.get('/inventory/daily-checklist-data', attachPostFilter, (req, res) => {
+    const { filterBy, filterValue } = req.query; // Get filter criteria from query
+
+    let query = `
+        SELECT * FROM daily_checklist_data
+        LEFT JOIN consumables ON daily_checklist_data.item_id = consumables.consumable_id
+        LEFT JOIN equipment ON daily_checklist_data.item_id = equipment.equipment_id
+        LEFT JOIN medications ON daily_checklist_data.item_id = medications.medication_id
+    `;
+    const params = [];
+
+    // Apply filter if provided
+    if (filterBy && filterValue) {
+        query += ` WHERE ${filterBy} LIKE ?`;
+        params.push(`%${filterValue}%`);
+    }
+
+    // Execute query
+    db.all(query, params, (err, rows) => {
+        if (err) {
+            console.error("Error fetching DAILY CHECKLIST DATA:", err);
+            return res.status(500).send("Error fetching checklist data");
+        }
+
+        // Render the template with data
+        res.render('inventory/daily-checklist-data', { logs: rows, filterBy, filterValue });
+    });
+});
+
+
 
 // Route: Add Inventory Item (GET)
-app.get('/inventory/add-inventory-item', (req, res) => {
-    res.render('inventory/add-inventory-item'); // landing-page.ejs
+app.get('/inventory/add-inventory-item', attachPostFilter, (req, res) => {
+    
+    const userPost = res.locals.post || ''; // Fetch from session or DB
+    res.render('inventory/add-inventory-item', { userPost });
 });
 
 // Route: Add Inventory Item (POST)
-app.post('/inventory/add-inventory-item', (req, res) => {
+app.post('/inventory/add-inventory-item', attachPostFilter, (req, res) => {
     const { 
         name, 
         category, 
@@ -2026,7 +2386,7 @@ app.post('/inventory/add-inventory-item', (req, res) => {
     const category_id = categoryMap[category];
 
     db.run(`
-        INSERT INTO inventory_items (item_name, category_id, unit, reorder_level, expiry_date, device_status, service_date, stock)
+        INSERT INTO inventory_items (item_name, category_id, unit, reorder_level, expiry_date, equipment_status, service_date, stock)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [name, category_id, unit, reorder_level, expiry_date || null, status || null, service_date || null, initial_stock],
         function (err) {
@@ -2040,7 +2400,6 @@ app.post('/inventory/add-inventory-item', (req, res) => {
     );
 });
 
-
 // Route: Add Category Page (GET)
 app.get('/inventory/add-inventory-category', (req, res) => {
     res.render('inventory/add-inventory-category'); // Add Category form page
@@ -2048,12 +2407,12 @@ app.get('/inventory/add-inventory-category', (req, res) => {
 
 // Route: Add Category (POST)
 app.post('/inventory/add-inventory-category', (req, res) => {
-    const { category_name } = req.body;
+    const { name, description } = req.body;
 
     db.run(`
-        INSERT INTO inventory_categories (category_name)
-        VALUES (?)`,
-        [category_name],
+        INSERT INTO inventory_categories (name, description)
+        VALUES (?,?)`,
+        [name, description],
         function (err) {
             if (err) {
                 console.error("Error adding category:", err);
@@ -2066,9 +2425,495 @@ app.post('/inventory/add-inventory-category', (req, res) => {
 });
 
 // Route: Monthly Summary Page (GET)
+// app.get('/inventory/monthly-summary', (req, res) => {
+//     res.render('inventory/monthly-summary'); // Monthly Summary form/page
+// });
+// app.get('/inventory/monthly-summary', (req, res) => {
+//     const currentMonth = new Date().toISOString().slice(0, 7); // Format YYYY-MM
+
+//     const query = `
+//         SELECT 
+//             SUM(stock_used) AS total_stock_used,
+//             SUM(stock_added) AS total_stock_added,
+//             COUNT(CASE WHEN expiry_date IS NOT NULL AND expiry_date <= DATE('now', '+30 days') THEN 1 END) AS items_near_expiry,
+//             COUNT(CASE WHEN stock_end <= reorder_level THEN 1 END) AS low_stock_alerts
+//         FROM inventory_daily_logs
+//         LEFT JOIN inventory_items ON inventory_daily_logs.item_id = inventory_items.id
+//         WHERE strftime('%Y-%m', log_date) = ?`;
+
+//     db.get(query, [currentMonth], (err, summary) => {
+//         if (err) {
+//             console.error("Error fetching monthly summary:", err.message);
+//             req.flash('error_msg', 'Error fetching monthly summary.');
+//             return res.redirect('/errors/error');
+//         }
+
+//         res.render('inventory/monthly-summary', {
+//             summary: summary || { total_stock_used: 0, total_stock_added: 0, items_near_expiry: 0, low_stock_alerts: 0 },
+//         });
+//     });
+// });
+
+//EXPERIMENTAL BELOW
 app.get('/inventory/monthly-summary', (req, res) => {
-    res.render('inventory/monthly-summary'); // Monthly Summary form/page
+    const summaryQuery = `
+        SELECT 
+            SUM(stock_used) AS total_stock_used,
+            SUM(stock_added) AS new_stock_added,
+            COUNT(CASE WHEN expiry_date <= DATE('now', '+30 days') THEN 1 END) AS near_expiry_count,
+            COUNT(CASE WHEN stock_end <= reorder_level THEN 1 END) AS low_stock_alert_count
+        FROM (
+            SELECT item_id, stock_used, stock_added, stock_end, NULL AS expiry_date, reorder_level
+            FROM inventory_daily_logs
+            JOIN consumables ON inventory_daily_logs.item_id = consumables.consumable_id
+            UNION ALL
+            SELECT item_id, stock_used, stock_added, stock_end, NULL AS expiry_date, reorder_level
+            FROM inventory_daily_logs
+            JOIN equipment ON inventory_daily_logs.item_id = equipment.equipment_id
+            UNION ALL
+            SELECT item_id, stock_used, stock_added, stock_end, expiry_date, reorder_level
+            FROM inventory_daily_logs
+            JOIN medications ON inventory_daily_logs.item_id = medications.medication_id
+        )
+    `;
+
+    db.get(summaryQuery, (err, result) => {
+        if (err) {
+            console.error('Error fetching monthly summary:', err.message);
+            req.flash('error_msg', 'Error fetching monthly summary.');
+            return res.redirect('/errors/error');
+        }
+
+        res.render('inventory/monthly-summary', {
+            totalStockUsed: result.total_stock_used || 0,
+            newStockAdded: result.new_stock_added || 0,
+            nearExpiryCount: result.near_expiry_count || 0,
+            lowStockAlertCount: result.low_stock_alert_count || 0,
+        });
+    });
 });
+
+
+
+
+// GET Route for All Inventory Items with Search/Filter
+app.get('/inventory/inventory-items-all', (req, res) => {
+    const { filterBy, filterValue } = req.query;
+
+    let baseQuery = `
+        SELECT * FROM (
+            SELECT consumable_location AS post_location, consumable_id AS item_id, consumable_name AS name, category, unit, reorder_level, expiry_date, NULL AS service_date, 
+                   manufacturer, description, created_at 
+            FROM consumables
+            UNION ALL
+            SELECT equipment_location AS post_location, equipment_id AS item_id, equipment_name AS name, category, unit, reorder_level, NULL AS expiry_date, service_date, 
+                   manufacturer, description, created_at 
+            FROM equipment
+            UNION ALL
+            SELECT medication_location AS post_location, medication_id AS item_id, medication_name AS name, category, unit, reorder_level, expiry_date, NULL AS service_date, 
+                   manufacturer, description, created_at 
+            FROM medications
+        ) AS inventory`;
+
+    const params = [];
+
+    // Add filtering based on filterBy and filterValue
+    if (filterBy && filterValue) {
+        baseQuery += ` WHERE ${filterBy} LIKE ?`;
+        params.push(`%${filterValue}%`);
+    }
+
+    db.all(baseQuery, params, (err, rows) => {
+        if (err) {
+            console.error('Error fetching Inventory Items:', err.message);
+            req.flash('error_msg', 'Error fetching Inventory Items.');
+            return res.redirect('/errors/error');
+        }
+
+        
+        // Pass the rows and filter criteria to the EJS template
+        res.render('inventory/inventory-items-all', {
+            inventoryItems: rows,
+            filterBy,
+            filterValue,
+        });
+    });
+});
+// END Inventory Items All Route
+
+
+// GET Route for Viewing All User Inventory Activity Logs
+// GET Route for Viewing All User Activity Logs
+app.get('/inventory/user-activity-logs', (req, res) => {
+    db.all('SELECT * FROM user_activity_logs', [], (err, rows) => {
+        if (err) {
+            console.error('Error fetching user activity logs:', err.message);
+            req.flash('error_msg', 'Error fetching user activity logs.');
+            return res.redirect('../errors/error');
+        }
+        res.render('inventory/user-activity-logs', { logs: rows });
+    });
+});
+
+
+/***********************  ITEMS REGISTER PAGE AND MODAL SLIDESHOW FOR ITEM DETAILS **********************/
+
+// Route for Items Register
+// app.get('/inventory/items-register', attachPostFilter, (req, res) => {
+//     const query = `SELECT * FROM items_register`;
+//     db.all(query, [], (err, rows) => {
+//       if (err) {
+//         console.error('Error fetching items:', err.message);
+//         req.flash('error_msg', 'Error fetching items.');
+//         return res.redirect('/inventory');
+//       }
+//       res.render('inventory/items-register', { items: rows });
+//     });
+//   });
+app.get('/inventory/items-register', attachPostFilter, (req, res) => {
+    const query = req.user.role === 'Superuser'
+        ? `SELECT * FROM items_register ORDER BY name ASC`
+        : `SELECT * FROM items_register WHERE post_location = ? COLLATE NOCASE ORDER BY name ASC`;
+
+    const params = req.user.role === 'Superuser' ? [] : [req.postLocation];
+
+    db.all(query, params, (err, items) => {
+        if (err) {
+            console.error('Error retrieving items:', err.message);
+            req.flash('error_msg', 'Unable to retrieve items.');
+            return res.redirect('/inventory');
+        }
+        res.render('inventory/items-register', { items });
+    });
+});
+
+
+
+//   Route for Item Details
+// app.get('/inventory/item/:id', (req, res) => {
+//     const { id } = req.params;
+//     const itemQuery = `SELECT * FROM items_register WHERE item_id = ?`;
+//     const activityQuery = `SELECT * FROM user_activity_logs WHERE record_id = ?`;
+  
+//     db.get(itemQuery, [id], (err, item) => {
+//       if (err || !item) {
+//         console.error('Error fetching item:', err ? err.message : 'Item not found.');
+//         req.flash('error_msg', 'Item not found.');
+//         return res.redirect('/inventory/items-register');
+//       }
+  
+//       db.all(activityQuery, [id], (err, activities) => {
+//         if (err) {
+//           console.error('Error fetching activities:', err.message);
+//           activities = [];
+//         }
+//         res.render('inventory/item-details', { item, activities });
+//       });
+//     });
+//   });
+//   OLD FLAT RENDER
+app.get('/inventory/item/:id', attachPostFilter, (req, res) => {
+  const { id } = req.params;
+
+  // Query to fetch current item
+  const itemQuery = `SELECT * FROM items_register WHERE item_id = ?`;
+
+  // Query to fetch previous and next item IDs
+  const navigationQuery = `
+    SELECT
+      (SELECT item_id FROM items_register WHERE rowid < (SELECT rowid FROM items_register WHERE item_id = ?) ORDER BY rowid DESC LIMIT 1) AS prevItemId,
+      (SELECT item_id FROM items_register WHERE rowid > (SELECT rowid FROM items_register WHERE item_id = ?) ORDER BY rowid ASC LIMIT 1) AS nextItemId
+  `;
+
+  // Query to fetch activity logs for the item
+  const activityQuery = `SELECT * FROM user_activity_logs WHERE record_id = ?`;
+
+  db.get(itemQuery, [id], (err, item) => {
+    if (err || !item) {
+      console.error('Error fetching item:', err ? err.message : 'Item not found.');
+      req.flash('error_msg', 'Item not found.');
+      return res.redirect('/inventory/items-register');
+    }
+
+    db.get(navigationQuery, [id, id], (err, navData) => {
+      if (err) {
+        console.error('Error fetching navigation data:', err.message);
+        navData = { prevItemId: null, nextItemId: null };
+      }
+
+      db.all(activityQuery, [id], (err, activities) => {
+        if (err) {
+          console.error('Error fetching activities:', err.message);
+          activities = [];
+        }
+        res.render('inventory/item-details', {
+          item,
+          activities,
+          prevItemId: navData.prevItemId,
+          nextItemId: navData.nextItemId,
+        });
+      });
+    });
+  });
+});
+
+// Get Form to Add item to items_register
+app.get('/inventory/add-new-item', attachPostFilter, (req, res) => {
+    const locationsQuery = 'SELECT name FROM post_locations';
+    db.all(locationsQuery, [], (err, locations) => {
+        if (err) {
+            console.error('Error fetching locations:', err.message);
+            req.flash('error_msg', 'Error loading FAP locations.');
+            return res.redirect('/inventory');
+        }
+        
+        const userPost = res.locals.post || ''; // Fetch from session or DB
+        res.render('inventory/add-new-item', {
+            locations,
+            categories: ['medication', 'consumable', 'equipment'], // Example for dropdown
+         userPost });
+    });
+});
+
+//Post route for adding item
+app.post('/inventory/add-new-item', attachPostFilter, (req, res) => {
+    const {
+        post_location,
+        category, // e.g., Medication, Consumable, Equipment
+        name,
+        description,
+        initial_stock,
+        reorder_level,
+        available_stock,
+        manufacturer,
+        expiry_date,
+        device_status,
+        service_date
+    } = req.body;
+
+    const userId = req.user?.id || 'unknown'; // Replace with actual user ID from session/auth
+    const username = req.user?.username || 'Unknown User';
+
+    // Determine the prefix based on the category
+    let itemIdPrefix = '';
+    if (category === 'Equipment') {
+        itemIdPrefix = 'equip-';
+    } else if (category === 'Medication') {
+        itemIdPrefix = 'med-';
+    } else if (category === 'Consumable') {
+        itemIdPrefix = 'cons-';
+    } else {
+        itemIdPrefix = 'item-'; // Default prefix
+    }
+
+    const itemIdQuery = `SELECT '${itemIdPrefix}' || IFNULL(MAX(rowid) + 1, 0) AS new_id FROM items_register`;
+
+    db.get(itemIdQuery, [], (err, row) => {
+        if (err) {
+            console.error('Error generating item ID:', err.message);
+            req.flash('error_msg', 'Error adding item. Please try again.');
+            return res.redirect('/inventory/add-new-item');
+        }
+
+        const newItemId = row.new_id;
+
+        const insertQuery = `
+            INSERT INTO items_register (
+                post_location,
+                item_id,
+                category,
+                name,
+                description,
+                initial_stock,
+                reorder_level,
+                available_stock,
+                manufacturer,
+                expiry_date,
+                device_status,
+                service_date
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        db.run(
+            insertQuery,
+            [
+                post_location,
+                newItemId,
+                category,
+                name,
+                description,
+                initial_stock || null,
+                reorder_level || null,
+                available_stock || null,
+                manufacturer,
+                expiry_date || null,
+                device_status,
+                service_date || null
+            ],
+            function (insertErr) {
+                if (insertErr) {
+                    console.error('Error inserting new item:', insertErr.message);
+                    req.flash('error_msg', 'Error adding item. Please try again.');
+                    return res.redirect('/inventory/add-new-item');
+                }
+
+                
+            // Log user activity
+            const logActivityQuery = `
+                INSERT INTO user_activity_logs (user_id, action, table_name, record_id, logged_by)
+                VALUES (?, ?, ?, ?, ?)
+            `;
+
+            db.run(
+                logActivityQuery,
+                [userId, 'Add', 'equipment', this.lastID, username],
+                    (logErr) => {
+                        if (logErr) {
+                            console.error('Error logging activity:', logErr.message);
+                            req.flash('error_msg', 'Item added but activity log failed.');
+                            return res.redirect('/inventory/items-register');
+                        }
+
+                        // Flashed message using dynamic category and name
+                        req.flash(
+                            'success_msg',
+                            `${name} (${category}) added successfully.`
+                        );
+                        res.redirect('/inventory/items-register');
+                    }
+                );
+            }
+        );
+    });
+});
+
+// Edit item in register
+app.post('/inventory/edit/:id', attachPostFilter, (req, res) => {
+    const itemId = req.params.id;
+    const {
+        name,
+        description,
+        manufacturer,
+        post_location,
+        available_stock,
+        reorder_level,
+        expiry_date,
+        service_date,
+    } = req.body;
+
+    const query = `
+        UPDATE items_register 
+        SET name = ?, description = ?, manufacturer = ?, post_location = ?, 
+            available_stock = ?, reorder_level = ?, expiry_date = ?, service_date = ?
+        WHERE id = ?
+    `;
+
+    const params = [
+        name, description, manufacturer, post_location,
+        available_stock, reorder_level, expiry_date, service_date, itemId
+    ];
+
+    db.run(query, params, (err) => {
+        if (err) {
+            console.error('Error updating item:', err.message); // Log the error
+            req.flash('error_msg', 'Error updating item.');
+            return res.redirect(`/inventory/details/${itemId}`);
+        }
+
+        // Log user activity
+        const logActivityQuery = `
+            INSERT INTO user_activity_logs (user_id, action, table_name, record_id, logged_by)
+            VALUES (?, ?, ?, ?, ?)
+        `;
+
+        // Assuming `req.user` contains user info
+        db.run(
+            logActivityQuery,
+            [req.user.id, 'Edit', 'items_register', itemId, req.user.username],
+            (logErr) => {
+                if (logErr) {
+                    console.error('Error logging activity:', logErr.message);
+                    req.flash('error_msg', 'Item updated but activity log failed.');
+                } else {
+                    req.flash('success_msg', `${name} updated successfully.`);
+                }
+                res.redirect('/inventory/items-register');
+            }
+        );
+    });
+});
+
+// Delete register item
+app.post('/inventory/delete/:id', ensureAdmin, attachPostFilter, (req, res) => {
+    const itemId = req.params.id;
+
+    // Fetch the existing item before deleting (for logging or verification)
+    db.get('SELECT * FROM items_register WHERE id = ?', [itemId], (error, item) => {
+        if (error || !item) {
+            req.flash('error_msg', 'Error loading item for deletion.');
+            return res.redirect('/inventory/items-register');
+        }
+
+        // Save the item in a history table for audit purposes
+        const historySql = `
+            INSERT INTO items_register_history (
+                id, post_location, item_id, category, name, image_url, description,
+                initial_stock, reorder_level, available_stock, manufacturer,
+                expiry_date, device_status, service_date, created_at, deleted_on
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        db.run(historySql, [
+            item.id, item.post_location, item.item_id, item.category, item.name,
+            item.image_url, item.description, item.initial_stock, item.reorder_level,
+            item.available_stock, item.manufacturer, item.expiry_date, item.device_status,
+            item.service_date, item.created_at, new Date().toISOString() // Record deletion time
+        ], function (historyError) {
+            if (historyError) {
+                console.error('Error saving item history:', historyError.message); // Debug log
+                req.flash('error_msg', 'Error saving item history.');
+                return res.redirect('/inventory/items-register');
+            }
+
+            // Now delete the item from the items_register table
+            const deleteSql = 'DELETE FROM items_register WHERE id = ?';
+            db.run(deleteSql, [itemId], function (deleteError) {
+                if (deleteError) {
+                    console.error('Error deleting item:', deleteError.message); // Debug log
+                    req.flash('error_msg', 'Error deleting item.');
+                    return res.redirect('/inventory/items-register');
+                }
+
+                // Log user activity
+                const logActivityQuery = `
+                    INSERT INTO user_activity_logs (user_id, action, table_name, record_id, logged_by)
+                    VALUES (?, ?, ?, ?, ?)
+                `;
+
+                db.run(
+                    logActivityQuery,
+                    [req.user.id, 'Delete', 'items_register', itemId, req.user.username],
+                    (logErr) => {
+                        if (logErr) {
+                            console.error('Error logging activity:', logErr.message);
+                            req.flash('error_msg', 'Item deleted but activity log failed.');
+                        } else {
+                            req.flash('success_msg', `Item ${item.name} deleted successfully.`);
+                        }
+                        res.redirect('/inventory/items-register');
+                    }
+                );
+            });
+        });
+    });
+});
+
+
+/***********************************************************************************************/
+
+
+
 
 
 

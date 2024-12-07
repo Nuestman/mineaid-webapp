@@ -11,7 +11,7 @@
     <header><%- include('../partials/_nav') %></header>
 
     <div class="container">
-        <h2>Add New Medication</h2>
+        <h1>Add New Medication</h1>
 
         <div class="alert-parent">
             <%- include('../partials/_flash-alert') %>
@@ -19,6 +19,7 @@
 
         <!-- Add New Medication Form -->
         <form action="/inventory/add-medication" method="POST">
+            <input type="text" name="post_location" id="post_location" value="<%= userPost %>" readonly>
             <div class="input-grp">
                 <label for="medication_name">Medication Name</label>
                 <input type="text" id="medication_name" name="medication_name" required class="form-control">
@@ -91,6 +92,6 @@
     </div>
 
     <footer><%- include('../partials/_footer') %></footer>
-    <script src="../js/mineaid-scripts.js"></script>
+    <script src="/js/mineaid-scripts.js"></script>
 </body>
 </html>

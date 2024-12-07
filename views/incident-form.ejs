@@ -37,15 +37,8 @@
                     <% } %>
                     <form action="/incident/submit" method="POST">
                         <div class="form-group input-grp">
-                            <label for="post">Post</label>
-                            <select id="post" name="post">
-                                <option value="">Select FAP</option>
-                                <option value="ODD">ODD</option>
-                                <option value="STP">STP</option>
-                                <option value="KMS">KMS</option>
-                                <option value="GCS">GCS</option>
-                                <option value="EMS">EMS</option>
-                            </select>
+                            <label for="post_location">Post</label>
+                            <input type="text" name="post_location" id="post_location" value="<%= userPost %>" readonly>
                         </div>
                         <div class="grid-2">
                             <div class="form-group input-grp">

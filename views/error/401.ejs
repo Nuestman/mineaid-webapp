@@ -14,19 +14,8 @@
     <main>
         <div class="inner-flex">
             <div class="container">
-                <div class="mmessage-container">
+                <div class="mmessage-container alert-parent">
                     <!-- Display flash messages if there are any -->
-                    <% if (success_msg) { %>
-                        <div class="alert alert-success"><%= success_msg %></div>
-                    <% } %>
-            
-                    <% if (error_msg) { %>
-                        <div class="alert alert-danger"><%= error_msg %></div>
-                    <% } %>
-            
-                    <% if (error) { %>
-                        <div class="alert alert-danger"><%= error %></div>
-                    <% } %>
                     <h1>401 - Unauthorized</h1>
                     <div class="error-text">
                         <p>You need to log in to access this page.</p>
@@ -40,6 +29,7 @@
         </div>
     </main>
 
-        <%- include ('../partials/_footer') %>
+    <%- include ('../partials/_footer') %>
+    <script src="js/mineaid-scripts.js"></script>
 </body>
 </html>

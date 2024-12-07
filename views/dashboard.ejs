@@ -17,7 +17,7 @@
     <div class="container">
         <div class="alert-parent">
             <%- include('partials/_flash-alert') %>
-            <h1>Admin Dashboard</h1>
+            <h1><span class="accent"><%= current_post %></span> First Aid Post Dashboard</h1>
             <div class="grid-1-3">
                 <!-- Bring the _sidebar partial back after fixing pages under dev. -->
                 <aside class="sidebar">
@@ -25,7 +25,7 @@
                     <a href="/dashboard">Dashboard</a>
                     <a href="/incident-book">Incident Book</a>
                     <a href="/admin/users">Manage Users</a>
-                    <a class="soon reports" href="../coming-soon">Analytics &amp; Reports</a>
+                    <a class="soon reports" href="/reports">Analytics &amp; Reports</a>
                     <a class="" href="../inventory">Inventory Management</a>
                     <a class="soon training" href="../coming-soon">Training &amp; Resources</a>
                     <a class="soon settings" href="../coming-soon">Settings</a>
@@ -64,7 +64,9 @@
                             <% if (recent_activity.length > 0) { %>
                                 <ul>
                                     <% recent_activity.forEach(activity => { %>
+                                        <li><%= activity.user_id %> on <%= activity.timestamp %></li>
                                         <li><%= activity.activity %> on <%= activity.timestamp %></li>
+                                        <li><%= activity.post_location %> on <%= activity.timestamp %></li>
                                     <% }) %>
                                 </ul>
                             <% } else { %>
@@ -89,8 +91,8 @@
                                 <p><%= statistics.newUsers %> this month</p>
                             </div>
                             <div class="card">
-                                <h4>Compliance Status</h4>
-                                <p>85%</p>
+                                <h4>Inventory Status</h4>
+                                <p>Render dynamic data</p>
                             </div>
                             <div class="card db-mgt">
                                 <h4>Database Management</h4>
