@@ -266,6 +266,14 @@ function showPrev() {
     populateModal();
 }
 
+/* Closes the modal if clicked outside the content. */
+ window.onclick = function (event) {
+    const modal = document.getElementById("item-modal");
+    if (event.target === modal) {
+        closeModal();
+    }
+};
+
 // Toggle visibility of the edit form
 function toggleEditForm() {
     const editSection = document.getElementById('edit-section');
