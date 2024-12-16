@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iSoup - Form</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+</head>
+
+<body class="items-register full-height">
+
+    <header>
+        <%- include('partials/_nav') %>
+    </header>
+
+    <section class="prim-header">
+        <div class="container">
+            <h1>Supervisor Report Form</h1>
+        </div>
+    </section>
+
+    <main class="dashboard alert-parent">
+        <%- include('partials/_flash-alert') %>
+        <div class="container">
+            <div class="form-container">
+                <form action="isoup/forms/submit-report" method="post">
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Systems</h3>
+                        <div class="grid-3">
+                            <div class="input-grp">
+                                <label id="" for="">Plumbing System</label>
+                                <select name="" id="">
+                                    <option value="Good">Good</option>
+                                    <option value="Faulty">Faulty</option>
+                                </select>
+                            </div>
+                            <div class="input-grp">
+                                <label id="" for="">Electrical System</label>
+                                <select name="" id="">
+                                    <option value="Good">Good</option>
+                                    <option value="Faulty">Faulty</option>
+                                </select>
+                            </div>
+                            <div class="input-grp">
+                                <label id="" for="">Oxygen System</label>
+                                <select name="" id="">
+                                    <option value="Good">Good</option>
+                                    <option value="Faulty">Faulty</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Leaders / Supervisors</h3>
+                        <div class="grid-2">
+                            <div class="input-grp">
+                                <label for="">DMO</label>
+                                <input type="text">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">General Supervisor</label>
+                                <input type="text">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Med/Surg Supervisor</label>
+                                <input type="text">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Mat/Surg Supervisor</label>
+                                <input type="text">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Cases Treated</h3>
+                        <div class="grid-3">
+                            <div class="input-grp">
+                                <label for="">Emergency</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Theatre</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Recovery</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">ODD</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">STP</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">KMS</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">GCS</label>
+                                <input type="number">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Staff on Duty</h3>
+                        <div class="grid-3">
+                            <div class="input-grp">
+                                <label for="">Emergency Unit</label>
+                                <textarea name="" id=""></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Theatre</label>
+                                <textarea name="" id=""></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Recovery</label>
+                                <textarea name="" id=""></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="">ODD</label>
+                                <textarea name="" id=""></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="">STP</label>
+                                <textarea name="" id=""></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="">KMS</label>
+                                <textarea name="" id=""></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="">GCS</label>
+                                <textarea name="" id=""></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="">ICU</label>
+                                <textarea name="" id=""></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="">NICU</label>
+                                <textarea name="" id=""></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Paediatric Ward</label>
+                                <textarea name="" id=""></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Female Ward</label>
+                                <textarea name="" id=""></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Male Ward</label>
+                                <textarea name="" id=""></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Lying-In Ward</label>
+                                <textarea name="" id=""></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Maternity Ward</label>
+                                <textarea name="" id=""></textarea>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Ward State &amp; Report</h3>
+                        <div class="input-grp">
+                            <label for="">Emergency Unit</label>
+                            <div class="h-flex">
+                                <ul class="flex-wrap">
+                                    <li class="reg-action alert-success">Prev: 12</li>
+                                    <li class="reg-action alert-success">Pt: 16</li>
+                                    <li class="reg-action alert-success">Adm: 6</li>
+                                    <li class="reg-action alert-success">Dis: 2</li>
+                                    <li class="reg-action alert-success">Death: 1</li>
+                                    <li class="reg-action alert-success">Dep: 1</li>
+                                    <li class="reg-action alert-success">Wrk: 0</li>
+                                    <li class="reg-action alert-success">Priv: 15</li>
+                                </ul>
+                            </div>
+                            <textarea name="" id="" placeholder="How was the unit as at midnight/EOD?"></textarea>
+                        </div>
+                    </section>
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Roll Call</h3>
+                        <div class="grid-3">
+                            <div class="input-grp">
+                                <label for="">Nurses/Midwives</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Service Personnel</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Students</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Drivers</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Pharmacy</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Laboratory</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Revenue</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Records</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Security</label>
+                                <input type="number">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Orderlies</label>
+                                <input type="number">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>General Comments</h3>
+                        <div class="input-grp">
+                            <label for="">General Comments</label>
+                            <textarea name="" id=""></textarea>
+                        </div>
+                    </section>
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Incidents</h3>
+                        <div class="grid-2">
+                            <div class="input-grp">
+                                <label for="">Mine Incidents</label>
+                                <input type="text">
+                            </div>
+                            <div class="input-grp">
+                                <label for="">Hospital Incidents</label>
+                                <input type="text">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Signature</h3>
+                        <div class="input-grp">
+                            <label for="">Entered By</label>
+                            <select name="" id="" disabled>
+                                <option value="John Doe">John Doe</option>
+                            </select>
+                        </div>
+                    </section>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <%- include('partials/_footer') %>
+        <script src="/js/mineaid-scripts.js"></script>
+</body>
+
+</html>

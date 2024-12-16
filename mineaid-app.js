@@ -408,7 +408,7 @@ app.post('/triage', attachPostFilter, (req, res) => {
         }
 
             // Log the update action into recent_activities
-            const activity = `Added a new triagebook entry.`;
+            const activity = `Added a new triagebook entry`;
             db.run(
                 'INSERT INTO recent_activities (user_id, post_location, activity, timestamp) VALUES (?, ?, ?, datetime("now", "localtime"))',
                 [userId, currentPost, activity],
@@ -485,7 +485,7 @@ app.post('/incident/submit', attachPostFilter, (req, res) => {
         
         
             // Log the update action into recent_activities
-            const activity = `Added a new incident_book entry.`;
+            const activity = `Added a new incident_book entry`;
             db.run(
                 'INSERT INTO recent_activities (user_id, post_location, activity, timestamp) VALUES (?, ?, ?, datetime("now", "localtime"))',
                 [userId, currentPost, activity],
@@ -688,7 +688,7 @@ app.post('/login', (req, res, next) => {
 
 // Route: Display Post-Selection Page
 app.get('/post-selection', ensureAuthenticated, (req, res) => {
-    res.render('post-selection', { posts: ['ODD', 'STP', 'KMS', 'GCS', 'EMS'] });
+    res.render('post-selection', { posts: ['ODD', 'STP', 'KMS', 'GCS', 'EMS', 'AGAHF'] });
 });
 
 // Route: Handle Post Selection
@@ -696,7 +696,7 @@ app.post('/post-selection', ensureAuthenticated, (req, res) => {
     const { selected_post } = req.body;
 
     // Validate the selected post
-    const validPosts = ['ODD', 'STP', 'KMS', 'GCS', 'EMS'];
+    const validPosts = ['ODD', 'STP', 'KMS', 'GCS', 'EMS', 'AGAHF'];
     if (!validPosts.includes(selected_post)) {
         req.flash('error_msg', 'Invalid post selected. Please try again.');
         return res.redirect('/post-selection');
@@ -707,6 +707,9 @@ app.post('/post-selection', ensureAuthenticated, (req, res) => {
 
     req.flash('success_msg', `Welcome, You are now logged into ${selected_post}.`);
     // Redirect to the post-specific dashboard
+    if (selected_post === 'AGAHF') {
+        res.redirect(`/isoup-dashboard`);
+    } else
     res.redirect(`/dashboard`);
 });
 
@@ -831,29 +834,77 @@ app.get('/logout', (req, res) => {
 
 // Route: Dashboard (GET)
 // Dashboard route (requires login)
-app.get('/dashboard', ensureAuthenticated, attachPostFilter, (req, res) => {
-    const current_post = req.session.current_post;// Assuming you have a session variable for the current post
-    
-    // Fetch all users from DB    
-    // Fetch recent activities
-    db.all(`SELECT activity FROM recent_activities ORDER BY timestamp DESC LIMIT 5`, (err, recent_activity) => {
-        if (err) return console.error(err.message);
+app.get('/dashboard', ensureAuthenticated, attachPostFilter, async (req, res) => {
+    try {
+        const current_post = req.session.current_post; // Assuming a session variable for the current post
 
-
-            // Fetch statistics (modify based on your data requirements)
-            db.get(`SELECT 
-                    (SELECT COUNT(*) FROM triagebook WHERE strftime('%m', date) = strftime('%m', 'now')) AS triageEntries,
-                    (SELECT COUNT(*) FROM incident_book WHERE strftime('%m', incident_date) = strftime('%m', 'now')) AS incidents,
-                    (SELECT COUNT(*) FROM users WHERE strftime('%m', created_at) = strftime('%m', 'now')) AS newUsers
-                    `, (err, statistics) => {
-                if (err) return console.error(err.message);
-
-                // Render the admin-users page
-                res.render('dashboard', { recent_activity,  statistics, user: req.user, current_post });
+        // Fetch recent activities
+        const recent_activity = await new Promise((resolve, reject) => {
+            db.all(`SELECT * FROM user_activity_logs ORDER BY timestamp DESC LIMIT 5`, (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
             });
+        });
 
-    });
+        // Fetch statistics
+        const statistics = await new Promise((resolve, reject) => {
+            db.get(
+                `SELECT 
+                    (SELECT COUNT(*) FROM triagebook WHERE strftime('%m', date) = strftime('%m', 'now')) AS triageEntries,
+                    (SELECT COUNT(*) FROM triagebook) AS totalTriageEntries,
+                    (SELECT COUNT(*) FROM incident_book WHERE strftime('%m', incident_date) = strftime('%m', 'now')) AS incidents,
+                    (SELECT COUNT(*) FROM incident_book WHERE strftime('%Y', incident_date) = '2024') AS ytdIncidents,
+                    (SELECT COUNT(*) FROM users WHERE strftime('%m', created_at) = strftime('%m', 'now')) AS newUsers,
+                    (SELECT COUNT(*) FROM users) AS totalUsers
+                `,
+                (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                }
+            );
+        });
+
+        // Render the dashboard
+        res.render('dashboard', {
+            recent_activity,
+            statistics,
+            user: req.user,
+            current_post,
+        });
+    } catch (error) {
+        console.error('Error loading dashboard:', error.message);
+        req.flash('error', 'Unable to load dashboard. Please try again.');
+        res.redirect('/');
+    }
 });
+
+//Without Async/await
+// app.get('/dashboard', ensureAuthenticated, attachPostFilter, (req, res) => {
+//     const current_post = req.session.current_post;// Assuming you have a session variable for the current post
+    
+//     // Fetch all users from DB    
+//     // Fetch recent activities
+//     db.all(`SELECT * FROM user_activity_logs ORDER BY timestamp DESC LIMIT 5`, (err, recent_activity) => {
+//         if (err) return console.error(err.message);
+
+
+//             // Fetch statistics (modify based on your data requirements)
+//             db.get(`SELECT 
+//                     (SELECT COUNT(*) FROM triagebook WHERE strftime('%m', date) = strftime('%m', 'now')) AS triageEntries,
+//                     (SELECT COUNT(*) FROM triagebook ) AS totalTriageEntries,
+//                     (SELECT COUNT(*) FROM incident_book WHERE strftime('%m', incident_date) = strftime('%m', 'now')) AS incidents,
+//                     (SELECT COUNT(*) FROM incident_book WHERE incident_date INCLUDES '2024')) AS ytdIncidents,
+//                     (SELECT COUNT(*) FROM users WHERE strftime('%m', created_at) = strftime('%m', 'now')) AS newUsers,
+//                     (SELECT COUNT(*) FROM users ) AS totalUsers
+//                     `, (err, statistics) => {
+//                 if (err) return console.error(err.message);
+
+//                 // Render the admin-users page
+//                 res.render('dashboard', { recent_activity,  statistics, user: req.user, current_post });
+//             });
+
+//     });
+// });
 // app.get('/dashboard', ensurePostSelected, (req, res) => {
 //     const currentPost = req.session.current_post;
 
@@ -963,7 +1014,7 @@ app.get('/admin/approve/:id', ensureAuthenticated, ensureAdmin, ensureSuperuser,
                 from: 'nuestman17@gmail.com',
                 to: user.email, // Email of the approved user
                 subject: 'Account Approved',
-                text: `Hello ${user.username}, your account has been approved.`
+                text: `Hello ${user.firstname}, your account has been approved.`
             };
 
             console.log('Preparing to send email...');
@@ -1747,7 +1798,7 @@ app.post('/reports/submit', ensureAuthenticated, attachPostFilter, (req, res) =>
         }
   
         // Log activity
-        const activity = `Submitted a new FAP report for ${shift_type} shift at ${currentPost}.`;
+        const activity = `Submitted a new FAP report for ${shift_type} shift at ${currentPost}`;
         const logQuery = `
           INSERT INTO user_activity_logs (user_id, post_location, action, table_name, record_id, logged_by)
           VALUES (?, ?, ?, ?, ?, ?)
@@ -1828,6 +1879,33 @@ app.get('/reports', ensureAuthenticated, attachPostFilter, (req, res) => {
     });
 });
 
+// Route to Edit Reports in reports-hom.ejs
+app.get("/report/:id", (req, res) => {
+    const reportId = req.params.id;
+
+    // Fetch the report from the database
+    db.query("SELECT * FROM reports WHERE report_id = $1", [reportId], (err, result) => {
+        if (err) {
+            req.flash("error", "An error occurred while fetching the report.");
+            return res.redirect("/reports");
+        }
+
+        if (result.rows.length === 0) {
+            req.flash("error", "Report not found.");
+            return res.redirect("/reports");
+        }
+
+        const selectedReport = result.rows[0];
+
+        // Render the report view with the selected report
+        res.render("report-view", {
+            selectedReport,
+            currentPost: req.session.currentPost || "Unknown Post", // Add session data if needed
+            messages: req.flash(), // Pass flash messages
+        });
+    });
+});
+
 
 
   
@@ -1887,6 +1965,9 @@ app.get('/landing-page', (req, res) => {
 app.get('/iaid', (req, res) => {
     res.render('index'); // landing-page.ejs
 });
+
+
+/* iSoup Portal */
 // Route: iSoup Landing Page (GET)
 app.get('/isoup', (req, res) => {
     res.render('isoup'); // landing-page.ejs
@@ -1895,6 +1976,199 @@ app.get('/isoup', (req, res) => {
 app.get('/isoup-dashboard', (req, res) => {
     res.render('isoup-dashboard'); // landing-page.ejs
 });
+// Route: View iSoup Report Form (GET)
+app.get('/isoup/forms/report-form', (req, res) => {
+    res.render('isoup-reports-form'); // landing-page.ejs
+});
+// Route: View iSoup Statistics Form (GET)
+app.get('/isoup/forms/stats-form', (req, res) => {
+    res.render('isoup-stats-form'); // landing-page.ejs
+});
+// Route: Submit iSoup Statistics (POST)
+app.post('/isoup/forms/stats-form', (req, res) => {
+    const {
+        med_surg_prev, med_surg_beds, med_surg_cots, med_surg_pts, med_surg_adm,
+        med_surg_disch, med_surg_tin, med_surg_tout, med_surg_deaths,
+        mat_surg_prev, mat_surg_beds, mat_surg_cots, mat_surg_pts, mat_surg_adm,
+        mat_surg_disch, mat_surg_tin, mat_surg_tout, mat_surg_deaths,
+        lying_in_prev, lying_in_beds, lying_in_cots, lying_in_pts, lying_in_adm,
+        lying_in_disch, lying_in_tin, lying_in_tout, lying_in_deaths,
+        nicu_prev, nicu_beds, nicu_cots, nicu_pts, nicu_adm, nicu_disch, nicu_tin, nicu_tout, nicu_deaths,
+        cdu_prev, cdu_beds, cdu_cots, cdu_pts, cdu_adm, cdu_disch, cdu_tin, cdu_tout, cdu_deaths,
+        icu_prev, icu_beds, icu_cots, icu_pts, icu_adm, icu_disch, icu_tin, icu_tout, icu_deaths,
+        recovery_prev, recovery_beds, recovery_cots, recovery_pts, recovery_adm, recovery_disch, recovery_tin, recovery_tout, recovery_deaths,
+        emergency_prev, emergency_beds, emergency_cots, emergency_pts, emergency_adm, emergency_disch, emergency_tin, emergency_tout, emergency_deaths,
+        site_clinic_prev, site_clinic_beds, site_clinic_cots, site_clinic_pts, site_clinic_adm, site_clinic_disch, site_clinic_tin, site_clinic_tout, site_clinic_deaths,
+        nursery_prev, nursery_beds, nursery_cots, nursery_pts, nursery_adm, nursery_disch, nursery_tin, nursery_tout, nursery_deaths
+    } = req.body;
+
+    // Calculate totals for each ward row
+    const totalPrev = parseInt(med_surg_prev) + parseInt(mat_surg_prev) + parseInt(lying_in_prev) + parseInt(nicu_prev) +
+        parseInt(cdu_prev) + parseInt(icu_prev) + parseInt(recovery_prev) + parseInt(emergency_prev) +
+        parseInt(site_clinic_prev);
+    const totalBeds = parseInt(med_surg_beds) + parseInt(mat_surg_beds) + parseInt(lying_in_beds) + parseInt(nicu_beds) +
+        parseInt(cdu_beds) + parseInt(icu_beds) + parseInt(recovery_beds) + parseInt(emergency_beds) +
+        parseInt(site_clinic_beds);
+    const totalCots = parseInt(med_surg_cots) + parseInt(mat_surg_cots) + parseInt(lying_in_cots) + parseInt(nicu_cots) +
+        parseInt(cdu_cots) + parseInt(icu_cots) + parseInt(recovery_cots) + parseInt(emergency_cots) +
+        parseInt(site_clinic_cots);
+    const totalPts = parseInt(med_surg_pts) + parseInt(mat_surg_pts) + parseInt(lying_in_pts) + parseInt(nicu_pts) +
+        parseInt(cdu_pts) + parseInt(icu_pts) + parseInt(recovery_pts) + parseInt(emergency_pts) +
+        parseInt(site_clinic_pts);
+    const totalAdm = parseInt(med_surg_adm) + parseInt(mat_surg_adm) + parseInt(lying_in_adm) + parseInt(nicu_adm) +
+        parseInt(cdu_adm) + parseInt(icu_adm) + parseInt(recovery_adm) + parseInt(emergency_adm) +
+        parseInt(site_clinic_adm);
+    const totalDisch = parseInt(med_surg_disch) + parseInt(mat_surg_disch) + parseInt(lying_in_disch) + parseInt(nicu_disch) +
+        parseInt(cdu_disch) + parseInt(icu_disch) + parseInt(recovery_disch) + parseInt(emergency_disch) +
+        parseInt(site_clinic_disch);
+    const totalTin = parseInt(med_surg_tin) + parseInt(mat_surg_tin) + parseInt(lying_in_tin) + parseInt(nicu_tin) +
+        parseInt(cdu_tin) + parseInt(icu_tin) + parseInt(recovery_tin) + parseInt(emergency_tin) +
+        parseInt(site_clinic_tin);
+    const totalTout = parseInt(med_surg_tout) + parseInt(mat_surg_tout) + parseInt(lying_in_tout) + parseInt(nicu_tout) +
+        parseInt(cdu_tout) + parseInt(icu_tout) + parseInt(recovery_tout) + parseInt(emergency_tout) +
+        parseInt(site_clinic_tout);
+    const totalDeaths = parseInt(med_surg_deaths) + parseInt(mat_surg_deaths) + parseInt(lying_in_deaths) + parseInt(nicu_deaths) +
+        parseInt(cdu_deaths) + parseInt(icu_deaths) + parseInt(recovery_deaths) + parseInt(emergency_deaths) +
+        parseInt(site_clinic_deaths);
+
+    // Insert data for each ward
+    db.serialize(() => {
+        const stmt = db.prepare(`
+            INSERT INTO isoup_stats (
+                ward, prev, beds, cots, pts, adm, disch, tin, tout, deaths
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+
+        stmt.run("Med/Surg", med_surg_prev, med_surg_beds, med_surg_cots, med_surg_pts, med_surg_adm,
+            med_surg_disch, med_surg_tin, med_surg_tout, med_surg_deaths);
+        
+        stmt.run("Mat/Surg", mat_surg_prev, mat_surg_beds, mat_surg_cots, mat_surg_pts, mat_surg_adm,
+            mat_surg_disch, mat_surg_tin, mat_surg_tout, mat_surg_deaths);
+        
+        stmt.run("Lying-In", lying_in_prev, lying_in_beds, lying_in_cots, lying_in_pts, lying_in_adm,
+            lying_in_disch, lying_in_tin, lying_in_tout, lying_in_deaths);
+        
+        stmt.run("NICU", nicu_prev, nicu_beds, nicu_cots, nicu_pts, nicu_adm, nicu_disch, nicu_tin, nicu_tout, nicu_deaths);
+        stmt.run("CDU", cdu_prev, cdu_beds, cdu_cots, cdu_pts, cdu_adm, cdu_disch, cdu_tin, cdu_tout, cdu_deaths);
+        stmt.run("ICU", icu_prev, icu_beds, icu_cots, icu_pts, icu_adm, icu_disch, icu_tin, icu_tout, icu_deaths);
+        stmt.run("Recovery", recovery_prev, recovery_beds, recovery_cots, recovery_pts, recovery_adm,
+            recovery_disch, recovery_tin, recovery_tout, recovery_deaths);
+        stmt.run("Emergency", emergency_prev, emergency_beds, emergency_cots, emergency_pts, emergency_adm,
+            emergency_disch, emergency_tin, emergency_tout, emergency_deaths);
+        stmt.run("Site Clinic", site_clinic_prev, site_clinic_beds, site_clinic_cots, site_clinic_pts,
+            site_clinic_adm, site_clinic_disch, site_clinic_tin, site_clinic_tout, site_clinic_deaths);
+
+        // Insert Sub-Total row
+        stmt.run("Sub-Total", totalPrev, totalBeds, totalCots, totalPts, totalAdm, totalDisch, totalTin, totalTout, totalDeaths);
+
+        // Insert the Nursery row (if applicable)
+        stmt.run("Nursery", nursery_prev, nursery_beds, nursery_cots, nursery_pts, nursery_adm, nursery_disch,
+            nursery_tin, nursery_tout, nursery_deaths);
+
+        // Insert the Total row, summing Sub-Total and Nursery
+        stmt.run("Total", 
+            totalPrev + nursery_prev, 
+            totalBeds + nursery_beds, 
+            totalCots + nursery_cots, 
+            totalPts + nursery_pts, 
+            totalAdm + nursery_adm, 
+            totalDisch + nursery_disch, 
+            totalTin + nursery_tin, 
+            totalTout + nursery_tout, 
+            totalDeaths + nursery_deaths
+        );
+
+        stmt.finalize();
+    });
+
+    // Redirect or send success response
+    res.send("Statistics successfully recorded.");
+});
+
+// Route: iSoup Home (GET)
+app.get('/isoup/home', (req, res) => {
+    const sql = `SELECT * FROM isoup_reports ORDER BY created_at DESC`;
+
+    db.all(sql, [], (err, rows) => {
+        if (err) {
+            console.error(err.message);
+            req.flash('error', 'Error fetching reports.');
+            return res.render('isoup-home', { reports: [] });
+        }
+        res.render('isoup-home', { reports: rows });
+    });
+});
+
+app.post('/isoup/forms/submit-report', async (req, res) => {
+    const {
+        plumbing_system, electrical_system, oxygen_system,
+        dmo, general_supervisor, med_surg_supervisor, mat_surg_supervisor,
+        emergency_cases, theatre_cases, recovery_cases, odd_cases, stp_cases, kms_cases, gcs_cases,
+        staff_emergency, staff_theatre, staff_recovery, staff_odd, staff_stp, staff_kms, staff_gcs,
+        staff_icu, staff_nicu, staff_paeds, staff_female, staff_male,
+        staff_lying_in, staff_maternity,
+        emergency_report, rollcall_nurses, rollcall_service, rollcall_students, rollcall_drivers,
+        rollcall_pharmacy, rollcall_laboratory, rollcall_revenue, rollcall_records, rollcall_security, rollcall_orderlies,
+        general_comments, mine_incidents, hospital_incidents, entered_by
+    } = req.body;
+
+    const sql = `INSERT INTO isoup_reports (
+        plumbing_system, electrical_system, oxygen_system,
+        dmo, general_supervisor, med_surg_supervisor, mat_surg_supervisor,
+        emergency_cases, theatre_cases, recovery_cases, odd_cases, stp_cases, kms_cases, gcs_cases,
+        staff_emergency, staff_theatre, staff_recovery, staff_odd, staff_stp, staff_kms, staff_gcs,
+        staff_icu, staff_nicu, staff_paeds, staff_female, staff_male,
+        staff_lying_in, staff_maternity,
+        emergency_report, rollcall_nurses, rollcall_service, rollcall_students, rollcall_drivers,
+        rollcall_pharmacy, rollcall_laboratory, rollcall_revenue, rollcall_records, rollcall_security, rollcall_orderlies,
+        general_comments, mine_incidents, hospital_incidents, entered_by
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    const params = [
+        plumbing_system, electrical_system, oxygen_system,
+        dmo, general_supervisor, med_surg_supervisor, mat_surg_supervisor,
+        emergency_cases, theatre_cases, recovery_cases, odd_cases, stp_cases, kms_cases, gcs_cases,
+        staff_emergency, staff_theatre, staff_recovery, staff_odd, staff_stp, staff_kms, staff_gcs,
+        staff_icu, staff_nicu, staff_paeds, staff_female, staff_male,
+        staff_lying_in, staff_maternity,
+        emergency_report, rollcall_nurses, rollcall_service, rollcall_students, rollcall_drivers,
+        rollcall_pharmacy, rollcall_laboratory, rollcall_revenue, rollcall_records, rollcall_security, rollcall_orderlies,
+        general_comments, mine_incidents, hospital_incidents, entered_by
+    ];
+
+    try {
+        await new Promise((resolve, reject) => {
+            db.run(sql, params, function (err) {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
+        req.flash('success', 'Report submitted successfully!');
+        res.redirect('/isoup/forms/report-form');
+    } catch (err) {
+        console.error(err.message);
+        req.flash('error', 'Error saving the report.');
+        res.redirect('/isoup/forms/report-form');
+    }
+});
+
+// Route to display iSoup incident book
+app.get('/isoup/incidents', ensureAuthenticated, ensureAdmin, attachPostFilter, (req, res) => {
+    const query = 'SELECT * FROM incident_book ORDER BY incident_date DESC';
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            console.error('Error fetching incident records:', err.message);
+            res.status(500).render('error', { message: 'Error fetching incident records' });
+        } else {
+            res.render('isoup-incidents', { title: 'Incident Records', incidents: rows });
+        }
+    });
+});
+
+
+
+
 // Route: iManage Landing Page (GET)
 app.get('/imanage', (req, res) => {
     res.render('imanage'); // landing-page.ejs
@@ -2938,6 +3212,8 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).render('error/500');
 });
+
+
 
 // Server setup
 const PORT = process.env.PORT || 3000;

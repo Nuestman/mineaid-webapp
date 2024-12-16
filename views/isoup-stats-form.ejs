@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iSoup - Form</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+</head>
+
+<body class="items-register full-height">
+
+    <header>
+        <%- include('partials/_nav') %>
+    </header>
+
+    <section class="prim-header">
+        <div class="container">
+            <h1>Supervisor Statistics Form</h1>
+        </div>
+    </section>
+
+    <main class="dashboard alert-parent">
+        <%- include('partials/_flash-alert') %>
+        <div class="container">
+            <div class="form-container">
+                <form action="isoup/forms/submit-stats" method="post">
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Stats Table</h3>
+                        <div class="grid-3">
+                            <div class="input-grp">
+                                <label id="" for="">Plumbing System</label>
+                                <select name="" id="">
+                                    <option value="Good">Good</option>
+                                    <option value="Faulty">Faulty</option>
+                                </select>
+                            </div>
+                            <div class="input-grp">
+                                <label id="" for="">Electrical System</label>
+                                <select name="" id="">
+                                    <option value="Good">Good</option>
+                                    <option value="Faulty">Faulty</option>
+                                </select>
+                            </div>
+                            <div class="input-grp">
+                                <label id="" for="">Oxygen System</label>
+                                <select name="" id="">
+                                    <option value="Good">Good</option>
+                                    <option value="Faulty">Faulty</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <%- include('partials/_footer') %>
+        <script src="/js/mineaid-scripts.js"></script>
+</body>
+
+</html>

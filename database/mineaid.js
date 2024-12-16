@@ -507,5 +507,146 @@ clearExpiredTokens();
 //     });
     
 
+// iSoup Reports
+db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS isoup_reports (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        report_date DATE NOT NULL, -- Added report_date column
+        plumbing_system TEXT NOT NULL,
+        electrical_system TEXT NOT NULL,
+        oxygen_system TEXT NOT NULL,
+        dmo TEXT NOT NULL,
+        general_supervisor TEXT NOT NULL,
+        med_surg_supervisor TEXT NOT NULL,
+        mat_surg_supervisor TEXT NOT NULL,
+        emergency_cases INTEGER NOT NULL,
+        theatre_cases INTEGER NOT NULL,
+        recovery_cases INTEGER NOT NULL,
+        odd_cases INTEGER NOT NULL,
+        stp_cases INTEGER NOT NULL,
+        kms_cases INTEGER NOT NULL,
+        gcs_cases INTEGER NOT NULL,
+        staff_emergency TEXT NOT NULL,
+        staff_theatre TEXT NOT NULL,
+        staff_recovery TEXT NOT NULL,
+        staff_odd TEXT NOT NULL,
+        staff_stp TEXT NOT NULL,
+        staff_kms TEXT NOT NULL,
+        staff_gcs TEXT NOT NULL,
+        staff_icu TEXT NOT NULL,
+        staff_nicu TEXT NOT NULL,
+        staff_paediatric TEXT NOT NULL,
+        staff_female TEXT NOT NULL,
+        staff_male TEXT NOT NULL,
+        staff_lying_in TEXT NOT NULL,
+        staff_maternity TEXT NOT NULL,
+        ward_state_emergency TEXT NOT NULL,
+        rollcall_nurses INTEGER NOT NULL,
+        rollcall_service INTEGER NOT NULL,
+        rollcall_students INTEGER NOT NULL,
+        rollcall_drivers INTEGER NOT NULL,
+        rollcall_pharmacy INTEGER NOT NULL,
+        rollcall_laboratory INTEGER NOT NULL,
+        rollcall_revenue INTEGER NOT NULL,
+        rollcall_records INTEGER NOT NULL,
+        rollcall_security INTEGER NOT NULL,
+        rollcall_orderlies INTEGER NOT NULL,
+        general_comments TEXT NOT NULL,
+        mine_incidents TEXT NOT NULL,
+        hospital_incidents TEXT NOT NULL,
+        entered_by TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+});
+
+// iSOup Stats
+db.serialize(() => {
+    db.run(`
+        CREATE TABLE IF NOT EXISTS isoup_stats (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ward TEXT,
+            prev INTEGER,
+            beds INTEGER,
+            cots INTEGER,
+            pts INTEGER,
+            adm INTEGER,
+            disch INTEGER,
+            tin INTEGER,
+            tout INTEGER,
+            deaths INTEGER
+        )
+    `);
+});
+
+db.serialize(() => {
+    db.run(`
+        CREATE TABLE IF NOT EXISTS isoup_stats (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ward TEXT,
+            prev INTEGER,
+            beds INTEGER,
+            cots INTEGER,
+            pts INTEGER,
+            adm INTEGER,
+            disch INTEGER,
+            tin INTEGER,
+            tout INTEGER,
+            deaths INTEGER
+        )
+    `);
+
+    // Insert data for each ward row
+    const stmt = db.prepare(`
+        INSERT INTO isoup_stats (
+            ward, prev, beds, cots, pts, adm, disch, tin, tout, deaths
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    // Insert rows for each ward (Med/Surg, Mat/Surg, etc.)
+    stmt.run("Med/Surg", 10, 20, 5, 15, 10, 8, 5, 6, 1); // Example values for Med/Surg
+    stmt.run("Mat/Surg", 8, 15, 3, 12, 6, 9, 3, 4, 0); // Example values for Mat/Surg
+    stmt.run("Lying-In", 12, 25, 6, 18, 14, 13, 4, 7, 2); // Example values for Lying-In
+    stmt.run("NICU", 5, 8, 2, 6, 3, 4, 1, 2, 0); // Example values for NICU
+    stmt.run("CDU", 7, 10, 4, 8, 5, 6, 2, 3, 1); // Example values for CDU
+    stmt.run("ICU", 4, 6, 3, 5, 3, 3, 1, 2, 0); // Example values for ICU
+    stmt.run("Recovery", 9, 18, 5, 14, 8, 7, 3, 5, 1); // Example values for Recovery
+    stmt.run("Emergency", 10, 22, 7, 16, 12, 10, 4, 6, 2); // Example values for Emergency
+    stmt.run("Site Clinic", 6, 10, 3, 8, 5, 4, 2, 3, 0); // Example values for Site Clinic
+
+    // Insert Sub-Total row, summing all wards above it
+    stmt.run("Sub-Total", 
+        81, // Sum of prev values
+        141, // Sum of beds values
+        41, // Sum of cots values
+        94, // Sum of pts values
+        63, // Sum of adm values
+        60, // Sum of disch values
+        24, // Sum of tin values
+        36, // Sum of tout values
+        7  // Sum of deaths values
+    );
+
+    // Insert Nursery row (if applicable)
+    stmt.run("Nursery", 3, 5, 1, 3, 2, 2, 1, 1, 0); // Example values for Nursery
+
+    // Insert Total row, summing Sub-Total and Nursery rows
+    stmt.run("Total", 
+        84, // Sum of Sub-Total + Nursery prev
+        146, // Sum of Sub-Total + Nursery beds
+        42, // Sum of Sub-Total + Nursery cots
+        97, // Sum of Sub-Total + Nursery pts
+        65, // Sum of Sub-Total + Nursery adm
+        62, // Sum of Sub-Total + Nursery disch
+        25, // Sum of Sub-Total + Nursery tin
+        37, // Sum of Sub-Total + Nursery tout
+        7  // Sum of Sub-Total + Nursery deaths
+    );
+
+    stmt.finalize();
+});
+
+
+
+
 
 module.exports = db;

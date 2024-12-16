@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iSoup - Incident Book</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    width: 50%;
+    border-radius: 8px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    </style>
+</head>
+<body class="incident-book">
+    <header>
+        <%- include('partials/_nav') %>
+    </header>
+    <section class="prim-header table-page-head">
+        <h1 class="text-center">SUPERVISOR INCIDENT BOOK:</h1>
+        <h4>Covers AGAHF, First Aid Posts, &amp; Employee Clinic Incidents</h4>
+    </section>
+
+    <main>
+        <div class="table-page-container">
+            <div class="wide-table">
+                <div class="alert-parent">
+                    <table > <!-- Optional: Add border for better visibility -->
+                        <!-- Display flash messages if there are any -->
+                        <% if (success_msg) { %>
+                            <div class="alert alert-success"><%= success_msg %></div>
+                        <% } %>
+                
+                        <% if (error_msg) { %>
+                            <div class="alert alert-danger"><%= error_msg %></div>
+                        <% } %>
+                
+                        <% if (error) { %>
+                            <div class="alert alert-danger"><%= error %></div>
+                        <% } %>
+                        <thead class="accent">
+                            <tr>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                            <th>ID</th>
+                            <th>Post</th>
+                            <th>Incident ID</th>
+                            <th>Incident Date</th>
+                            <th>Time of Incident</th>
+                            <th>Company</th>
+                            <th>Badge</th>
+                            <th>Name</th>
+                            <th>Incident Type</th>
+                            <th>Incident Location</th>
+                            <th>Incident Details</th>
+                            <th>First Aid on Site?</th>
+                            <th>Detained?</th>
+                            <th>Treatment Given</th>
+                            <th>Disposition</th>
+                            <th>Disposition Time</th>
+                            <th>Reporting</th>
+                            <th>Entry By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% incidents.forEach(incident => { %>
+                            <tr>
+                                <!-- Edit button, only shown if the incident was created by the logged-in user -->
+                                <!-- Edit Button: Shown for incident owners or admins -->
+                                <td>
+                                    <% if (incident.incident_by === user.user_id || user.role === 'Admin' || user.role === 'Superuser') { %>
+                                      <button class="reg-action success" onclick="openModal(<%= JSON.stringify(incident) %>)">Edit</button>
+                                    <% } else { %>
+                                      Uneditable
+                                    <% } %>
+                                </td>
+
+
+                                <!-- Delete Button: Shown for admins only -->
+                                <% if (user.role === 'Admin' || user.role === 'Superuser') { %>
+                                    <td><a class="reg-action danger" href="/delete/incident-book/<%= incident.id %>"
+                                        onclick="return confirm('Are you sure you want to delete this medication?')">
+                                         Delete</a></td>
+                                <% } else { %>
+                                    <td>No Access</td>
+                                <% } %>
+                                <td><%= incident.id %></td>
+                                <td><%= incident.post_location %></td>
+                                <td><%= incident.entry_id %></td>
+                                <td><%= incident.incident_date %></td>
+                                <td><%= incident.incident_time %></td>
+                                <td><%= incident.company %></td>
+                                <td><%= incident.badge %></td>
+                                <td><%= incident.name %></td>
+                                <td><%= incident.incident_type %></td>
+                                <td><%= incident.incident_location %></td>
+                                <td><%= incident.incident_details %></td>
+                                <td><%= incident.first_aid %></td>
+                                <td><%= incident.detained %></td>
+                                <td><%= incident.treatment_given %></td>
+                                <td><%= incident.disposition %></td>
+                                <td><%= incident.disposition_time %></td>
+                                <td><%= incident.reporting || 'N/A' %></td>
+                                <td><%= incident.entry_by %></td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Add download button -->
+            <div class="btn-grp">
+                <a href="/export" class="btn">Download as Excel</a>
+                
+                <a href="/" class="btn btn-outline">Home</a>
+            </div>
+
+            
+            <div class="form-container">
+                <div id="editModal" class="modal">
+                    <div class="modal-content">
+                      <span class="close" onclick="closeModal()"><i class="fas fa-close"> </i></span>
+                      <form id="editForm" method="POST" action="/edit/incident-book">
+                        <div class="form-group input-grp">
+                            <input type="hidden" id="id" name="id">
+                            <label for="post_location">Post</label>
+                            <select id="post_location" name="post_location">
+                                <option value="">Select FAP</option>
+                                <option value="ODD">ODD</option>
+                                <option value="STP">STP</option>
+                                <option value="KMS">KMS</option>
+                                <option value="GCS">GCS</option>
+                                <option value="EMS">EMS</option>
+                            </select>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group input-grp">
+                                <label for="incident_date">Incident Date</label>
+                                <input type="date" name="incident_date" id="incident_date" placeholder="Enter incident date">
+                            </div>
+                            <div class="form-group input-grp">
+                                <label for="incident_time">Incident Time</label>
+                                <input type="time" name="incident_time" id="incident_time" placeholder="Enter incident time">
+                            </div>
+                        </div>
+
+                        <div class="company-badge grid-2">
+                            <!-- Company (Select) -->
+                            <div class="input-grp">
+                                <label for="company">Company:</label>
+                                <select id="company" name="company" required>
+                                    <option value="">--Select Company--</option>
+                                    <option value="AGA">AGA</option>
+                                    <option value="UMA">UMA</option>
+                                    <option value="MFS">Magnum</option>
+                                    <option value="Berves">Berves</option>
+                                    <option value="Rammoth">Rammoth</option>
+                                    <option value="MTG">Mining Tools</option>
+                                    <option value="Pamicor">Pamicor</option>
+                                    <option value="Ampcor">Ampcor</option>
+                                    <option value="MCS">Mining and Construction</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <!-- Badge (Text) -->
+                            <div class="input-grp">
+                                <label for="badge">Badge Number:</label>
+                                <input type="text" id="badge" name="badge" required>
+                            </div>
+                        </div>
+                        <div class="form-group input-grp">
+                            <label for="name">Patient Name</label>
+                            <input type="text" name="name" id="name" placeholder="Enter patient name">
+                        </div>
+                        <div class="form-group input-grp">
+                            <label for="incident_type">Incident Type</label>
+                            <select id="incident_type" name="incident_type">
+                                <option value="Trauma/Injury">Trauma/Injury</option>
+                                <option value="Medical">Medical</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group input-grp">
+                            <label for="incident_location">Incident Location</label>
+                            <input type="text" name="incident_location" id="incident_location" placeholder="Where did it happen?">
+                        </div>
+                        <div class="form-group input-grp">
+                            <label for="incident_details">Incident Details</label>
+                            <textarea name="incident_details" id="incident_details" rows="4" placeholder="Describe the incident"></textarea>
+                        </div>
+                        <div class="input-grp">
+                            <label for="first_aid">On-Site First Aid</label>
+                            <div>
+                                <input type="radio" name="first_aid" id="first-aid-yes" value="Yes">
+                                <label for="first-aid-yes">Yes</label>
+                            </div>
+                            <div>
+                                <input type="radio" name="first_aid" id="first-aid-no" value="No">
+                                <label for="first-aid-no">No</label>
+                            </div>
+                        </div>
+                        <!-- Detention status -->
+                        <div class="input-grp">
+                            <label>Detained?</label>
+                            <div>
+                                <input type="radio" name="detained" id="is_detained" value="Yes" required>
+                                <label for="is_detained">Yes</label>
+                            </div>
+                            <div>
+                                <input type="radio" name="detained" id="not_detained" value="No" required>
+                                <label for="not_detained">No</label>
+                            </div>
+                            </div>
+                            <!-- Treatment given -->
+                        <div class="form-group input-grp">
+                            <label for="treatment_given">Treatment Given</label>
+                            <textarea name="treatment_given" id="treatment_given" rows="4" placeholder="Describe the treatment given"></textarea>
+                        </div>
+                        <!-- Disposition (Radio Buttons) -->
+                        <div class="input-grp">
+                            <label>Disposition:</label>
+                            <div>
+                                <input type="radio" id="back_to_work" name="disposition" value="Back to work" required>
+                                <label for="back_to_work">Back to work</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="sent_to_employee_clinic" name="disposition" value="Sent to Employee Clinic" required>
+                                <label for="sent_to_employee_clinic">Sent to Employee Clinic</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="sent_to_agahf" name="disposition" value="Sent to AGAHF" required>
+                                <label for="sent_to_agahf">Sent to AGAHF</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="sent_to_hospital" name="disposition" value="Sent to Hospital (Other)" required>
+                                <label for="sent_to_hospital">Sent to Hospital (Other)</label>
+                            </div>
+                        </div>
+                        <!-- Time of Disposition -->
+                        <div class="input-grp">
+                            <label for="disposition_time">Time of Disposition:</label>
+                            <input type="time" id="disposition_time" name="disposition_time" required>
+                        </div>
+                        <!-- Reporting (Checkboxes) -->
+                        <div class="input-grp">
+                            <label>Reporting:</label>
+                            <div>
+                                <input type="checkbox" id="not_rep" name="reporting" value="Unreported">
+                                <label for="not_rep">Not Reportable</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="uma" name="reporting" value="UMA">
+                                <label for="uma">UMA Informed</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="ems" name="reporting" value="EMS">
+                                <label for="ems">EMS Informed</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="employee_clinic" name="reporting" value="Employee Clinic">
+                                <label for="employee_clinic">Employee Clinic Informed</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="agahf" name="reporting" value="AGAHF">
+                                <label for="agahf">AGAHF Informed</label>
+                            </div>
+                        </div>
+                        <!-- Submit Button -->
+                        <button class="btn" type="submit">Save Changes</button>
+                      </form>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <%- include('partials/_footer') %>
+    <script src="/js/mineaid-scripts.js"></script>
+</body>
+</html>

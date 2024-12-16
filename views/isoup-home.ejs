@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iSoup - Home</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+</head>
+
+<body class="isoup full-height">
+
+    <header>
+        <%- include('partials/_nav') %>
+    </header>
+
+    <section class="prim-header">
+        <div class="container">
+            <h1>Nurse-Supervisor Dashboard</h1>
+        </div>
+    </section>
+
+    <main class="isoup-table-hidden dashboard alert-parent hidden">
+        <%- include('partials/_flash-alert') %>
+        <div class="container">
+            <h2>Submitted Reports</h2>
+            <% if (reports.length > 0) { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Report Date</th>
+                            <th>Plumbing</th>
+                            <th>Electrical</th>
+                            <th>Oxygen</th>
+                            <th>DMO</th>
+                            <th>General Supervisor</th>
+                            <th>Med/Surg Supervisor</th>
+                            <th>Mat/Surg Supervisor</th>
+                            <th>Emergency Cases</th>
+                            <th>Theatre Cases</th>
+                            <th>Recovery Cases</th>
+                            <th>ODD Cases</th>
+                            <th>STP Cases</th>
+                            <th>KMS Cases</th>
+                            <th>GCS Cases</th>
+                            <th>Staff Emergency</th>
+                            <th>Staff Theatre</th>
+                            <th>Staff Recovery</th>
+                            <th>Staff ODD</th>
+                            <th>Staff STP</th>
+                            <th>Staff KMS</th>
+                            <th>Staff GCS</th>
+                            <th>Staff ICU</th>
+                            <th>Staff NICU</th>
+                            <th>Staff Paediatric</th>
+                            <th>Staff Female</th>
+                            <th>Staff Male</th>
+                            <th>Staff Lying In</th>
+                            <th>Staff Maternity</th>
+                            <th>Ward State Emergency</th>
+                            <th>Rollcall Nurses</th>
+                            <th>Rollcall Service</th>
+                            <th>Rollcall Students</th>
+                            <th>Rollcall Drivers</th>
+                            <th>Rollcall Pharmacy</th>
+                            <th>Rollcall Laboratory</th>
+                            <th>Rollcall Revenue</th>
+                            <th>Rollcall Records</th>
+                            <th>Rollcall Security</th>
+                            <th>Rollcall Orderlies</th>
+                            <th>General Comments</th>
+                            <th>Mine Incidents</th>
+                            <th>Hospital Incidents</th>
+                            <th>Submitted By</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reports.forEach((report, index) => { %>
+                            <tr>
+                                <td><%= index + 1 %></td>
+                                <td><%= report.report_date %></td>
+                                <td><%= report.plumbing_system %></td>
+                                <td><%= report.electrical_system %></td>
+                                <td><%= report.oxygen_system %></td>
+                                <td><%= report.dmo %></td>
+                                <td><%= report.general_supervisor %></td>
+                                <td><%= report.med_surg_supervisor %></td>
+                                <td><%= report.mat_surg_supervisor %></td>
+                                <td><%= report.emergency_cases %></td>
+                                <td><%= report.theatre_cases %></td>
+                                <td><%= report.recovery_cases %></td>
+                                <td><%= report.odd_cases %></td>
+                                <td><%= report.stp_cases %></td>
+                                <td><%= report.kms_cases %></td>
+                                <td><%= report.gcs_cases %></td>
+                                <td><%= report.staff_emergency %></td>
+                                <td><%= report.staff_theatre %></td>
+                                <td><%= report.staff_recovery %></td>
+                                <td><%= report.staff_odd %></td>
+                                <td><%= report.staff_stp %></td>
+                                <td><%= report.staff_kms %></td>
+                                <td><%= report.staff_gcs %></td>
+                                <td><%= report.staff_icu %></td>
+                                <td><%= report.staff_nicu %></td>
+                                <td><%= report.staff_paediatric %></td>
+                                <td><%= report.staff_female %></td>
+                                <td><%= report.staff_male %></td>
+                                <td><%= report.staff_lying_in %></td>
+                                <td><%= report.staff_maternity %></td>
+                                <td><%= report.ward_state_emergency %></td>
+                                <td><%= report.rollcall_nurses %></td>
+                                <td><%= report.rollcall_service %></td>
+                                <td><%= report.rollcall_students %></td>
+                                <td><%= report.rollcall_drivers %></td>
+                                <td><%= report.rollcall_pharmacy %></td>
+                                <td><%= report.rollcall_laboratory %></td>
+                                <td><%= report.rollcall_revenue %></td>
+                                <td><%= report.rollcall_records %></td>
+                                <td><%= report.rollcall_security %></td>
+                                <td><%= report.rollcall_orderlies %></td>
+                                <td><%= report.general_comments %></td>
+                                <td><%= report.mine_incidents %></td>
+                                <td><%= report.hospital_incidents %></td>
+                                <td><%= report.entered_by %></td>
+                                <td><%= report.created_at %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No reports submitted yet.</p>
+            <% } %>
+        </div>
+        
+        
+
+    </main>
+
+    <main class="dashboard alert-parent">
+        <div class="container">
+            <h1>Submitted Reports</h1>
+            <div class="">
+                <!-- Loop through reports and display each as a card -->
+                <% reports.forEach(report => { %>
+                    <div class="">
+                        <h3>Report Date: <%= report.report_date %></h3>
+
+                        <!-- Statistics Section -->
+                        <section class="gen-sect">
+                            <h4>Ward Statistics</h4>
+                            <table border="1">
+                                <thead>
+                                    <tr>
+                                        <th>Wards</th>
+                                        <th>Prev</th>
+                                        <th>Beds</th>
+                                        <th>Cots</th>
+                                        <th>Pts</th>
+                                        <th>Adm</th>
+                                        <th>Disch</th>
+                                        <th>T-In</th>
+                                        <th>T-Out</th>
+                                        <th>Deaths</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Med/Surg Row -->
+                                    <tr>
+                                        <td>Med/Surg</td>
+                                        <td>50</td> <!-- Prev -->
+                                        <td>30</td> <!-- Beds -->
+                                        <td>10</td> <!-- Cots -->
+                                        <td>20</td> <!-- Pts -->
+                                        <td>15</td> <!-- Adm -->
+                                        <td>10</td> <!-- Disch -->
+                                        <td>5</td> <!-- T-In -->
+                                        <td>3</td> <!-- T-Out -->
+                                        <td>1</td> <!-- Deaths -->
+                                    </tr>
+                                    <!-- Mat/Surg Row -->
+                                    <tr>
+                                        <td>Mat/Surg</td>
+                                        <td>40</td> <!-- Prev -->
+                                        <td>25</td> <!-- Beds -->
+                                        <td>5</td> <!-- Cots -->
+                                        <td>15</td> <!-- Pts -->
+                                        <td>10</td> <!-- Adm -->
+                                        <td>8</td> <!-- Disch -->
+                                        <td>7</td> <!-- T-In -->
+                                        <td>4</td> <!-- T-Out -->
+                                        <td>0</td> <!-- Deaths -->
+                                    </tr>
+                                    <!-- Lying-In Row -->
+                                    <tr>
+                                        <td>Lying-In</td>
+                                        <td>30</td> <!-- Prev -->
+                                        <td>20</td> <!-- Beds -->
+                                        <td>2</td> <!-- Cots -->
+                                        <td>10</td> <!-- Pts -->
+                                        <td>8</td> <!-- Adm -->
+                                        <td>5</td> <!-- Disch -->
+                                        <td>4</td> <!-- T-In -->
+                                        <td>2</td> <!-- T-Out -->
+                                        <td>1</td> <!-- Deaths -->
+                                    </tr>
+                                    <!-- NICU Row -->
+                                    <tr>
+                                        <td>NICU</td>
+                                        <td>20</td> <!-- Prev -->
+                                        <td>15</td> <!-- Beds -->
+                                        <td>5</td> <!-- Cots -->
+                                        <td>8</td> <!-- Pts -->
+                                        <td>7</td> <!-- Adm -->
+                                        <td>6</td> <!-- Disch -->
+                                        <td>5</td> <!-- T-In -->
+                                        <td>3</td> <!-- T-Out -->
+                                        <td>0</td> <!-- Deaths -->
+                                    </tr>
+                                    <!-- CDU Row -->
+                                    <tr>
+                                        <td>CDU</td>
+                                        <td>15</td> <!-- Prev -->
+                                        <td>10</td> <!-- Beds -->
+                                        <td>3</td> <!-- Cots -->
+                                        <td>12</td> <!-- Pts -->
+                                        <td>9</td> <!-- Adm -->
+                                        <td>6</td> <!-- Disch -->
+                                        <td>4</td> <!-- T-In -->
+                                        <td>2</td> <!-- T-Out -->
+                                        <td>0</td> <!-- Deaths -->
+                                    </tr>
+                                    <!-- ICU Row -->
+                                    <tr>
+                                        <td>ICU</td>
+                                        <td>25</td> <!-- Prev -->
+                                        <td>12</td> <!-- Beds -->
+                                        <td>5</td> <!-- Cots -->
+                                        <td>10</td> <!-- Pts -->
+                                        <td>8</td> <!-- Adm -->
+                                        <td>6</td> <!-- Disch -->
+                                        <td>6</td> <!-- T-In -->
+                                        <td>3</td> <!-- T-Out -->
+                                        <td>1</td> <!-- Deaths -->
+                                    </tr>
+                                    <!-- Recovery Row -->
+                                    <tr>
+                                        <td>Recovery</td>
+                                        <td>35</td> <!-- Prev -->
+                                        <td>18</td> <!-- Beds -->
+                                        <td>6</td> <!-- Cots -->
+                                        <td>14</td> <!-- Pts -->
+                                        <td>12</td> <!-- Adm -->
+                                        <td>10</td> <!-- Disch -->
+                                        <td>7</td> <!-- T-In -->
+                                        <td>4</td> <!-- T-Out -->
+                                        <td>1</td> <!-- Deaths -->
+                                    </tr>
+                                    <!-- Emergency Row -->
+                                    <tr>
+                                        <td>Emergency</td>
+                                        <td>60</td> <!-- Prev -->
+                                        <td>40</td> <!-- Beds -->
+                                        <td>15</td> <!-- Cots -->
+                                        <td>30</td> <!-- Pts -->
+                                        <td>25</td> <!-- Adm -->
+                                        <td>20</td> <!-- Disch -->
+                                        <td>10</td> <!-- T-In -->
+                                        <td>6</td> <!-- T-Out -->
+                                        <td>2</td> <!-- Deaths -->
+                                    </tr>
+                                    <!-- Site Clinic Row -->
+                                    <tr>
+                                        <td>Site Clinic</td>
+                                        <td>80</td> <!-- Prev -->
+                                        <td>50</td> <!-- Beds -->
+                                        <td>20</td> <!-- Cots -->
+                                        <td>40</td> <!-- Pts -->
+                                        <td>30</td> <!-- Adm -->
+                                        <td>25</td> <!-- Disch -->
+                                        <td>15</td> <!-- T-In -->
+                                        <td>8</td> <!-- T-Out -->
+                                        <td>0</td> <!-- Deaths -->
+                                    </tr>
+                                    <!-- Sub-Total Row -->
+                                    <tr>
+                                        <td>Sub-Total</td>
+                                        <td><%= "Total of Prev Columns" %></td>
+                                        <td><%= "Sum of Beds" %></td>
+                                        <td><%= "Sum of Cots" %></td>
+                                        <td><%= "Sum of Pts" %></td>
+                                        <td><%= "Sum of Adm" %></td>
+                                        <td><%= "Sum of Disch" %></td>
+                                        <td><%= "Sum of T-In" %></td>
+                                        <td><%= "Sum of T-Out" %></td>
+                                        <td><%= "Sum of Deaths" %></td>
+                                    </tr>
+                                    <!-- Nursery Row -->
+                                    <tr>
+                                        <td>Nursery</td>
+                                        <td>45</td> <!-- Prev -->
+                                        <td>20</td> <!-- Beds -->
+                                        <td>8</td> <!-- Cots -->
+                                        <td>18</td> <!-- Pts -->
+                                        <td>13</td> <!-- Adm -->
+                                        <td>11</td> <!-- Disch -->
+                                        <td>6</td> <!-- T-In -->
+                                        <td>4</td> <!-- T-Out -->
+                                        <td>1</td> <!-- Deaths -->
+                                    </tr>
+                                    <!-- Total Row -->
+                                    <tr>
+                                        <td>Total</td>
+                                        <td><%= "Total of Prev Columns" %></td>
+                                        <td><%= "Total of Beds" %></td>
+                                        <td><%= "Total of Cots" %></td>
+                                        <td><%= "Total of Pts" %></td>
+                                        <td><%= "Total of Adm" %></td>
+                                        <td><%= "Total of Disch" %></td>
+                                        <td><%= "Total of T-In" %></td>
+                                        <td><%= "Total of T-Out" %></td>
+                                        <td><%= "Total of Deaths" %></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                        
+                        <!-- Systems -->
+                        <section class="card-container gen-sect">
+                            <h3>Systems</h3>
+                            <div class="grid-3">
+                                <div class="card input-grp">
+                                    <strong>Plumbing System:</strong> <%= report.plumbing_system %>
+                                </div>
+                                <div class="card input-grp">
+                                    <strong>Electrical System:</strong> <%= report.electrical_system %>
+                                </div>
+                                <div class="card input-grp">
+                                    <strong>Oxygen System:</strong> <%= report.oxygen_system %>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Leaders / Supervisors -->
+                        <section class="card-container gen-sect">
+                            <h3>Leaders / Supervisors</h3>
+                            <div class="grid-2">
+                                <div class="card input-grp">
+                                    <strong>DMO:</strong> <%= report.dmo %>
+                                </div>
+                                <div class="card input-grp">
+                                    <strong>General Supervisor:</strong> <%= report.general_supervisor %>
+                                </div>
+                                <div class="card input-grp">
+                                    <strong>Med/Surg Supervisor:</strong> <%= report.med_surg_supervisor %>
+                                </div>
+                                <div class="card input-grp">
+                                    <strong>Mat/Surg Supervisor:</strong> <%= report.mat_surg_supervisor %>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Cases Treated -->
+                        <section class="card-container gen-sect">
+                            <h3>Cases Treated</h3>
+                            <div class="grid-3">
+                                <div class="card">
+                                    <strong>Emergency:</strong> <%= report.emergency_cases %>
+                                </div>
+                                <div class="card">
+                                    <strong>Theatre:</strong> <%= report.theatre_cases %>
+                                </div>
+                                <div class="card">
+                                    <strong>Recovery:</strong> <%= report.recovery_cases %>
+                                </div>
+                                <div class="card">
+                                    <strong>ODD:</strong> <%= report.odd_cases %>
+                                </div>
+                                <div class="card">
+                                    <strong>STP:</strong> <%= report.stp_cases %>
+                                </div>
+                                <div class="card">
+                                    <strong>KMS:</strong> <%= report.kms_cases %>
+                                </div>
+                                <div class="card">
+                                    <strong>GCS:</strong> <%= report.gcs_cases %>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Staff on Duty -->
+                        <section class="card-container gen-sect">
+                            <h3>Staff on Duty</h3>
+                            <div class="grid-3">
+                                <div class="card input-grp">
+                                    <strong>Emergency Unit:</strong> <%= report.staff_emergency %>
+                                </div>
+                                <div class="card input-grp">
+                                    <strong>Theatre:</strong> <%= report.staff_theatre %>
+                                </div>
+                                <div class="card input-grp">
+                                    <strong>Recovery:</strong> <%= report.staff_recovery %>
+                                </div>
+                                <!-- Add more staff details as needed -->
+                            </div>
+                        </section>
+
+                        <!-- Ward State & Report -->
+                        <section class="card-container gen-sect">
+                            <h3>Ward State &amp; Report</h3>
+                            <div class="card input-grp">
+                                <strong>Emergency Unit:</strong> <%= report.ward_state_emergency %>
+                            </div>
+                        </section>
+
+                        <!-- Roll Call -->
+                        <section class="card-container gen-sect">
+                            <h3>Roll Call</h3>
+                            <div class="grid-3">
+                                <div class="card">
+                                    <strong>Nurses/Midwives:</strong> <%= report.rollcall_nurses %>
+                                </div>
+                                <div class="card">
+                                    <strong>Service Personnel:</strong> <%= report.rollcall_service %>
+                                </div>
+                                <div class="card">
+                                    <strong>Students:</strong> <%= report.rollcall_students %>
+                                </div>
+                                <div class="card">
+                                    <strong>Drivers:</strong> <%= report.rollcall_drivers %>
+                                </div>
+                                <div class="card">
+                                    <strong>Pharmacy:</strong> <%= report.rollcall_pharmacy %>
+                                </div>
+                                <div class="card">
+                                    <strong>Laboratory:</strong> <%= report.rollcall_laboratory %>
+                                </div>
+                                <div class="card">
+                                    <strong>Revenue:</strong> <%= report.rollcall_revenue %>
+                                </div>
+                                <div class="card">
+                                    <strong>Records:</strong> <%= report.rollcall_records %>
+                                </div>
+                                <div class="card">
+                                    <strong>Security:</strong> <%= report.rollcall_security %>
+                                </div>
+                                <div class="card">
+                                    <strong>Orderlies:</strong> <%= report.rollcall_orderlies %>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- General Comments -->
+                        <section class="card-container gen-sect">
+                            <h3>General Comments</h3>
+                            <div class="card">
+                                <%= report.general_comments %>
+                            </div>
+                        </section>
+
+                        <!-- Incidents -->
+                        <section class="card-container gen-sect">
+                            <h3>Incidents</h3>
+                            <div class="grid-3">
+                                <div class="card input-grp">
+                                    <strong>Mine Incidents:</strong> <%= report.mine_incidents %>
+                                </div>
+                                <div class="card input-grp">
+                                    <strong>Hospital Incidents:</strong> <%= report.hospital_incidents %>
+                                </div>
+                                <div class="card input-grp">
+                                    <strong>Signature:</strong> <%= report.entered_by%>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div> <!-- End of card -->
+                <% }); %>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/_footer') %>
+        <script src="/js/mineaid-scripts.js"></script>
+</body>
+
+</html>

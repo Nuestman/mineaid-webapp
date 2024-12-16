@@ -753,4 +753,70 @@
 });
 
 </script>
+
+
+<!-- Backup scripts -->
+ 
+<script>
+    const groupedReports = <%- JSON.stringify(groupedReports) %>; // Ensure groupedReports is passed correctly
+    let currentReportIndex = null;
+    let reportsArray = [];
+    
+    /**
+     * Opens the modal and populates it with report details.
+     * @param {Object} report - The selected report object.
+     */
+    function openModal(report) {
+        const modal = document.getElementById("reportModal");
+    
+        // Populate modal fields
+        document.getElementById("modal-title").textContent = `${report.post_location} ${report.shift_type} Shift Report`;
+        document.getElementById("modal-summary").textContent = report.summary || "No summary available.";
+        document.getElementById("modal-details").textContent = report.details || "No additional details provided.";
+        document.getElementById("modal-submitted-by").textContent = report.submitted_by || "Unknown";
+        document.getElementById("modal-date").textContent = report.report_date || "Unknown date";
+        document.getElementById("modal-post-location").textContent = report.post_location || "Unknown";
+    
+        // Determine the array of reports for the current group (e.g., day/night)
+        const locationKey = report.post_location.toLowerCase(); // e.g., "odd", "stp"
+        const shiftKey = report.shift_type.toLowerCase(); // e.g., "day", "night"
+        reportsArray = groupedReports[locationKey]?.[shiftKey] || []; // Get relevant reports group
+    
+        // Find the index of the current report in the array
+        currentReportIndex = reportsArray.findIndex((r) => r.report_id === report.report_id);
+    
+        // Update navigation button visibility
+        updateNavigationButtons();
+    
+        // Show the modal
+        modal.style.display = "block";
+    }
+    
+    /**
+     * Updates the visibility of "Previous" and "Next" buttons based on the current index.
+     */
+    function updateNavigationButtons() {
+        document.getElementById("prev-btn").style.display = currentReportIndex > 0 ? "inline-block" : "none";
+        document.getElementById("next-btn").style.display =
+            currentReportIndex < reportsArray.length - 1 ? "inline-block" : "none";
+    }
+    
+    
+    
+    // Toggle visibility of the edit form
+    function toggleEditForm() {
+        const editSection = document.getElementById('edit-section');
+        const editButton = document.getElementById('edit-button');
+        const isHidden = editSection.classList.toggle('hidden'); // Toggle visibility
+    
+        // Update button text/icon
+        editButton.innerHTML = isHidden
+            ? '<i class="fas fa-edit"></i> Edit report'
+            : '<i class="fas fa-times"></i> Close Edit';
+    
+        if (!isHidden) {
+            populateEditForm(); // Populate the edit form when opened
+        }
+    }
+</script>
 </html>

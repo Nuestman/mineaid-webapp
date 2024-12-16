@@ -256,6 +256,11 @@ hr {
       grid-template-columns: 300px 1fr;
       gap: 1rem;
   }
+  .grid-4 {
+    display: grid;
+    grid-template-columns: auto-fit, minmax(75px, 1fr);
+    grid-auto-columns: 100px;
+  }
 
   .accent {
     color: var(--accent-color);
@@ -272,7 +277,7 @@ hr {
   
 /* Admin Dashboard Main Layout */
 .dashboard {
-    padding: 2rem;
+    padding: 2rem 0 2rem;
     h3 {
         margin: 2rem 0;
         color: var(--accent-color);
@@ -383,7 +388,7 @@ hr {
   header {
     background-color: var(--primary-color);
     color: var(--white-color);
-    padding: var(--padding-small);
+    padding: 16px 24px;
     text-align: center;
     p {
         margin-inline: auto;
@@ -532,6 +537,11 @@ h4 {
         margin: 0;
         flex-wrap: wrap;
     }
+}
+.flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
 }
 @media (max-width: 500px) {
     .h-flex {
@@ -756,6 +766,19 @@ footer p {
 }
 .profile-container section:hover {
     box-shadow: var(--box-shadow-medium);
+}
+
+.card-outline {
+    padding: var(--padding-medium);
+    border: 1px solid #deeffd;
+        h4 {
+            margin: 32px 0 10px 0;
+        }
+        transition: var(--transition-fast);
+
+    &:hover {
+        box-shadow: var(--box-shadow-light);
+    }
 }
 
 #login-main {
@@ -1915,6 +1938,14 @@ gap: 15px;
 
 
 /* iSOUP*/
+.isoup {
+    .isoup-table-hidden {
+        display: none;
+    }
+    .card {
+        margin-bottom: 0;
+    }
+}
 #isoup {
     header, footer {
         background-color: var(--text-color);

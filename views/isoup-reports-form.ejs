@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iSoup - Form</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+</head>
+
+<body class="items-register full-height">
+
+    <header>
+        <%- include('partials/_nav') %>
+    </header>
+
+    <section class="prim-header">
+        <div class="container">
+            <h1>Supervisor Report Form</h1>
+        </div>
+    </section>
+
+    <main class="dashboard alert-parent">
+        <%- include('partials/_flash-alert') %>
+        <div class="container">
+            <div class="form-container">
+                <form action="isoup/forms/submit-report" method="post">
+                    <section class="gen-sect isoup-rep-sect systems">
+                        <h3>Systems</h3>
+                        <div class="grid-3">
+                            <div class="input-grp">
+                                <label for="plumbing-system">Plumbing System</label>
+                                <select name="plumbing_system" id="plumbing-system" required>
+                                    <option value="Good">Good</option>
+                                    <option value="Faulty">Faulty</option>
+                                </select>
+                            </div>
+                            <div class="input-grp">
+                                <label for="electrical-system">Electrical System</label>
+                                <select name="electrical_system" id="electrical-system" required>
+                                    <option value="Good">Good</option>
+                                    <option value="Faulty">Faulty</option>
+                                </select>
+                            </div>
+                            <div class="input-grp">
+                                <label for="oxygen-system">Oxygen System</label>
+                                <select name="oxygen_system" id="oxygen-system" required>
+                                    <option value="Good">Good</option>
+                                    <option value="Faulty">Faulty</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+                
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Leaders / Supervisors</h3>
+                        <div class="grid-2">
+                            <div class="input-grp">
+                                <label for="dmo">DMO</label>
+                                <input type="text" name="dmo" id="dmo" placeholder="Enter DMO name" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="general-supervisor">General Supervisor</label>
+                                <input type="text" name="general_supervisor" id="general-supervisor" placeholder="Enter General Supervisor name" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="med-surg-supervisor">Med/Surg Supervisor</label>
+                                <input type="text" name="med_surg_supervisor" id="med-surg-supervisor" placeholder="Enter Med/Surg Supervisor name" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="mat-surg-supervisor">Mat/Surg Supervisor</label>
+                                <input type="text" name="mat_surg_supervisor" id="mat-surg-supervisor" placeholder="Enter Mat/Surg Supervisor name" required>
+                            </div>
+                        </div>
+                    </section>
+                
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Cases Treated</h3>
+                        <div class="grid-3">
+                            <div class="input-grp">
+                                <label for="emergency-cases">Emergency</label>
+                                <input type="number" name="emergency_cases" id="emergency-cases" placeholder="Number of emergency cases" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="theatre-cases">Theatre</label>
+                                <input type="number" name="theatre_cases" id="theatre-cases" placeholder="Number of theatre cases" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="recovery-cases">Recovery</label>
+                                <input type="number" name="recovery_cases" id="recovery-cases" placeholder="Number of recovery cases" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="odd-cases">ODD</label>
+                                <input type="number" name="odd_cases" id="odd-cases" placeholder="Number of ODD cases" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="stp-cases">STP</label>
+                                <input type="number" name="stp_cases" id="stp-cases" placeholder="Number of STP cases" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="kms-cases">KMS</label>
+                                <input type="number" name="kms_cases" id="kms-cases" placeholder="Number of KMS cases" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="gcs-cases">GCS</label>
+                                <input type="number" name="gcs_cases" id="gcs-cases" placeholder="Number of GCS cases" required>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Systems Section -->
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Staff on Duty</h3>
+                        <div class="grid-3">
+                            <div class="input-grp">
+                                <label for="emergency-staff">Emergency Unit</label>
+                                <textarea name="staff_emergency" id="emergency-staff" placeholder="List staff on duty..." required></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="theatre-staff">Theatre</label>
+                                <textarea name="staff_theatre" id="theatre-staff" placeholder="List staff on duty..." required></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="recovery-staff">Recovery</label>
+                                <textarea name="staff_recovery" id="recovery-staff" placeholder="List staff on duty..." required></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="odd-staff">ODD</label>
+                                <textarea name="staff_odd" id="odd-staff" placeholder="List staff on duty..." required></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="stp-staff">STP</label>
+                                <textarea name="staff_stp" id="stp-staff" placeholder="List staff on duty..." required></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="kms-staff">KMS</label>
+                                <textarea name="staff_kms" id="kms-staff" placeholder="List staff on duty..." required></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="gcs-staff">GCS</label>
+                                <textarea name="staff_gcs" id="gcs-staff" placeholder="List staff on duty..." required></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="icu-staff">ICU</label>
+                                <textarea name="staff_icu" id="icu-staff" placeholder="List staff on duty..." required></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="nicu-staff">NICU</label>
+                                <textarea name="staff_nicu" id="nicu-staff" placeholder="List staff on duty..." required></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="paed-ward-staff">Paediatric Ward</label>
+                                <textarea name="staff_paediatric" id="paed-ward-staff" placeholder="List staff on duty..." required></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="female-ward-staff">Female Ward</label>
+                                <textarea name="staff_female" id="female-ward-staff" placeholder="List staff on duty..." required></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="male-ward-staff">Male Ward</label>
+                                <textarea name="staff_male" id="male-ward-staff" placeholder="List staff on duty..." required></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="lying-in-ward-staff">Lying-In Ward</label>
+                                <textarea name="staff_lying_in" id="lying-in-ward-staff" placeholder="List staff on duty..." required></textarea>
+                            </div>
+                            <div class="input-grp">
+                                <label for="maternity-ward-staff">Maternity Ward</label>
+                                <textarea name="staff_maternity" id="maternity-ward-staff" placeholder="List staff on duty..." required></textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Ward State &amp; Report</h3>
+                        <div class="input-grp">
+                            <label for="emergency-report">Emergency Unit</label>
+                            <div class="h-flex">
+                                <ul class="flex-wrap">
+                                    <li class="reg-action alert-success">Prev: 12</li>
+                                    <li class="reg-action alert-success">Pt: 16</li>
+                                    <li class="reg-action alert-success">Adm: 6</li>
+                                    <li class="reg-action alert-success">Dis: 2</li>
+                                    <li class="reg-action alert-success">Death: 1</li>
+                                    <li class="reg-action alert-success">Dep: 1</li>
+                                    <li class="reg-action alert-success">Wrk: 0</li>
+                                    <li class="reg-action alert-success">Priv: 15</li>
+                                </ul>
+                            </div>
+                            <textarea name="emergency-report" id="emergency-report" placeholder="How was the unit at midnight/EOD?" required></textarea>
+                        </div>
+                    </section>
+
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Roll Call</h3>
+                        <div class="grid-3">
+                            <div class="input-grp">
+                                <label for="rollcall-nurses">Nurses/Midwives</label>
+                                <input type="number" name="rollcall_nurses" id="rollcall-nurses" placeholder="Enter number..." min="0" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="rollcall-service">Service Personnel</label>
+                                <input type="number" name="rollcall_service" id="rollcall-service" placeholder="Enter number..." min="0" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="rollcall-students">Students</label>
+                                <input type="number" name="rollcall_students" id="rollcall-students" placeholder="Enter number..." min="0" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="rollcall-drivers">Drivers</label>
+                                <input type="number" name="rollcall_drivers" id="rollcall-drivers" placeholder="Enter number..." min="0" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="rollcall-pharmacy">Pharmacy</label>
+                                <input type="number" name="rollcall_pharmacy" id="rollcall-pharmacy" placeholder="Enter number..." min="0" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="rollcall-laboratory">Laboratory</label>
+                                <input type="number" name="rollcall_laboratory" id="rollcall-laboratory" placeholder="Enter number..." min="0" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="rollcall-revenue">Revenue</label>
+                                <input type="number" name="rollcall_revenue" id="rollcall-revenue" placeholder="Enter number..." min="0" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="rollcall-records">Records</label>
+                                <input type="number" name="rollcall_records" id="rollcall-records" placeholder="Enter number..." min="0" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="rollcall-security">Security</label>
+                                <input type="number" name="rollcall_security" id="rollcall-security" placeholder="Enter number..." min="0" required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="rollcall-orderlies">Orderlies</label>
+                                <input type="number" name="rollcall_orderlies" id="rollcall-orderlies" placeholder="Enter number..." min="0" required>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>General Comments</h3>
+                        <div class="input-grp">
+                            <label for="general-comments">General Comments</label>
+                            <textarea name="general_comments" id="general-comments" placeholder="Enter any comments..." required></textarea>
+                        </div>
+                    </section>
+
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Incidents</h3>
+                        <div class="grid-2">
+                            <div class="input-grp">
+                                <label for="mine-incidents">Mine Incidents</label>
+                                <input type="text" name="mine_incidents" id="mine-incidents" placeholder="Describe incidents..." required>
+                            </div>
+                            <div class="input-grp">
+                                <label for="hospital-incidents">Hospital Incidents</label>
+                                <input type="text" name="hospital_incidents" id="hospital-incidents" placeholder="Describe incidents..." required>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Signature</h3>
+                        <div class="input-grp">
+                            <label for="entered-by">Entered By</label>
+                            <select name="entered_by" id="entered-by" disabled>
+                                <option value="John Doe">John Doe</option>
+                            </select>
+                        </div>
+                    </section>
+
+                    <button class="btn" type="submit">Submit Report</button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <%- include('partials/_footer') %>
+        <script src="/js/mineaid-scripts.js"></script>
+</body>
+
+</html>

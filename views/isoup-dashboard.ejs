@@ -6,75 +6,75 @@
   <title>Supervisor - Dashboard</title>
   <link rel="stylesheet" href="/css/mineaid-styles.css">
   <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
 <header>
     <%- include('partials/_nav') %>
 </header>
-<section class="prim-header">
-    <div class="container">
-        <h1>Supervisor Dashboard</h1>
-    </div>
-</section>
 <main class="dashboard alert-parent">
     <%- include('partials/_flash-alert') %>
-    <div class="container">
-        <div class="">
-            <div class="grid-1-3">
-                <aside class="sidebar">
-                    <h2>Navigation</h2>
-                    <a href="/dashboard">Dashboard</a>
-                    <a href="/supervisor/reports">Shift Reports</a>
-                    <a href="/admin/incidents">Manage Incidents</a>
-                    <a href="/analytics">Analytics &amp; Summaries</a>
-                    <a href="/supervisor/logs">Shift Logs</a>
-                    <a href="/settings">Settings</a>
-                </aside>
-                <div class="main-content">
-                    <!-- Welcome Section -->
-                    <h1 class="accent">CONTENT COMING SOON: These are placeholders.</h1>
-                    <section class="welcome-card card-container">
-                        <div class="">
-                            <h2>Welcome, <span class="accent"><%= user.firstname || 'Firstname'%>!</span></h2>
-                            <p>Access reports, update logs, and review overnight incidents across all units.</p>
-                        </div>
-                    </section>
-                    <!-- Quick Links -->
-                    <section class="quick-links card-container">
-                        <h3>Quick Links</h3>
-                        <div class="grid-container">
-                            <div class="card"><a href="/supervisor/new-report">Submit Report</a></div>
-                            <div class="card"><a href="/supervisor/unit-summary">Unit Summary</a></div>
-                            <div class="card"><a href="/supervisor/messages">Messages</a></div>
-                        </div>
-                    </section>
-                    <!-- Unit Reports -->
-                    <section class="card-container">
-                        <h3>Unit Reports</h3>
-                        <p>View recent updates from each unit, submitted during your shift.</p>
-                        <div class="card">
-                            <p>No reports available.</p>
-                        </div>
-                    </section>
-                    <!-- Pending Follow-Ups -->
-                    <section class="pending card-container">
-                        <h3>Pending Follow-Ups</h3>
-                        <div>
-                            
-                            <p>No pending follow-ups.</p>
-                        </div>
-                    </section>
-                    <!-- Supervisor Shift Log -->
-                    <section class="card-container">
-                        <h3>Shift Log</h3>
-                        <p>Review logs of events and incidents across units.</p>
-                        <div class="grid-container">
-                            <div class="card"><a href="/supervisor/logs">View Logs</a></div>
-                            <div class="card"><a href="/supervisor/logs/new">Add Log Entry</a></div>
-                        </div>
-                    </section>
-                </div>
+    <div class="">
+        <div class="grid-1-3">
+            <aside class="sidebar">
+                <h2>Menu</h2>
+                <a href="/isoup/home">iSoup Home</a>
+                <a href="/isoup/forms/report-form">Submit iSoup Report</a>
+                <a href="/isoup/forms/stats-form">Submit iSoup Statistics</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/supervisor/reports">Shift Reports</a>
+                <a href="/isoup/incidents">Manage Incidents</a>
+                <a href="/analytics">Analytics &amp; Summaries</a>
+                <a href="/supervisor/logs">Shift Logs</a>
+                <a href="/settings">Settings</a>
+            </aside>
+            <div class="main-content">
+                <!-- Welcome Section -->
+            <section class="prim-header">
+                    <h1>Supervisor Dashboard</h1>
+            </section>
+                <h1 class="danger">CONTENT COMING SOON: These are placeholders.</h1>
+                <section class="welcome-card card-container">
+                    <div class="">
+                        <h2>Welcome, <span class="accent"><%= user.firstname || 'Firstname'%>!</span></h2>
+                        <p>Access reports, update logs, and review overnight incidents across all units.</p>
+                    </div>
+                </section>
+                <!-- Quick Links -->
+                <section class="quick-links card-container">
+                    <h3>Quick Links</h3>
+                    <div class="grid-container">
+                        <div class="card"><a href="/isoup/forms/report-form">Submit Report</a></div>
+                        <div class="card"><a href="/isoup/forms/stats-form">Submit Stats/Ward State</a></div>
+                        <div class="card"><a href="/supervisor/messages">Messages</a></div>
+                    </div>
+                </section>
+                <!-- Unit Reports -->
+                <section class="card-container">
+                    <h3>Unit Reports</h3>
+                    <p>View recent updates from each unit, submitted during your shift.</p>
+                    <div class="card">
+                        <p>No reports available.</p>
+                    </div>
+                </section>
+                <!-- Pending Follow-Ups -->
+                <section class="pending card-container">
+                    <h3>Pending Follow-Ups</h3>
+                    <div>
+                        
+                        <p>No pending follow-ups.</p>
+                    </div>
+                </section>
+                <!-- Supervisor Shift Log -->
+                <section class="card-container">
+                    <h3>Shift Log</h3>
+                    <p>Review logs of events and incidents across units.</p>
+                    <div class="grid-container">
+                        <div class="card"><a href="/supervisor/logs">View Logs</a></div>
+                        <div class="card"><a href="/supervisor/logs/new">Add Log Entry</a></div>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
