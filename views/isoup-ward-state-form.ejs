@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iSoup - Form</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+</head>
+
+<body class="">
+
+    <header>
+        <%- include('partials/_nav') %>
+    </header>
+
+    <main class="alert-parent">
+        <%- include('partials/_flash-alert') %>
+        <div class="container">
+            <div class="form-container">
+                <form action="isoup/forms/submit-ward-state" method="post">
+                    <h2>Night Sup. Ward State Form</h2>
+                    <section class="gen-sect isoup-rep-sect">
+                        <h3>Ward State &amp; Report</h3>
+                        <div class="grid-2">
+                            <div class="input-grp">
+                                <label for="date">Date</label>
+                                <input type="date" name="date" id="date">
+                            </div>
+                            <div class="input-grp">
+                                <label for="ward">Ward</label>
+                                <select name="ward" id="ward">
+                                    <option disabled selected>Ward State for....</option>
+                                    <option value="ICU">ICU</option>
+                                    <option value="CDU">CDU</option>
+                                    <option value="NICU">NICU</option>
+                                    <option value="Paediatric">Paediatric</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Lying-In">Lying-In</option>
+                                    <option value="Maternity">Maternity</option>
+                                    <option value="Nursery">Nursery</option>
+                                    <option value="Recovery">Recovery</option>
+                                    <option value="Emergency">Emergency</option>
+                                    <option value="Employee Clinic">Employee Clinic</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid-3">
+                            <div class="input-grp">
+                                <label for="prev">Previous Patients</label>
+                                <input type="number" name="prev" id="prev">
+                            </div>
+                            <div class="input-grp">
+                                <label for="pats">Total Patients</label>
+                                <input type="number" name="pats" id="pats">
+                            </div>
+                            <div class="input-grp">
+                                <label for="adm">Admissions</label>
+                                <input type="number" name="adm" id="adm">
+                            </div>
+                            <div class="input-grp">
+                                <label for="disch">Discharges</label>
+                                <input type="number" name="disch" id="disch">
+                            </div>
+                            <div class="input-grp">
+                                <label for="deaths">Deaths</label>
+                                <input type="number" name="deaths" id="deaths">
+                            </div>
+                            <div class="input-grp">
+                                <label for="t-in">Trans-In</label>
+                                <input type="number" name="t-in" id="t-in">
+                            </div>
+                            <div class="input-grp">
+                                <label for="t-out">Trans-Out</label>
+                                <input type="number" name="t-out" id="t-out">
+                            </div>
+                            <div class="input-grp">
+                                <label for="workers">Workers</label>
+                                <input type="number" name="workers" id="workers">
+                            </div>
+                            <div class="input-grp">
+                                <label for="dep">Dependents</label>
+                                <input type="number" name="dep" id="dep">
+                            </div>
+                            <div class="input-grp">
+                                <label for="private">Private Patients</label>
+                                <input type="number" name="private" id="private">
+                            </div>
+                        </div>
+                        <button class="btn" type="submit">Submit</button>
+                        <div class="input-grp">
+                            <label for="emergency-report">Emergency Unit</label>
+                            <div class="h-flex">
+                                <ul class="flex-wrap">
+                                    <li class="reg-action alert-success">Prev: 12</li>
+                                    <li class="reg-action alert-success">Pt: 16</li>
+                                    <li class="reg-action alert-success">Adm: 6</li>
+                                    <li class="reg-action alert-success">Dis: 2</li>
+                                    <li class="reg-action alert-success">Death: 1</li>
+                                    <li class="reg-action alert-success">Dep: 1</li>
+                                    <li class="reg-action alert-success">Wrk: 0</li>
+                                    <li class="reg-action alert-success">Priv: 15</li>
+                                </ul>
+                            </div>
+                            <textarea name="emergency-report" id="emergency-report" placeholder="How was the unit at midnight/EOD?" required></textarea>
+                        </div>
+                    </section>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <%- include('partials/_footer') %>
+        <script src="/js/mineaid-scripts.js"></script>
+</body>
+
+</html>

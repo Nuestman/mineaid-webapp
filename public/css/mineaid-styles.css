@@ -273,7 +273,7 @@ button, select, option {
 
 /* Admin Dashboard Main Layout */
 .dashboard {
-  padding: 2rem 0 2rem;
+  padding: 2rem 2rem 2rem 0;
 }
 .dashboard h3 {
   margin: 2rem 0;

@@ -15,21 +15,16 @@
         <%- include('partials/_nav') %>
     </header>
 
-    <section class="prim-header">
-        <div class="container">
-            <h1>Supervisor Statistics Form</h1>
-        </div>
-    </section>
-
     <main class="dashboard alert-parent">
         <%- include('partials/_flash-alert') %>
         <div class="container">
+            <h1>Supervisor Statistics Form</h1>
             <div class="form-container">
                 <form action="isoup/forms/submit-stats" method="post">
                     <h2 class="danger">Form content coming soon</h2>
                     <section class="gen-sect isoup-rep-sect">
                         <h3>Stats Table</h3>
-                        <div class="grid-3">
+                        <div class="grid-3 hidden">
                             <div class="input-grp">
                                 <label id="" for="">Plumbing System</label>
                                 <select name="" id="">

@@ -5,10 +5,34 @@
         <div class="logo">
             <a href="/iaid"><img src="/images/first-aid-kit.png" alt=""></a>
         </div>
-        <nav>
-            <a href="/landing-page"><i class="fas fa"></i>Hub</a>
-            <a href="/database"><i class="fas fa"></i>Database</a>
-            <a href="/inventory"><i class="fas fa"></i>Inventory</a>
+        <nav class="toggler">
+            <ul>
+                <li class="nav-item">Hub
+                    <ul class="nav-links">
+                        <li><a href="/landing-page"><i class="fas fa"></i>Hub</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">Database
+                    <ul class="nav-links">
+                        <li><a href="/database"><i class="fas fa"></i>Database</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">Inventory
+                    <ul class="nav-links">
+                        <li><a href="/inventory"><i class="fas fa-home"></i> Inventory Home</a></li>
+                        <li><a href="/inventory/add-new-item" ><i class="fas fa-plus"></i> Add New Items to Register </a></li>
+                        <li><a href="/inventory/items-register" ><i class="fas fa-cogs"></i> Items Register</a></li>
+                        <li><a href="/inventory/user-activity-logs" ><i class="fas fa-file"></i> User Activity Logs</a></li>
+                        <li><a href="/inventory/inventory-items-all" ><i class="fas fa-cogs"></i> Inventory Items</a></li>
+                        <li class="hidden"><a href="/inventory/inventory-log" ><i class="fas fa-list"></i> Inventory Log</a></li>
+                        <li class="hidden"><a href="/inventory/add-inventory-category" ><i class="fas fa-plus"></i> Add Inventory Cat</a></li>
+                        <li><a href="/inventory/daily-checklist" ><i class="fas fa-list"></i> Daily Checklist</a></li>
+                        <li><a href="/inventory/daily-checklist-data" ><i class="fas fa-list"></i> Daily Checklist Data</a></li>
+                        <li class="hidden"><a href="/inventory/export" ><i class="fas fa-file-export"></i> Export Data</a></li>
+                        <li class="hidden"><a href="/inventory/import" ><i class="fas fa-file-import"></i> Import Data</a></li>
+                    </ul>
+                </li>
+            </ul>
         </nav>
 
         <!-- Hamburger icon for smaller screens -->
@@ -42,8 +66,10 @@
                 </li>
                 <li class="nav-item">Supervisor
                     <ul class="nav-links">
-                        <li><a href="/isoup/home">iSoup Home</a></li>
+                        <li><a href="/isoup-dashboard">iSoup Dashboard</a></li>
+                        <li><a href="/isoup/reports">iSoup Reports</a></li>
                         <li><a href="/isoup/forms/report-form">Submit Sup. Report</a></li>
+                        <li><a href="/isoup/forms/ward-state-form">Submit Ward State</a></li>
                         <li><a href="/isoup/forms/stats-form">Submit Sup. Statistics</a></li>
                     </ul>
                 </li>

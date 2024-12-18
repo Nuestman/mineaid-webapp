@@ -1980,6 +1980,10 @@ app.get('/isoup-dashboard', (req, res) => {
 app.get('/isoup/forms/report-form', (req, res) => {
     res.render('isoup-reports-form'); // landing-page.ejs
 });
+// Route: View iSoup Ward State Form (GET)
+app.get('/isoup/forms/ward-state-form', (req, res) => {
+    res.render('isoup-ward-state-form'); // landing-page.ejs
+});
 // Route: View iSoup Statistics Form (GET)
 app.get('/isoup/forms/stats-form', (req, res) => {
     res.render('isoup-stats-form'); // landing-page.ejs
@@ -2084,21 +2088,7 @@ app.post('/isoup/forms/stats-form', (req, res) => {
     // Redirect or send success response
     res.send("Statistics successfully recorded.");
 });
-
-// Route: iSoup Home (GET)
-app.get('/isoup/home', (req, res) => {
-    const sql = `SELECT * FROM isoup_reports ORDER BY created_at DESC`;
-
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-            console.error(err.message);
-            req.flash('error', 'Error fetching reports.');
-            return res.render('isoup-home', { reports: [] });
-        }
-        res.render('isoup-home', { reports: rows });
-    });
-});
-
+// Route: Submit iSoup Report (POST)
 app.post('/isoup/forms/submit-report', async (req, res) => {
     const {
         plumbing_system, electrical_system, oxygen_system,
@@ -2151,6 +2141,21 @@ app.post('/isoup/forms/submit-report', async (req, res) => {
         res.redirect('/isoup/forms/report-form');
     }
 });
+
+// Route: View iSoup Reports (GET)
+app.get('/isoup/reports', (req, res) => {
+    const sql = `SELECT * FROM isoup_reports ORDER BY created_at DESC`;
+
+    db.all(sql, [], (err, rows) => {
+        if (err) {
+            console.error(err.message);
+            req.flash('error', 'Error fetching reports.');
+            return res.render('isoup-reports', { reports: [] });
+        }
+        res.render('isoup-reports', { reports: rows });
+    });
+});
+
 
 // Route to display iSoup incident book
 app.get('/isoup/incidents', ensureAuthenticated, ensureAdmin, attachPostFilter, (req, res) => {
