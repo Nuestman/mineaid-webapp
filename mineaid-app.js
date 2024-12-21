@@ -118,19 +118,30 @@ passport.deserializeUser((id, done) => {
 
 // Middleware: Ensure Post is Selected & Filter Queries
 function attachPostFilter(req, res, next) {
+    // Define routes to exclude
+    const excludedRoutes = ['/login', '/post-selection', '/about', '/contact'];
+
+    // Skip middleware for excluded routes
+    if (excludedRoutes.includes(req.path)) {
+        return next();
+    }
+
     if (!req.session.current_post) {
         req.flash('error_msg', 'Please select your post before proceeding.');
+        console.log('Please select your post before proceeding.');
         return res.redirect('/post-selection');
     }
     
     // Attach post to res.locals for views
-    res.locals.post = req.session.current_post;
+    res.locals.current_post = req.session.current_post;
 
     // Attach post to req for backend filtering
     req.postLocation = req.session.current_post;
 
     next();
 }
+app.use(attachPostFilter);
+
 
 // Multer Configuration
 
@@ -347,7 +358,7 @@ app.post('/profile/update-theme', (req, res) => {
 function logActivity(req, res, next) {
     if (req.user) { // Log only if user is authenticated
         const userId = req.user.user_id;
-        const currentPost = req.session.current_post;
+        const currentPost = req.postLocation;
         const activity = `${req.method} ${req.originalUrl}`;
         db.run('INSERT INTO recent_activities (user_id, post_location, activity, timestamp) VALUES (?, ?, ?, datetime("now", "localtime"))',
             [userId, currentPost, activity],
@@ -688,7 +699,7 @@ app.post('/login', (req, res, next) => {
 
 // Route: Display Post-Selection Page
 app.get('/post-selection', ensureAuthenticated, (req, res) => {
-    res.render('post-selection', { posts: ['ODD', 'STP', 'KMS', 'GCS', 'EMS', 'AGAHF'] });
+    res.render('post-selection', { posts: ['ODD', 'STP', 'KMS', 'GCS', 'EMS', 'AGAHF-ED', 'AGAHF-Sup'] });
 });
 
 // Route: Handle Post Selection
@@ -696,7 +707,7 @@ app.post('/post-selection', ensureAuthenticated, (req, res) => {
     const { selected_post } = req.body;
 
     // Validate the selected post
-    const validPosts = ['ODD', 'STP', 'KMS', 'GCS', 'EMS', 'AGAHF'];
+    const validPosts = ['ODD', 'STP', 'KMS', 'GCS', 'EMS', 'AGAHF-ED', 'AGAHF-Sup'];
     if (!validPosts.includes(selected_post)) {
         req.flash('error_msg', 'Invalid post selected. Please try again.');
         return res.redirect('/post-selection');
@@ -707,8 +718,14 @@ app.post('/post-selection', ensureAuthenticated, (req, res) => {
 
     req.flash('success_msg', `Welcome, You are now logged into ${selected_post}.`);
     // Redirect to the post-specific dashboard
-    if (selected_post === 'AGAHF') {
+    if (selected_post === 'AGAHF-Sup') {
         res.redirect(`/isoup-dashboard`);
+    } else 
+    if (selected_post === 'AGAHF-ED') {
+        res.redirect(`/iemerge/dashboard`);
+    } else
+    if (selected_post === 'Nurse-Manager') {
+        res.redirect(`/imanage-dashboard`);
     } else
     res.redirect(`/dashboard`);
 });
@@ -731,7 +748,7 @@ app.post('/register', (req, res) => {
     let validationError = null;
 
     // Server-side validations
-    if (!user_id, firstname || !surname || !email || !username || !password || !confirm_password) {
+    if (!user_id || !firstname || !surname || !email || !username || !password || !confirm_password) {
         validationError = 'Please fill in all fields';
     } else if (password !== confirm_password) {
         validationError = 'Passwords do not match';
@@ -1956,6 +1973,8 @@ app.get('/error/regis-error', (req, res) => {
     res.render('error/regis-error'); // help.ejs
 });
 
+
+
 /* NURSING PORTAL */
 // Route: Nursing Portal Landing Page (GET)
 app.get('/landing-page', (req, res) => {
@@ -1973,9 +1992,18 @@ app.get('/isoup', (req, res) => {
     res.render('isoup'); // landing-page.ejs
 });
 // Route: iSoup Dashboard (GET)
-app.get('/isoup-dashboard', (req, res) => {
-    res.render('isoup-dashboard'); // landing-page.ejs
+app.get('/isoup-dashboard', ensureAuthenticated, (req, res) => {
+    const current_post = req.session.current_post;
+
+    // Check if the session has the current_post
+    if (!current_post) {
+        req.flash('error_msg', 'Please select a post before accessing the iSoup dashboard.');
+        return res.redirect('/post-selection');
+    }
+
+    res.render('isoup-dashboard', { current_post }); // Pass current_post to the template
 });
+
 // Route: View iSoup Report Form (GET)
 app.get('/isoup/forms/report-form', (req, res) => {
     res.render('isoup-reports-form'); // landing-page.ejs
@@ -2091,35 +2119,36 @@ app.post('/isoup/forms/stats-form', (req, res) => {
 // Route: Submit iSoup Report (POST)
 app.post('/isoup/forms/submit-report', async (req, res) => {
     const {
-        plumbing_system, electrical_system, oxygen_system,
+        report_date, plumbing_system, electrical_system, oxygen_system,
         dmo, general_supervisor, med_surg_supervisor, mat_surg_supervisor,
         emergency_cases, theatre_cases, recovery_cases, odd_cases, stp_cases, kms_cases, gcs_cases,
         staff_emergency, staff_theatre, staff_recovery, staff_odd, staff_stp, staff_kms, staff_gcs,
-        staff_icu, staff_nicu, staff_paeds, staff_female, staff_male,
+        staff_icu, staff_nicu, staff_paediatric, staff_female, staff_male,
         staff_lying_in, staff_maternity,
         emergency_report, rollcall_nurses, rollcall_service, rollcall_students, rollcall_drivers,
         rollcall_pharmacy, rollcall_laboratory, rollcall_revenue, rollcall_records, rollcall_security, rollcall_orderlies,
-        general_comments, mine_incidents, hospital_incidents, entered_by
+        general_comments, mine_incidents, hospital_incidents
     } = req.body;
+    const entered_by = req.user.firstname; // Get user from session/middleware, assuming user object has a 'firstname' property
 
     const sql = `INSERT INTO isoup_reports (
-        plumbing_system, electrical_system, oxygen_system,
+        report_date, plumbing_system, electrical_system, oxygen_system,
         dmo, general_supervisor, med_surg_supervisor, mat_surg_supervisor,
         emergency_cases, theatre_cases, recovery_cases, odd_cases, stp_cases, kms_cases, gcs_cases,
         staff_emergency, staff_theatre, staff_recovery, staff_odd, staff_stp, staff_kms, staff_gcs,
-        staff_icu, staff_nicu, staff_paeds, staff_female, staff_male,
+        staff_icu, staff_nicu, staff_paediatric, staff_female, staff_male,
         staff_lying_in, staff_maternity,
         emergency_report, rollcall_nurses, rollcall_service, rollcall_students, rollcall_drivers,
         rollcall_pharmacy, rollcall_laboratory, rollcall_revenue, rollcall_records, rollcall_security, rollcall_orderlies,
         general_comments, mine_incidents, hospital_incidents, entered_by
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     const params = [
-        plumbing_system, electrical_system, oxygen_system,
+        report_date, plumbing_system, electrical_system, oxygen_system,
         dmo, general_supervisor, med_surg_supervisor, mat_surg_supervisor,
         emergency_cases, theatre_cases, recovery_cases, odd_cases, stp_cases, kms_cases, gcs_cases,
         staff_emergency, staff_theatre, staff_recovery, staff_odd, staff_stp, staff_kms, staff_gcs,
-        staff_icu, staff_nicu, staff_paeds, staff_female, staff_male,
+        staff_icu, staff_nicu, staff_paediatric, staff_female, staff_male,
         staff_lying_in, staff_maternity,
         emergency_report, rollcall_nurses, rollcall_service, rollcall_students, rollcall_drivers,
         rollcall_pharmacy, rollcall_laboratory, rollcall_revenue, rollcall_records, rollcall_security, rollcall_orderlies,
@@ -2134,27 +2163,126 @@ app.post('/isoup/forms/submit-report', async (req, res) => {
             });
         });
         req.flash('success', 'Report submitted successfully!');
-        res.redirect('/isoup/forms/report-form');
+        res.redirect('/isoup/reports/all');
     } catch (err) {
         console.error(err.message);
         req.flash('error', 'Error saving the report.');
-        res.redirect('/isoup/forms/report-form');
+        res.redirect('/error/500');
     }
 });
 
-// Route: View iSoup Reports (GET)
-app.get('/isoup/reports', (req, res) => {
-    const sql = `SELECT * FROM isoup_reports ORDER BY created_at DESC`;
+// Route: View All iSoup Reports (GET)
+// app.get('/isoup/reports/all', (req, res) => {
+//     const sql = `SELECT * FROM isoup_reports ORDER BY created_at DESC`;
 
-    db.all(sql, [], (err, rows) => {
+//     db.all(sql, [], (err, rows) => {
+//         if (err) {
+//             console.error(err.message);
+//             req.flash('error', 'Error fetching reports.');
+//             return res.render('isoup-reports-all', { reports: [] });
+//         }
+
+//         res.render('isoup-reports-all', { reports: rows });
+//     });
+// });
+// app.get('/isoup/reports/all', (req, res) => {
+//     //With pagination
+//     const page = parseInt(req.query.page) || 1; // Current page number, default to 1
+//     const limit = parseInt(req.query.limit) || 10; // Number of items per page, default to 10
+//     const offset = (page - 1) * limit;
+
+//     const sql = `SELECT * FROM isoup_reports ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+//     const countSql = `SELECT COUNT(*) AS total FROM isoup_reports`;
+
+//     db.get(countSql, [], (err, countResult) => {
+//         if (err) {
+//             console.error(err.message);
+//             req.flash('error', 'Error fetching reports count.');
+//             return res.render('isoup-reports-all', { reports: [], totalPages: 0, currentPage: page });
+//         }
+
+//         const totalReports = countResult.total;
+//         const totalPages = Math.ceil(totalReports / limit);
+
+//         db.all(sql, [limit, offset], (err, rows) => {
+//             if (err) {
+//                 console.error(err.message);
+//                 req.flash('error', 'Error fetching reports.');
+//                 return res.render('isoup-reports-all', { reports: [], totalPages: 0, currentPage: page });
+//             }
+
+//             res.render('isoup-reports-all', {
+//                 reports: rows,
+//                 totalPages,
+//                 currentPage: page,
+//             });
+//         });
+//     });
+// });
+app.get('/isoup/reports/all', (req, res) => {
+    //With pagination plus filters
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+    const search = req.query.search || ''; // Search term
+
+    let sql = `SELECT * FROM isoup_reports WHERE report_date LIKE ? ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+    const countSql = `SELECT COUNT(*) AS total FROM isoup_reports WHERE report_date LIKE ?`;
+
+    const searchTerm = `%${search}%`;
+
+    db.get(countSql, [searchTerm], (err, countResult) => {
         if (err) {
             console.error(err.message);
-            req.flash('error', 'Error fetching reports.');
-            return res.render('isoup-reports', { reports: [] });
+            req.flash('error', 'Error fetching reports count.');
+            return res.render('isoup-reports-all', { reports: [], totalPages: 0, currentPage: page });
         }
-        res.render('isoup-reports', { reports: rows });
+
+        const totalReports = countResult.total;
+        const totalPages = Math.ceil(totalReports / limit);
+
+        db.all(sql, [searchTerm, limit, offset], (err, rows) => {
+            if (err) {
+                console.error(err.message);
+                req.flash('error', 'Error fetching reports.');
+                return res.render('isoup-reports-all', { reports: [], totalPages: 0, currentPage: page });
+            }
+
+            res.render('isoup-reports-all', {
+                reports: rows,
+                totalPages,
+                currentPage: page,
+                search,
+            });
+        });
     });
 });
+
+
+
+// Route: View One Specific Day's iSoup Report (GET)
+app.get('/isoup/report', (req, res) => {
+    const { report_date } = req.query; // Extract report_date from query params
+
+    if (!report_date || !/^\d{4}-\d{2}-\d{2}$/.test(report_date)) {
+        req.flash('error', 'Invalid or missing report date.');
+        return res.render('isoup-report', { reports: [] });
+    }
+
+    const sql = `SELECT * FROM isoup_reports WHERE report_date = ?`;
+
+    db.all(sql, [report_date], (err, rows) => {
+        if (err) {
+            console.error(err.message);
+            req.flash('error', 'Error fetching the report.');
+            return res.render('isoup-report', { reports: [] });
+        }
+
+        res.render('isoup-report', { reports: rows });
+    });
+});
+
+
 
 
 // Route to display iSoup incident book
@@ -2187,8 +2315,12 @@ app.get('/iemerge', (req, res) => {
     res.render('iemerge'); // landing-page.ejs
 });
 // Route: iEmerge Dashboard (GET)
-app.get('/iemerge-dashboard', (req, res) => {
-    res.render('iemerge-dashboard'); // landing-page.ejs
+app.get('/iemerge/dashboard', (req, res) => {
+    res.render('iemerge/iemerge-dashboard'); // landing-page.ejs
+});
+// Route: iEmerge Inventory (GET)
+app.get('/iemerge/inventory/equipment', (req, res) => {
+    res.render('../inventory/equipment-inventory'); // landing-page.ejs
 });
 
 
@@ -2197,7 +2329,8 @@ app.get('/iemerge-dashboard', (req, res) => {
 
 // Route: Inventory Management Landing Page (GET)
 app.get('/inventory', attachPostFilter, (req, res) => {
-    res.render('inventory/inventory-mgt'); // landing-page.ejs
+    const current_post = req.session.current_post;
+    res.render('inventory/inventory-mgt', { current_post }); // landing-page.ejs
 });
 
 

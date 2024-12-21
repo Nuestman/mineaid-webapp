@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <title>User Activity Logs</title>
+</head>
+<body class="full-height">
+    <header><%- include('../partials/_nav') %></header>
+    <main>
+        <div class="container">
+            <h1>User Activity Logs</h1>
+            <div class="alert-parent">
+                <%- include('../partials/_flash-alert') %>
+                
+                <!-- Items Filter -->
+                <div class="filter-container">
+                    <form action="/inventory/inventory-items-all" method="GET">
+                        <div class="input-grp filter-grp">
+                            <!-- Dropdown for Filter Options -->
+                            <select name="filterBy" class="form-control" required>
+                                <option value="">Filter by...</option>
+                                <option value="post_location">Location</option>
+                                <option value="action">Action</option>
+                                <option value="logged_by">Expiry Date</option>
+                            </select>
+                
+                            <!-- Input for Filter Value -->
+                            <input type="text" name="filterValue" placeholder="Enter value..." class="form-control" required>
+                            
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                        </div>
+                    </form>
+                </div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>User ID</th>
+                            <th>Post Location</th>
+                            <th>Action</th>
+                            <th>Table Name</th>
+                            <th>Record ID</th>
+                            <th>Timestamp</th>
+                            <th>Logged By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (logs.length > 0) { %>
+                            <% logs.forEach((log, index) => { %>
+                                <tr>
+                                    <td><%= index + 1 %></td>
+                                    <td><%= log.user_id %></td>
+                                    <td><%= log.post_location %></td>
+                                    <td><%= log.action %></td>
+                                    <td><%= log.table_name %></td>
+                                    <td><%= log.record_id %></td>
+                                    <td><%= new Date(log.timestamp).toLocaleString() %></td>
+                                    <td><%= log.logged_by || 'System'%></td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" class="text-center">No activity logs available</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <footer><%- include('../partials/_footer') %></footer>
+</body>
+</html>

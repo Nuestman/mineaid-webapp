@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Inventory Category</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header><%- include('../partials/_nav') %></header>
+
+    <main class="dashboard">
+        <div class="container">
+            <h1>Add Inventory Category</h1>
+            <p>Use the form below to add a new inventory category.</p>
+
+            <!-- Add Category Form -->
+            <form action="/inventory/add-inventory-category" method="POST" class="form">
+                <div class="input-grp">
+                    <label for="name">Category Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter category name" required>
+                </div>
+                <div class="input-grp">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description" placeholder="Enter category description" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Add Category</button>
+            </form>
+        </div>
+    </main>
+    
+    <footer><%- include('../partials/_footer') %></footer>
+    <script src="/js/mineaid-scripts.js"></script>
+</body>
+</html>

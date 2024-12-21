@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Items - Inventory</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="inventory-table-body full-height">
+    <header><%- include('../partials/_nav') %></header>
+
+    <div class="container">
+        
+        <div class="inventory-table-container wide-table alert-parent">
+            <h1>Inventory Items</h1>
+            <%- include('../partials/_flash-alert') %>
+            
+            <!-- Items Filter -->
+            <div class="filter-container">
+                <form action="/inventory/inventory-items-all" method="GET">
+                    <div class="input-grp filter-grp">
+                        <!-- Dropdown for Filter Options -->
+                        <select name="filterBy" class="form-control" required>
+                            <option value="">Filter by...</option>
+                            <option value="post_location">Location</option>
+                            <option value="category">Category</option>
+                            <option value="expiry_date">Expiry Date</option>
+                            <option value="manufacturer">Manufacturer</option>
+                        </select>
+            
+                        <!-- Input for Filter Value -->
+                        <input type="text" name="filterValue" placeholder="Enter value..." class="form-control" required>
+                        
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Filtered Results Breadcrumb -->
+<% if (filterBy && filterValue) { %>
+    <div class="breadcrumb">
+        <span>Results filtered by:</span>
+        <span class="badge badge-primary"><%= filterBy.charAt(0).toUpperCase() + filterBy.slice(1) %></span>
+        <span class="badge badge-info"><%= filterValue %></span>
+    </div>
+<% } else { %>
+    <div class="breadcrumb">
+        <span>All Inventory Items</span>
+    </div>
+<% } %>
+
+<!-- No Items Found Scenario -->
+<% if (inventoryItems.length === 0) { %>
+    <div class="no-items">
+        <p>No items found for the given criteria.</p>
+    </div>
+<% } else { %>
+    <!-- All Inventory Items Table -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Location</th>
+                <th>Item ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Unit</th>
+                <th>Reorder Level</th>
+                <th>Expiry Date</th>
+                <th>Service Date</th>
+                <th>Manufacturer</th>
+                <th>Description</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% inventoryItems.forEach(item => { %>
+                <tr>
+                    <td><%= item.id %></td>
+                    <td><%= item.post_location %></td>
+                    <td><%= item.item_id %></td>
+                    <td><%= item.name %></td>
+                    <td><%= item.category %></td>
+                    <td><%= item.equipment_status %></td>
+                    <td><%= item.unit %></td>
+                    <td><%= item.reorder_level %></td>
+                    <td><%= item.expiry_date || 'N/A' %></td>
+                    <td><%= item.service_date || 'N/A' %></td>
+                    <td><%= item.manufacturer || 'N/A' %></td>
+                    <td><%= item.description || 'N/A' %></td>
+                    <td><%= item.created_at %></td>
+                    <td>
+                        <!-- Actions based on category -->
+                        <% if (item.category === 'Consumable') { %>
+                            <a href="/inventory/edit-inventory-consumable/<%= item.item_id %>" class="reg-action success">Edit</a>
+                            <a href="/inventory/delete-inventory-consumable/<%= item.item_id %>" class="reg-action danger" onclick="return confirm('Are you sure you want to delete this consumable?')">Delete</a>
+                        <% } else if (item.category === 'Equipment') { %>
+                            <a href="/inventory/edit-inventory-equipment/<%= item.item_id %>" class="reg-action success">Edit</a>
+                            <a href="/inventory/delete-inventory-equipment/<%= item.item_id %>" class="reg-action danger" onclick="return confirm('Are you sure you want to delete this equipment?')">Delete</a>
+                        <% } else if (item.category === 'Medication') { %>
+                            <a href="/inventory/edit-inventory-medication/<%= item.item_id %>" class="reg-action success">Edit</a>
+                            <a href="/inventory/delete-inventory-medication/<%= item.item_id %>" class="reg-action danger" onclick="return confirm('Are you sure you want to delete this medication?')">Delete</a>
+                        <% } %>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+<% } %>
+
+            
+        </div>
+    </div>
+
+    <footer><%- include('../partials/_footer') %></footer>
+</body>
+</html>

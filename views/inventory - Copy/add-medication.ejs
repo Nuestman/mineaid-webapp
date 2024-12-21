@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medications Checklist</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header><%- include('../partials/_nav') %></header>
+
+    <div class="container">
+        <h1>Add New Medication</h1>
+
+        <div class="alert-parent">
+            <%- include('../partials/_flash-alert') %>
+        </div>
+
+        <!-- Add New Medication Form -->
+        <form action="/inventory/add-medication" method="POST">
+            <input type="text" name="post_location" id="post_location" value="<%= userPost %>" readonly>
+            <div class="input-grp">
+                <label for="medication_name">Medication Name</label>
+                <input type="text" id="medication_name" name="medication_name" required class="form-control">
+            </div>
+            <div class="input-grp">
+                <label for="category">Category</label>
+                <select id="category" name="category" required class="form-control">
+                    <option value="Medication">Medication</option>
+                    <option value="Consumable">Consumable</option>
+                    <option value="Equipment">Equipment</option>
+                </select>
+            </div>
+            <div class="input-grp">
+                <label for="dosage_form">Dosage Form</label>
+                <input type="text" id="dosage_form" name="dosage_form" required class="form-control">
+            </div>
+            <div class="input-grp">
+                <label for="unit">Unit</label>
+                <input type="text" id="unit" name="unit" required class="form-control">
+            </div>
+            <div class="input-grp">
+                <label for="reorder_level">Reorder Level</label>
+                <input type="number" id="reorder_level" name="reorder_level" required class="form-control">
+            </div>
+            <div class="input-grp">
+                <label for="expiry_date">Expiry Date</label>
+                <input type="date" id="expiry_date" name="expiry_date" required class="form-control">
+            </div>
+            <div class="input-grp">
+                <label for="manufacturer">Manufacturer</label>
+                <input type="text" id="manufacturer" name="manufacturer" class="form-control">
+            </div>
+            <div class="input-grp">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Medication</button>
+        </form>
+    </div>
+
+        <h3>Existing Medications</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Dosage Form</th>
+                    <th>Unit</th>
+                    <th>Reorder Level</th>
+                    <th>Expiry Date</th>
+                    <th>Manufacturer</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% medications.forEach(medication => { %>
+                    <tr>
+                        <td><%= medication.medication_id %></td>
+                        <td><%= medication.medication_name %></td>
+                        <td><%= medication.dosage_form %></td>
+                        <td><%= medication.unit %></td>
+                        <td><%= medication.reorder_level %></td>
+                        <td><%= medication.expiry_date %></td>
+                        <td><%= medication.manufacturer %></td>
+                        <td><%= medication.description %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <footer><%- include('../partials/_footer') %></footer>
+    <script src="/js/mineaid-scripts.js"></script>
+</body>
+</html>

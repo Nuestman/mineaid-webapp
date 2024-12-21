@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iSoup - Home</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body class="isoup full-height">
+
+    <header>
+        <%- include('partials/_nav') %>
+    </header>
+
+    <main class="isoup-table-hidden dashboard alert-parent hidden">
+        <%- include('partials/_flash-alert') %>
+        <div class="container">
+            <h2>Submitted Reports</h2>
+            <% if (reports.length > 0) { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Report Date</th>
+                            <th>Plumbing</th>
+                            <th>Electrical</th>
+                            <th>Oxygen</th>
+                            <th>DMO</th>
+                            <th>General Supervisor</th>
+                            <th>Med/Surg Supervisor</th>
+                            <th>Mat/Surg Supervisor</th>
+                            <th>Emergency Cases</th>
+                            <th>Theatre Cases</th>
+                            <th>Recovery Cases</th>
+                            <th>ODD Cases</th>
+                            <th>STP Cases</th>
+                            <th>KMS Cases</th>
+                            <th>GCS Cases</th>
+                            <th>Staff Emergency</th>
+                            <th>Staff Theatre</th>
+                            <th>Staff Recovery</th>
+                            <th>Staff ODD</th>
+                            <th>Staff STP</th>
+                            <th>Staff KMS</th>
+                            <th>Staff GCS</th>
+                            <th>Staff ICU</th>
+                            <th>Staff NICU</th>
+                            <th>Staff Paediatric</th>
+                            <th>Staff Female</th>
+                            <th>Staff Male</th>
+                            <th>Staff Lying In</th>
+                            <th>Staff Maternity</th>
+                            <th>Ward State Emergency</th>
+                            <th>Rollcall Nurses</th>
+                            <th>Rollcall Service</th>
+                            <th>Rollcall Students</th>
+                            <th>Rollcall Drivers</th>
+                            <th>Rollcall Pharmacy</th>
+                            <th>Rollcall Laboratory</th>
+                            <th>Rollcall Revenue</th>
+                            <th>Rollcall Records</th>
+                            <th>Rollcall Security</th>
+                            <th>Rollcall Orderlies</th>
+                            <th>General Comments</th>
+                            <th>Mine Incidents</th>
+                            <th>Hospital Incidents</th>
+                            <th>Submitted By</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% reports.forEach((report, index) => { %>
+                            <tr>
+                                <td><%= index + 1 %></td>
+                                <td><%= report.report_date %></td>
+                                <td><%= report.plumbing_system %></td>
+                                <td><%= report.electrical_system %></td>
+                                <td><%= report.oxygen_system %></td>
+                                <td><%= report.dmo %></td>
+                                <td><%= report.general_supervisor %></td>
+                                <td><%= report.med_surg_supervisor %></td>
+                                <td><%= report.mat_surg_supervisor %></td>
+                                <td><%= report.emergency_cases %></td>
+                                <td><%= report.theatre_cases %></td>
+                                <td><%= report.recovery_cases %></td>
+                                <td><%= report.odd_cases %></td>
+                                <td><%= report.stp_cases %></td>
+                                <td><%= report.kms_cases %></td>
+                                <td><%= report.gcs_cases %></td>
+                                <td><%= report.staff_emergency %></td>
+                                <td><%= report.staff_theatre %></td>
+                                <td><%= report.staff_recovery %></td>
+                                <td><%= report.staff_odd %></td>
+                                <td><%= report.staff_stp %></td>
+                                <td><%= report.staff_kms %></td>
+                                <td><%= report.staff_gcs %></td>
+                                <td><%= report.staff_icu %></td>
+                                <td><%= report.staff_nicu %></td>
+                                <td><%= report.staff_paediatric %></td>
+                                <td><%= report.staff_female %></td>
+                                <td><%= report.staff_male %></td>
+                                <td><%= report.staff_lying_in %></td>
+                                <td><%= report.staff_maternity %></td>
+                                <td><%= report.ward_state_emergency %></td>
+                                <td><%= report.rollcall_nurses %></td>
+                                <td><%= report.rollcall_service %></td>
+                                <td><%= report.rollcall_students %></td>
+                                <td><%= report.rollcall_drivers %></td>
+                                <td><%= report.rollcall_pharmacy %></td>
+                                <td><%= report.rollcall_laboratory %></td>
+                                <td><%= report.rollcall_revenue %></td>
+                                <td><%= report.rollcall_records %></td>
+                                <td><%= report.rollcall_security %></td>
+                                <td><%= report.rollcall_orderlies %></td>
+                                <td><%= report.general_comments %></td>
+                                <td><%= report.mine_incidents %></td>
+                                <td><%= report.hospital_incidents %></td>
+                                <td><%= report.entered_by %></td>
+                                <td><%= report.created_at %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No reports submitted yet.</p>
+            <% } %>
+        </div>
+        
+        
+
+    </main>
+
+    <main class="dashboard alert-parent">
+        <%- include('partials/_flash-alert') %>
+        <div class="container">
+            <h1>Supervisors' Daily Reports</h1>
+            <p>Show all reports as date.</p>
+            <p>Click on a date to view detailed report for that specific date.</p>
+            <div class="">
+                <!-- Future enhancements -->
+                <section class="filter-container">
+                    <form action="/isoup/reports/all" method="get" class="search-form">
+                     <div class="filter-grp input-grp">
+                            <input type="text" name="search" placeholder="Search by date (YYYY-MM-DD)" value="<%= search %>" />
+                            <button class="btn btn-outline" type="submit">Search</button>
+                        </div>
+                    </form>
+                </section>
+                <!-- Enhancement ends -->
+
+                <% if (reports && reports.length > 0) { %>
+                    <div class="h-flex">
+                        <% reports.forEach(report => { %>
+                        <a href="/isoup/report?report_date=<%= report.report_date %>">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Report for <span class="accent"><%= report.report_date %></span></h5>
+                                </div>
+                            </div>
+                        </a>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <p>No reports found. Please check back later.</p>
+                <% } %>
+            </div>
+            
+
+            <!-- Future enhancements -->
+            <section>
+                <div class="pagination">
+                    <% if (currentPage > 1) { %>
+                        <a href="/isoup/reports/all?page=<%= currentPage - 1 %>">&laquo; Previous</a>
+                    <% } %>
+                
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <a href="/isoup/reports/all?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+                    <% } %>
+                
+                    <% if (currentPage < totalPages) { %>
+                        <a href="/isoup/reports/all?page=<%= currentPage + 1 %>">Next &raquo;</a>
+                    <% } %>
+                </div>
+            </section>
+            <!-- Enhancement ends -->
+        </div>
+    </main>
+
+    <%- include('partials/_footer') %>
+    <script src="/js/mineaid-scripts.js"></script>
+</body>
+
+</html>

@@ -274,6 +274,10 @@ hr {
     color: var(--white-color);
   }
 
+  title {
+    font-size: 1.5rem;
+    background-color: var(--success-bg-color);
+  }
   
 /* Admin Dashboard Main Layout */
 .dashboard {
@@ -1419,7 +1423,7 @@ gap: 15px;
     display: none;
 }
 
-#item-modal, #edit-modal {
+#item-modal, #edit-modal, #report-modal {
     inset: 50%;
     translate: -50% -50%;
     width: 40%;
@@ -1443,7 +1447,7 @@ gap: 15px;
         justify-content: space-between;
         align-items: center;
         
-        .item-details {
+        .item-details, .report-details {
             flex: 1;
             padding:10px;
         }
@@ -1944,6 +1948,22 @@ gap: 15px;
     }
     .card {
         margin-bottom: 0;
+    }
+    .h-flex {
+        justify-content: unset;
+        margin: 2rem 0;
+    }
+    .filter-container {
+        margin-top: 2rem;
+    }
+    
+    .pagination a {
+        margin: 0 5px;
+        text-decoration: none;
+    }
+    .pagination a.active {
+        font-weight: bold;
+        color: var(--accent-color);
     }
 }
 #isoup {

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Items Register</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="items-register full-height">
+        <header><%- include('../partials/_nav') %></header>
+    <section class="prim-header table-page-head">
+        <div class="container">
+            <h1>ITEMS REGISTER:</h1>
+            <h2>All items register</h2>
+        </div>
+    </section>
+
+    <main>
+        <div class="container">
+            <div class="alert-parent">
+                <%- include('../partials/_flash-alert') %>
+                <section class="item-cards">
+                    <% items.forEach((item, index) => { %>
+                    <div class="item-card" title="View Item Details">
+                        <div class="item-card-content" onclick="openModal(<%= index %>)">
+                            <img src=" ../images/saw.png " alt="<%= item.name %>">
+                            <div class="item-text">
+                                <h4><%= item.name %></h4>
+                                <p><%= item.description %></p>
+                            </div>
+                        </div>
+                        <div class=" card-edit-menu"><i class="fas fa-bars mod-reg-link" title="Edit Item"></i>
+                            <ul class=" card-edit-items hidden">
+                                <div class="card-edit-items-inner">
+                                    <li class="card-edit-item" title="Add New Item to Register">
+                                        <a href="/inventory/add-new-item" class="mod-reg-link"><i class="fas fa-plus"></i></a>
+                                    </li>
+                                    <li class="card-edit-item" title="Import Data">
+                                        <a href="/inventory/import" class="mod-reg-link"><i class="fas fa-file-import"></i></a>
+                                    </li>
+                                    <li class="card-edit-item" title="Export Data">
+                                        <a href="/inventory/export" class="mod-reg-link"><i class="fas fa-file-export"></i></a>
+                                    </li>
+                                </div>
+                            </ul>
+                        </div>
+                    </div>
+                    <% }); %>
+                </section>
+                
+                <!-- Modal Section -->
+                <!-- Details Modal -->
+                <!-- <dialog id="item-modal">
+                    <div class="modal-content">
+                        <button id="prev-button" onclick="showPrev()"><i class="fas fa-chevron-left fa-2x"></i></button>
+                        <div class="item-details">
+                            <img id="modal-image" src="" alt="Item Image">
+                            <h2 id="modal-name"></h2>
+                            <p id="modal-description"></p>
+                            <p><strong>Manufacturer:</strong> <span id="modal-manufacturer"></span></p>
+                            <p><strong>Location:</strong> <span id="modal-location"></span></p>
+                            <p><strong>Available Stock:</strong> <span id="modal-stock"></span></p>
+                            <p><strong>Reorder Level:</strong> <span id="modal-reorder"></span></p>
+                            <p><strong>Expiry Date:</strong> <span id="modal-expiry"></span></p>
+                            <p><strong>Service Date:</strong> <span id="modal-service"></span></p>
+                            <section class="h-flex">
+                                <button id="edit-button" class="reg-action success" onclick="openEditModal()"><i class="fas fa-edit"></i> Edit Item</button>
+                                <form id="delete-item-form" action="/inventory/delete/:id?confirm=yes"  method="POST">
+                                    <button class="reg-action danger" onclick="return confirm('Are you sure you want to delete this item?');">
+                                        <i class="fas fa-trash"></i> Delete Item
+                                    </button>
+                                </form>
+                            </section>
+                        </div>
+                        <button id="next-button"  onclick="showNext()"><i class="fas fa-chevron-right fa-2x"></i></button>
+                    </div>
+                    <button class="modal-close" onclick="closeModal()"><i class="fas fa-close fa-2x"></i></button>
+                </dialog> -->
+                
+                <!-- Edit Modal -->
+                <!-- <dialog id="edit-modal">
+                    <form id="edit-item-form" method="POST" action="">
+                        <h2>Edit Item</h2>
+                        <input type="hidden" id="edit-item-id" name="id" value="">
+                        <div class="input-grp">
+                            <label for="edit-name">Name:</label>
+                            <input type="text" id="edit-name" name="name" required>
+                        </div>
+                        <div class="input-grp">
+                            <label for="edit-description">Description:</label>
+                            <textarea id="edit-description" name="description" required></textarea>
+                        </div>
+                        <div class="input-grp">
+                            <label for="edit-manufacturer">Manufacturer:</label>
+                            <input type="text" id="edit-manufacturer" name="manufacturer">
+                        </div>
+                        <div class="input-grp">
+                            <label for="edit-location">Location:</label>
+                            <input type="text" id="edit-location" name="post_location">
+                        </div>
+                        <div class="input-grp">
+                            <label for="edit-stock">Available Stock:</label>
+                            <input type="number" id="edit-stock" name="available_stock" required>
+                        </div>
+                        <div class="input-grp">
+                            <label for="edit-reorder">Reorder Level:</label>
+                            <input type="number" id="edit-reorder" name="reorder_level">
+                        </div>
+                        <div class="input-grp">
+                            <label for="edit-expiry">Expiry Date:</label>
+                            <input type="date" id="edit-expiry" name="expiry_date">
+                        </div>
+                        <div class="input-grp">
+                            <label for="edit-service">Service Date:</label>
+                            <input type="date" id="edit-service" name="service_date">
+                        </div>
+                        <section class="h-flex">
+                            <button type="submit" class="reg-action success">Save Changes</button>
+                            <button type="button" onclick="closeEditModal()">Cancel</button>
+                        </section>
+                    </form>
+                </dialog> -->
+
+                <!-- Details Modal -->
+                <dialog id="item-modal">
+                    <div class="modal-content">
+                        <button id="prev-button" onclick="showPrev()"><i class="fas fa-chevron-left fa-2x"></i></button>
+                        <div class="item-details">
+                            <img id="modal-image" src="" alt="Item Image">
+                            <h2 id="modal-name"></h2>
+                            <p id="modal-description"></p>
+                            <p><strong>Manufacturer:</strong> <span id="modal-manufacturer"></span></p>
+                            <p><strong>Location:</strong> <span id="modal-location"></span></p>
+                            <p><strong>Available Stock:</strong> <span id="modal-stock"></span></p>
+                            <p><strong>Reorder Level:</strong> <span id="modal-reorder"></span></p>
+                            <p><strong>Expiry Date:</strong> <span id="modal-expiry"></span></p>
+                            <p><strong>Service Date:</strong> <span id="modal-service"></span></p>
+                            <section class="h-flex">
+                                <button id="edit-button" class="reg-action success" onclick="toggleEditForm()">
+                                    <i class="fas fa-edit"></i> Edit Item
+                                </button>
+                                <form id="delete-item-form" action="/inventory/delete/:id?confirm=yes" method="POST">
+                                    <button class="reg-action danger" onclick="return confirm('Are you sure you want to delete this item?');">
+                                        <i class="fas fa-trash"></i> Delete Item
+                                    </button>
+                                </form>
+                            </section>
+
+                            <!-- Collapsible Edit Section -->
+                            <div id="edit-section" class="hidden">
+                                <form id="edit-item-form" method="POST" action="">
+                                    <h3>Edit Item</h3>
+                                    <input type="hidden" id="edit-item-id" name="id" value="">
+                                    <div class="input-grp">
+                                        <label for="edit-name">Name:</label>
+                                        <input type="text" id="edit-name" name="name" required>
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="edit-description">Description:</label>
+                                        <textarea id="edit-description" name="description" required></textarea>
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="edit-manufacturer">Manufacturer:</label>
+                                        <input type="text" id="edit-manufacturer" name="manufacturer">
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="edit-location">Location:</label>
+                                        <input type="text" id="edit-location" name="post_location">
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="edit-stock">Available Stock:</label>
+                                        <input type="number" id="edit-stock" name="available_stock" required>
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="edit-reorder">Reorder Level:</label>
+                                        <input type="number" id="edit-reorder" name="reorder_level">
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="edit-expiry">Expiry Date:</label>
+                                        <input type="date" id="edit-expiry" name="expiry_date">
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="edit-service">Service Date:</label>
+                                        <input type="date" id="edit-service" name="service_date">
+                                    </div>
+                                    <section class="h-flex">
+                                        <button type="submit" class="reg-action success">Save Changes</button>
+                                        <button type="button" class="reg-action danger" onclick="toggleEditForm()">Cancel</button>
+                                    </section>
+                                </form>
+                            </div>
+                        </div>
+                        <button id="next-button" onclick="showNext()"><i class="fas fa-chevron-right fa-2x"></i></button>
+                    </div>
+                    <button class="modal-close" onclick="closeModal()"><i class="fas fa-close fa-2x"></i></button>
+                </dialog>
+
+
+                
+            </div>
+        </div>
+        <section class="modify-register">
+            <ul>
+                <li class="mod-reg-item top-gap"><span class="mod-reg-link"><i class="fas fa-edit fa-2x"></i></span>
+                    <ul class="mod-reg-items">
+                        <li class="" title="Add New Item to Register">
+                            <a href="/inventory/add-new-item" class="mod-reg-link"><i class="fas fa-plus fa-2x"></i></a>
+                        </li>
+                        <li class="" title="Import Data">
+                            <a href="/inventory/import" class="mod-reg-link"><i class="fas fa-file-import fa-2x"></i></a>
+                        </li>
+                        <li class="" title="Export Data">
+                            <a href="/inventory/export" class="mod-reg-link"><i class="fas fa-file-export fa-2x"></i></a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        const modal = document.getElementById('item-modal');
+const items = <%- JSON.stringify(items) %>; // Pass item data from server
+let currentIndex = 0;
+
+// Open modal and populate item details
+function openModal(index) {
+    currentIndex = index;
+    populateModal();
+    closeEditForm(); // Ensure edit form is hidden when opening a new item
+    modal.showModal();
+}
+
+function closeModal() {
+    modal.close();
+}
+
+// Populate the modal with current item's data
+function populateModal() {
+    const item = items[currentIndex];
+    document.getElementById('modal-image').src = item.image_url;
+    document.getElementById('modal-name').textContent = item.name;
+    document.getElementById('modal-description').textContent = item.description;
+    document.getElementById('modal-manufacturer').textContent = item.manufacturer;
+    document.getElementById('modal-location').textContent = item.post_location;
+    document.getElementById('modal-stock').textContent = item.available_stock;
+    document.getElementById('modal-reorder').textContent = item.reorder_level;
+    document.getElementById('modal-expiry').textContent = item.expiry_date || 'N/A';
+    document.getElementById('modal-service').textContent = item.service_date || 'N/A';
+
+    // Update delete form action
+    const deleteForm = document.getElementById('delete-item-form');
+    deleteForm.action = `/inventory/delete/${item.id}?confirm=yes`;
+}
+
+// Navigate between items in the modal
+function showNext() {
+    currentIndex = (currentIndex + 1) % items.length;
+    populateModal();
+}
+
+function showPrev() {
+    currentIndex = (currentIndex - 1 + items.length) % items.length;
+    populateModal();
+}
+
+/* Closes the modal if clicked outside the content. */
+ window.onclick = function (event) {
+    const modal = document.getElementById("item-modal");
+    if (event.target === modal) {
+        closeModal();
+    }
+};
+
+// Toggle visibility of the edit form
+function toggleEditForm() {
+    const editSection = document.getElementById('edit-section');
+    const editButton = document.getElementById('edit-button');
+    const isHidden = editSection.classList.toggle('hidden'); // Toggle visibility
+
+    // Update button text/icon
+    editButton.innerHTML = isHidden 
+        ? '<i class="fas fa-edit"></i> Edit Item' 
+        : '<i class="fas fa-times"></i> Close Edit';
+
+    if (!isHidden) {
+        populateEditForm(); // Populate the edit form when opened
+    }
+}
+
+// Populate the edit form with current item's data
+function populateEditForm() {
+    const item = items[currentIndex];
+    document.getElementById('edit-item-id').value = item.id;
+    document.getElementById('edit-name').value = item.name;
+    document.getElementById('edit-description').value = item.description;
+    document.getElementById('edit-manufacturer').value = item.manufacturer;
+    document.getElementById('edit-location').value = item.post_location;
+    document.getElementById('edit-stock').value = item.available_stock;
+    document.getElementById('edit-reorder').value = item.reorder_level;
+    document.getElementById('edit-expiry').value = item.expiry_date || '';
+    document.getElementById('edit-service').value = item.service_date || '';
+
+    // Update the form's action attribute
+    const editForm = document.getElementById('edit-item-form');
+    editForm.action = `/inventory/edit/${item.id}`;
+}
+
+// Ensure the edit form is closed when opening a new item
+function closeEditForm() {
+    const editSection = document.getElementById('edit-section');
+    editSection.classList.add('hidden'); // Always hide the edit section
+    document.getElementById('edit-button').innerHTML = '<i class="fas fa-edit"></i> Edit Item';
+}
+
+    </script>
+<!-- THINKING OF GETTING DYNAMIC CONTENT FOR THE REGISTER -->
+    <!-- <main class="items-grid">
+        <% items.forEach(item => { %>
+          <a href="/inventory/item/<%= item.item_id %>" class="item-card">
+            <div class="item-card-content">
+              <img src="<%= item.image_url %>" alt="<%= item.name %>" class="item-icon">
+              <div class="item-text">
+                <h3><%= item.name %></h3>
+                <p><%= item.description %></p>
+              </div>
+            </div>
+          </a>
+        <% }); %>
+      </main> -->
+    <%- include('../partials/_footer') %>
+    <script src="/js/mineaid-scripts.js"></script>
+</body>
+</html>
+
+
+  
+  

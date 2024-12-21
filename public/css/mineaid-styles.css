@@ -271,6 +271,11 @@ button, select, option {
   color: var(--white-color);
 }
 
+title {
+  font-size: 1.5rem;
+  background-color: var(--success-bg-color);
+}
+
 /* Admin Dashboard Main Layout */
 .dashboard {
   padding: 2rem 2rem 2rem 0;
@@ -1418,7 +1423,7 @@ th, td {
   display: none;
 }
 
-#item-modal, #edit-modal {
+#item-modal, #edit-modal, #report-modal {
   inset: 50%;
   translate: -50% -50%;
   width: 40%;
@@ -1430,23 +1435,23 @@ th, td {
   position: absolute;
   color: var(--text-color);
 }
-#item-modal .h-flex, #edit-modal .h-flex {
+#item-modal .h-flex, #edit-modal .h-flex, #report-modal .h-flex {
   justify-content: left;
   margin-top: 1rem;
 }
-#item-modal .h-flex button, #edit-modal .h-flex button {
+#item-modal .h-flex button, #edit-modal .h-flex button, #report-modal .h-flex button {
   padding: 0.2rem 0.5rem;
 }
-#item-modal .modal-content, #edit-modal .modal-content {
+#item-modal .modal-content, #edit-modal .modal-content, #report-modal .modal-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-#item-modal .modal-content .item-details, #edit-modal .modal-content .item-details {
+#item-modal .modal-content .item-details, #item-modal .modal-content .report-details, #edit-modal .modal-content .item-details, #edit-modal .modal-content .report-details, #report-modal .modal-content .item-details, #report-modal .modal-content .report-details {
   flex: 1;
   padding: 10px;
 }
-#item-modal .modal-close, #edit-modal .modal-close {
+#item-modal .modal-close, #edit-modal .modal-close, #report-modal .modal-close {
   background: transparent;
   font-size: 1em;
   cursor: pointer;
@@ -1842,6 +1847,21 @@ th, td {
 }
 .isoup .card {
   margin-bottom: 0;
+}
+.isoup .h-flex {
+  justify-content: unset;
+  margin: 2rem 0;
+}
+.isoup .filter-container {
+  margin-top: 2rem;
+}
+.isoup .pagination a {
+  margin: 0 5px;
+  text-decoration: none;
+}
+.isoup .pagination a.active {
+  font-weight: bold;
+  color: var(--accent-color);
 }
 
 #isoup header, #isoup footer {

@@ -25,7 +25,11 @@
         <%- include('partials/_flash-alert') %>
         <div class="container">
             <div class="form-container">
-                <form action="isoup/forms/submit-report" method="post">
+                <form action="/isoup/forms/submit-report" method="post">
+                    <div class="input-grp">
+                        <label for="report_date">Report Date</label>
+                        <input type="date" name="report_date" value="">
+                    </div>
                     <section class="gen-sect isoup-rep-sect systems">
                         <h3>Systems</h3>
                         <div class="grid-3">
@@ -174,7 +178,7 @@
                     <section class="gen-sect isoup-rep-sect">
                         <h3>Ward State &amp; Report</h3>
                         <div class="input-grp">
-                            <label for="emergency-report">Emergency Unit</label>
+                            <label for="emergency_report">Emergency Unit</label>
                             <div class="h-flex">
                                 <ul class="flex-wrap">
                                     <li class="reg-action alert-success">Prev: 12</li>
@@ -187,7 +191,7 @@
                                     <li class="reg-action alert-success">Priv: 15</li>
                                 </ul>
                             </div>
-                            <textarea name="emergency-report" id="emergency-report" placeholder="How was the unit at midnight/EOD?" required></textarea>
+                            <textarea name="emergency_report" id="emergency_report" placeholder="How was the unit at midnight/EOD?" required></textarea>
                         </div>
                     </section>
 

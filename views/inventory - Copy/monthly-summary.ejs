@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    
+    <%- include('../partials/_header') %>
+<main class="container">
+    <section class="monthly-summary full-report">
+        <h1>Monthly Inventory Summary</h1>
+        <p class="subhead">A detailed view of inventory activities for the current month.</p>
+        
+        <ul>
+            <li>Total Stock Used: <strong><%= totalStockUsed %> units</strong></li>
+            <li>New Stock Added: <strong><%= newStockAdded %> units</strong></li>
+            <li>Items Near Expiry: <strong><%= nearExpiryCount %> items</strong></li>
+            <li>Low Stock Alerts: <strong><%= lowStockAlertCount %> items</strong></li>
+        </ul>
+
+        <div class="charts-section">
+            <h3>Visual Analytics</h3>
+            <canvas id="inventoryChart"></canvas>
+        </div>
+
+        <button onclick="location.href='/inventory'" class="btn"><i class="fas fa-arrow-left"></i> Back to Inventory</button>
+    </section>
+</main>
+<%- include('../partials/_footer') %>
+
+<script>
+    // Ensure the data is passed correctly
+    const chartData = {
+        labels: ['Total Stock Used', 'New Stock Added', 'Items Near Expiry', 'Low Stock Alerts'],
+        datasets: [{
+            label: 'Monthly Inventory Summary',
+            data: [<%= totalStockUsed %>, <%= newStockAdded %>, <%= nearExpiryCount %>, <%= lowStockAlertCount %>],
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50'],
+            hoverOffset: 4
+        }]
+    };
+
+    // Chart.js configuration
+    const config = {
+        type: 'doughnut',
+        data: chartData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ${context.raw} units`;
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    // Render the chart
+    const ctx = document.getElementById('inventoryChart').getContext('2d');
+    new Chart(ctx, config);
+</script>
+
+    <footer><%- include('../partials/_footer') %></footer>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/mineaid-scripts.js"></script>
+</body>
+</html>

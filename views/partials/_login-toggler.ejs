@@ -5,35 +5,37 @@
         <div class="logo">
             <a href="/iaid"><img src="/images/first-aid-kit.png" alt=""></a>
         </div>
+        <% if (current_post !== 'AGAHF-ED' && current_post !== 'AGAHF-Sup') { %>
         <nav class="toggler">
             <ul>
-                <li class="nav-item">Hub
+                <li class="nav-item hidden">Hub
                     <ul class="nav-links">
                         <li><a href="/landing-page"><i class="fas fa"></i>Hub</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">Database
+                <li class="nav-item ">Database
                     <ul class="nav-links">
-                        <li><a href="/database"><i class="fas fa"></i>Database</a></li>
+                        <li><a href="/database"><i class="fas fa-database"></i> Database</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">Inventory
-                    <ul class="nav-links">
-                        <li><a href="/inventory"><i class="fas fa-home"></i> Inventory Home</a></li>
-                        <li><a href="/inventory/add-new-item" ><i class="fas fa-plus"></i> Add New Items to Register </a></li>
-                        <li><a href="/inventory/items-register" ><i class="fas fa-cogs"></i> Items Register</a></li>
-                        <li><a href="/inventory/user-activity-logs" ><i class="fas fa-file"></i> User Activity Logs</a></li>
-                        <li><a href="/inventory/inventory-items-all" ><i class="fas fa-cogs"></i> Inventory Items</a></li>
-                        <li class="hidden"><a href="/inventory/inventory-log" ><i class="fas fa-list"></i> Inventory Log</a></li>
-                        <li class="hidden"><a href="/inventory/add-inventory-category" ><i class="fas fa-plus"></i> Add Inventory Cat</a></li>
-                        <li><a href="/inventory/daily-checklist" ><i class="fas fa-list"></i> Daily Checklist</a></li>
-                        <li><a href="/inventory/daily-checklist-data" ><i class="fas fa-list"></i> Daily Checklist Data</a></li>
-                        <li class="hidden"><a href="/inventory/export" ><i class="fas fa-file-export"></i> Export Data</a></li>
-                        <li class="hidden"><a href="/inventory/import" ><i class="fas fa-file-import"></i> Import Data</a></li>
-                    </ul>
-                </li>
+                    <li class="nav-item">Inventory
+                        <ul class="nav-links">
+                            <li><a href="/inventory"><i class="fas fa-home"></i> Inventory Home</a></li>
+                            <li><a href="/inventory/add-new-item" ><i class="fas fa-plus"></i> Add New Items to Register </a></li>
+                            <li><a href="/inventory/items-register" ><i class="fas fa-cogs"></i> Items Register</a></li>
+                            <li><a href="/inventory/user-activity-logs" ><i class="fas fa-file"></i> User Activity Logs</a></li>
+                            <li><a href="/inventory/inventory-items-all" ><i class="fas fa-cogs"></i> Inventory Items</a></li>
+                            <li class="hidden"><a href="/inventory/inventory-log" ><i class="fas fa-list"></i> Inventory Log</a></li>
+                            <li class="hidden"><a href="/inventory/add-inventory-category" ><i class="fas fa-plus"></i> Add Inventory Cat</a></li>
+                            <li><a href="/inventory/daily-checklist" ><i class="fas fa-list"></i> Daily Checklist</a></li>
+                            <li><a href="/inventory/daily-checklist-data" ><i class="fas fa-list"></i> Daily Checklist Data</a></li>
+                            <li class="hidden"><a href="/inventory/export" ><i class="fas fa-file-export"></i> Export Data</a></li>
+                            <li class="hidden"><a href="/inventory/import" ><i class="fas fa-file-import"></i> Import Data</a></li>
+                        </ul>
+                    </li>
             </ul>
         </nav>
+        <% } %>
 
         <!-- Hamburger icon for smaller screens -->
         <div class="hamburger-menu" id="menu-toggle">
@@ -44,6 +46,7 @@
         <nav class="toggler" id="navbar">
             <!-- Existing nav structure -->
             <ul>
+                <% if (current_post !== 'AGAHF-ED' && current_post !== 'AGAHF-Sup') { %>
                 <li class="nav-item">Actions
                     <ul class="nav-links">
                         <li><a href="/triage">Triage</a></li>
@@ -51,8 +54,6 @@
                         <li><a href="/reports/form">Add Shift Report</a></li>
                         <li><a href="/contact">Contact</a></li>
                         <li><a href="/user-survey">Give Feedback</a></li>
-                        <li></li>
-                        <li></li>
                     </ul>
                 </li>
                 <li class="nav-item">Admin
@@ -64,23 +65,38 @@
                         <li><a href="/admin/super-user">SuperUser</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">Supervisor
-                    <ul class="nav-links">
-                        <li><a href="/isoup-dashboard">iSoup Dashboard</a></li>
-                        <li><a href="/isoup/reports">iSoup Reports</a></li>
-                        <li><a href="/isoup/forms/report-form">Submit Sup. Report</a></li>
-                        <li><a href="/isoup/forms/ward-state-form">Submit Ward State</a></li>
-                        <li><a href="/isoup/forms/stats-form">Submit Sup. Statistics</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">Records
-                    <ul class="nav-links">
-                        <li><a href="/triage-book">Triage Book</a></li>
-                        <li><a href="/incident-book">Incident Book</a></li>
-                        <li><a href="/reports">Shift Reports</a></li>
-                        <li><a href="/feedback/results">User Feedback</a></li>
-                    </ul>
-                </li>
+                <% } %>
+                <% if (current_post === 'AGAHF-Sup') { %>
+                    <li class="nav-item">Supervisor
+                        <ul class="nav-links">
+                            <li><a href="/isoup-dashboard">iSoup Dashboard</a></li>
+                            <li><a href="/isoup/reports/all">iSoup Reports</a></li>
+                            <li><a href="/isoup/forms/report-form">Submit Sup. Report</a></li>
+                            <li><a href="/isoup/forms/ward-state-form">Submit Ward State</a></li>
+                            <li><a href="/isoup/forms/stats-form">Submit Sup. Statistics</a></li>
+                        </ul>
+                    </li>
+                    <% } else if (current_post === 'AGAHF-ED') { %> 
+                        <li class="nav-item">Emergency Department
+                            <ul class="nav-links">
+                                <li><a href="/iemerge/dashboard"><i class="fas fa-home"></i> Emergency Inventory</a></li>
+                                <li><a href="/inventory/add-new-item" ><i class="fas fa-plus"></i> Add New ED Equipment </a></li>
+                                <li><a href="/inventory/items-register" ><i class="fas fa-cogs"></i> ED Equipment Register</a></li>
+                                <li><a href="/coming-soon" ><i class="fas fa-cogs"></i> Manage ED Equipment</a></li>
+                            </ul>
+                        </li>
+                    <% } 
+                    else { %>
+                    <li class="nav-item">Records
+                        <ul class="nav-links">
+                            <li><a href="/triage-book">Triage Book</a></li>
+                            <li><a href="/incident-book">Incident Book</a></li>
+                            <li><a href="/reports">Shift Reports</a></li>
+                            <li><a href="/feedback/results">User Feedback</a></li>
+                        </ul>
+                    </li>
+                    <% }
+                %>
                 <!-- Show dashboard/logout links if logged in -->
                 <% if (loggedIn === true) { %>
                 <li class="nav-item">Accounts

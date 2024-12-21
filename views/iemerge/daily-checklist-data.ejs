@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Daily Logs</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header><%- include('../partials/_nav') %></header>
+    <main>
+        <div class="container">
+            <h1>Daily Checklist DataSheet</h1>
+            <h3>For registering checklist entries </h3>
+        
+            <!-- Filter Form -->
+            <div class="filter-container">
+                <form method="GET" action="/inventory/inventory-daily-logs">
+                    <%- include('../partials/_flash-alert') %>
+        
+                    <!-- Items Filter -->
+                    <div class="filter-container">
+                        <form action="/inventory/inventory-items-all" method="GET">
+                            <div class="input-grp filter-grp">
+                                <!-- Dropdown for Filter Options -->
+                                <select name="filterBy" class="form-control" required>
+                                    <option value="">Filter by...</option>
+                                    <option value="post_location">Location</option>
+                                    <option value="category">Category</option>
+                                    <option value="expiry_date">Expiry Date</option>
+                                    <option value="item_id">Manufacturer</option>
+                                </select>
+        
+                                <!-- Input for Filter Value -->
+                                <input type="text" name="filterValue" placeholder="Enter value..." class="form-control" required>
+        
+                                <!-- Submit Button -->
+                                <button type="submit" class="btn btn-primary">Filter</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="input-grp filter-grp">
+                        <select name="filterBy" class="form-control">
+                            <option value="" disabled selected>Filter by...</option>
+                            <option value="item_id" <%= filterBy === 'item_id' ? 'selected' : '' %>>Item ID</option>
+                            <option value="logged_by" <%= filterBy === 'logged_by' ? 'selected' : '' %>>Logged By</option>
+                            <option value="date" <%= filterBy === 'date' ? 'selected' : '' %>>Date</option>
+                        </select>
+        
+                        <input type="text" name="filterValue" value="<%= filterValue %>" class="form-control" placeholder="Enter filter value">
+        
+                        <button type="submit" class="btn btn-primary">Apply Filter</button>
+                    </div>
+                </form>
+            </div>
+        
+            <!-- Filter Display -->
+            <% if (filterBy && filterValue) { %>
+                <p class="breadcrumb">Results filtered by <%= filterBy.charAt(0).toUpperCase() + filterBy.slice(1) %>: <%= filterValue %></p>
+            <% } %>
+            <!-- Logs Table -->
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>Item ID</th>
+                        <th>Name</th>
+                        <th>Log Date</th>
+                        <th>Stock Start</th>
+                        <th>Stock Used</th>
+                        <th>Stock Added</th>
+                        <th>Stock End</th>
+                        <th>Remarks</th>
+                        <th>Logged By</th>
+                        <th>User ID</th>
+                        <th>Logged Action</th>
+                        <th>Logged On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (logs.length > 0) { %>
+                        <% logs.forEach(log => { %>
+                            <tr>
+                                <td><%= log.post_location %></td>
+                                <td><%= log.item_id %></td>
+                                <td><%= log.item_name %></td>
+                                <td><%= log.log_date %></td>
+                                <td><%= log.stock_start %></td>
+                                <td><%= log.stock_used %></td>
+                                <td><%= log.stock_added %></td>
+                                <td><%= log.stock_end %></td>
+                                <td><%= log.remarks %></td>
+                                <td><%= log.logged_by %></td>
+                                <td><%= user.user_id %></td>
+                                <td><%= log.logged_action %></td>
+                                <td><%= log.created_at %></td>
+                                <td><%= log.consumable_name || log.equipment_name || log.medication_name %></td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="9" class="text-center">No logs found</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <footer><%- include('../partials/_footer') %></footer>
+    <script src="/js/mineaid-scripts.js"></script>
+</body>
+</html>
