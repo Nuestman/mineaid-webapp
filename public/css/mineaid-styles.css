@@ -682,6 +682,7 @@ footer p {
 }
 
 /* Page-specific styling */
+/* Testing Colors*/
 /*PASSWORD RESET*/
 .reset-request form {
   text-align: left;
@@ -891,6 +892,9 @@ footer p {
 }
 .full-height .inner-flex {
   text-align: center;
+}
+.full-height .inner-flex form {
+  text-align: left;
 }
 
 #soon {
@@ -1864,10 +1868,10 @@ th, td {
   color: var(--accent-color);
 }
 
-#isoup header, #isoup footer {
+#isoup header, #isoup footer, #imanage header, #imanage footer {
   background-color: var(--text-color);
 }
-#isoup .intro {
+#isoup .intro, #imanage .intro {
   margin-top: 2rem;
 }
 

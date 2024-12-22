@@ -115,31 +115,86 @@ passport.deserializeUser((id, done) => {
     });
 });
 
+// USER REGISTRATION AND LOGIN
+
+// Middleware to check if the user is authenticated
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    req.flash('error_msg', 'Please log in to view that resource');
+    req.session.returnTo = req.originalUrl;
+    res.redirect('/login');
+}
+
+// Middleware to ensure the user has Admin access (Admin or Superuser)
+function ensureAdmin(req, res, next) {
+    if (req.user && (req.user.role === 'Admin' || req.user.role === 'Superuser')) {
+        return next();
+    }
+    req.flash('error_msg', 'Admin access required. Contact admin.');
+    res.redirect('/contact');
+}
+// Middleware to ensure the user is a Superuser
+function ensureSuperuser(req, res, next) {
+    if (req.isAuthenticated() && req.user.role === 'Superuser') {
+        return next();
+    }
+    console.log('Superuser access denied: User role is', req.user ? req.user.role : 'undefined');
+    req.flash('error_msg', 'You are not authorized to view this page. Contact admin..');
+    res.redirect('/contact');
+}
 
 // Middleware: Ensure Post is Selected & Filter Queries
 function attachPostFilter(req, res, next) {
-    // Define routes to exclude
-    const excludedRoutes = ['/login', '/post-selection', '/about', '/contact'];
+    // Define excluded routes with patterns
+    const excludedRoutes = [
+        '/landing-page',
+        '/register',
+        '/',
+        '/iaid',
+        '/isoup',
+        '/iemerge',
+        '/imanage',
+        '/login',
+        '/post-selection',
+        '/about',
+        '/contact',
+        '/reset-request',
+    ];
+
+    // Add pattern-based exclusion for dynamic routes
+    const excludedRoutePatterns = [/^\/reset\/[a-f0-9]{64}$/]; // Matches /reset/:token with a 64-character hex token
+
+    // Attach a default `current_post` to avoid template errors
+    res.locals.current_post = req.session.current_post || null;
 
     // Skip middleware for excluded routes
-    if (excludedRoutes.includes(req.path)) {
+    if (
+        excludedRoutes.includes(req.path) || 
+        req.path.startsWith('/static') || 
+        excludedRoutePatterns.some(pattern => pattern.test(req.path))
+    ) {
+        console.log(`Processing path: ${req.path} (Excluded: true)`);
         return next();
     }
 
+    console.log(`Processing path: ${req.path} (Excluded: false)`);
+    console.log(`Current post: ${req.session.current_post}`);
+
+    // Check if `current_post` is in the session
     if (!req.session.current_post) {
         req.flash('error_msg', 'Please select your post before proceeding.');
-        console.log('Please select your post before proceeding.');
+        console.log('Redirecting: Please select your post before proceeding.');
         return res.redirect('/post-selection');
     }
-    
-    // Attach post to res.locals for views
-    res.locals.current_post = req.session.current_post;
 
-    // Attach post to req for backend filtering
+    // Attach `current_post` to `req` for use in backend processing
     req.postLocation = req.session.current_post;
 
     next();
 }
+
 app.use(attachPostFilter);
 
 
@@ -546,35 +601,6 @@ app.get('/incident-book', ensureAuthenticated, ensureAdmin, attachPostFilter, (r
 
 // USER REGISTRATION AND LOGIN
 
-// Middleware to check if the user is authenticated
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    req.flash('error_msg', 'Please log in to view that resource');
-    req.session.returnTo = req.originalUrl;
-    res.redirect('/login');
-}
-
-// Middleware to ensure the user has Admin access (Admin or Superuser)
-function ensureAdmin(req, res, next) {
-    if (req.user && (req.user.role === 'Admin' || req.user.role === 'Superuser')) {
-        return next();
-    }
-    req.flash('error_msg', 'Admin access required. Contact admin.');
-    res.redirect('/contact');
-}
-// Middleware to ensure the user is a Superuser
-function ensureSuperuser(req, res, next) {
-    if (req.isAuthenticated() && req.user.role === 'Superuser') {
-        return next();
-    }
-    console.log('Superuser access denied: User role is', req.user ? req.user.role : 'undefined');
-    req.flash('error_msg', 'You are not authorized to view this page. Contact admin..');
-    res.redirect('/contact');
-}
-
-
 // Nodemailer setup for sending emails after user approval
 // Configure the transporter (Initialize only once)
 const transporter = nodemailer.createTransport({
@@ -699,7 +725,7 @@ app.post('/login', (req, res, next) => {
 
 // Route: Display Post-Selection Page
 app.get('/post-selection', ensureAuthenticated, (req, res) => {
-    res.render('post-selection', { posts: ['ODD', 'STP', 'KMS', 'GCS', 'EMS', 'AGAHF-ED', 'AGAHF-Sup'] });
+    res.render('post-selection', { posts: ['ODD', 'STP', 'KMS', 'GCS', 'EMS', 'AGAHF-ED', 'AGAHF-Sup', 'Nurse-Manager'] });
 });
 
 // Route: Handle Post Selection
@@ -707,7 +733,7 @@ app.post('/post-selection', ensureAuthenticated, (req, res) => {
     const { selected_post } = req.body;
 
     // Validate the selected post
-    const validPosts = ['ODD', 'STP', 'KMS', 'GCS', 'EMS', 'AGAHF-ED', 'AGAHF-Sup'];
+    const validPosts = ['ODD', 'STP', 'KMS', 'GCS', 'EMS', 'AGAHF-ED', 'AGAHF-Sup', 'Nurse-Manager'];
     if (!validPosts.includes(selected_post)) {
         req.flash('error_msg', 'Invalid post selected. Please try again.');
         return res.redirect('/post-selection');
@@ -2304,15 +2330,32 @@ app.get('/isoup/incidents', ensureAuthenticated, ensureAdmin, attachPostFilter, 
 
 // Route: iManage Landing Page (GET)
 app.get('/imanage', (req, res) => {
-    res.render('imanage'); // landing-page.ejs
+    res.render('imanage/imanage'); // landing-page.ejs
 });
 // Route: iManage Dashboard (GET)
 app.get('/imanage-dashboard', (req, res) => {
-    res.render('imanage-dashboard'); // landing-page.ejs
+    res.render('imanage/imanage-dashboard'); // landing-page.ejs
 });
+//Route: View all Nurses
+app.get('/imanage/nurses', (req, res) => {
+    const query = 'SELECT * FROM nurses ORDER BY id ASC'; // Adjust as needed for your query
+    db.all(query, (err, nurses) => {
+        if (err) {
+            console.error('Error retrieving nurses:', err.message);
+            req.flash('error', 'Could not fetch nurses data.');
+            return res.redirect('/imanage-dashboard');
+        }
+        res.render('imanage/nurses-register', { nurses });
+    });
+});
+
+
+
+
+
 // Route: iEmerge Landing Page (GET)
 app.get('/iemerge', (req, res) => {
-    res.render('iemerge'); // landing-page.ejs
+    res.render('iemerge/iemerge'); // landing-page.ejs
 });
 // Route: iEmerge Dashboard (GET)
 app.get('/iemerge/dashboard', (req, res) => {
@@ -2322,6 +2365,7 @@ app.get('/iemerge/dashboard', (req, res) => {
 app.get('/iemerge/inventory/equipment', (req, res) => {
     res.render('../inventory/equipment-inventory'); // landing-page.ejs
 });
+
 
 
 

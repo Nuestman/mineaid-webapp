@@ -665,7 +665,14 @@ footer p {
 
 /* Page-specific styling */
 
-
+/* Testing Colors*/ 
+// header, footer {
+//     background-color: #d9d9d9;
+//     color: var(--text-color);
+//     a.nav-item {
+//         color: var(--text-color);
+//     }
+// }
 
 /*PASSWORD RESET*/
 .reset-request {
@@ -873,7 +880,7 @@ footer p {
     width: 32px;
     margin-right: 1rem;
 }
-  .full-height {
+.full-height {
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -888,8 +895,11 @@ footer p {
     }
     .inner-flex {
         text-align: center;
+        form {
+            text-align: left;
+        }
     }
-  }
+}
 
 // COMING SOON
 #soon {
@@ -1966,7 +1976,7 @@ gap: 15px;
         color: var(--accent-color);
     }
 }
-#isoup {
+#isoup, #imanage {
     header, footer {
         background-color: var(--text-color);
     }

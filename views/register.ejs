@@ -10,8 +10,16 @@
 <body id="home">
       
     <header>
-        <%- include('partials/_login-toggler') %>
-        <h1>REGISTER:</h1>
+        <div class="nav-container">
+            <div class="logo">
+                <a href="/iaid"><img src="/images/first-aid-kit.png" alt=""></a>
+            </div>
+            <nav class="h-flex">
+                <a class="nav-item" href="/login">Login</a>
+                <a class="nav-item" href="/reset-request">Reset Password</a>
+            </nav>
+        </div>
+        <h1>Register</h1>
     </header>
     
     <main class="login-main">

@@ -3,32 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>iSoup - Home</title>
+  <title>iManage - Home</title>
   <!-- Link to FontAwesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="/css/mineaid-styles.css">
   <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 </head>
-<body class="full-height " id="isoup">
+<body class="full-height" id="imanage">
     <header>
-        <h1>Welcome to i<span class="accent">Soup</span>:</h1>
-        <p class="bold">The Shift Supervisor Portal for AGAHF.</p>
+        <h1>Welcome to i<span class="accent">Manage</span>:</h1>
+        <p class="bold">The Nurse Manager Portal for AGAHF.</p>
     </header>
 
     <main class="home-main">
         <div class="container">
             <div class="alert-parent">
-                <%- include('partials/_flash-alert') %>
-                <!-- <div class="logo-large">
-                    <img src="/images/isoup-logo.svg" alt="Supervisor Briefcase Icon" loading="lazy">
-                </div> -->
+                <%- include('../partials/_flash-alert') %>
                 <section class="intro">
-                    <p class="bold">A platform to streamline hospital nursing supervisory responsibilities. <br>Submit shift reports, review incidents, log unit updates, and more. <br>Start by following these steps:</p>
+                    <p class="bold">Your centralized platform for managing nursing operations. <br>Oversee schedules, monitor reports, and streamline administrative tasks. <br>Here’s how to begin:</p>
                     <ul>
                         <li><strong>Register:</strong> Complete the user registration form.</li>
-                        <li><strong>Activate:</strong> Watch for an activation email from Numans Notifications.</li>
-                        <li><strong>Login:</strong> Access your supervisor account with your credentials.</li>
-                        <li><strong>Explore:</strong> Navigate the portal and provide feedback if needed.</li>
+                        <li><strong>Activate:</strong> Confirm activation via an email from Numans Notifications.</li>
+                        <li><strong>Login:</strong> Access your manager account with your credentials.</li>
+                        <li><strong>Explore:</strong> Take charge of your managerial tasks with ease.</li>
                     </ul>
                 </section>
                 <section class="qlinks">
@@ -38,20 +35,20 @@
                         <a href="/register" class="btn">Register</a>
                         <a href="/login" class="btn">Login</a>
                         <a href="/reset-request" class="btn">Reset</a>
-                        <a href="/isoup-dashboard" class="btn hidden">iSoup</a>
+                        <a href="/imanage-dashboard" class="btn hidden">iManage</a>
                     </div>
                 </section>
             </div>
         </div>
     <!-- Floating Feedback Button -->
     <div id="feedback-float" class="feedback-float">
-        <button onclick="window.location.href='/supervisor-survey'" aria-label="Give Feedback">
+        <button onclick="window.location.href='/manager-survey'" aria-label="Give Feedback">
             📝 Feedback
         </button>
     </div>
     </main>
 
-    <%- include('partials/_footer') %>
+    <%- include('../partials/_footer') %>
 
 <script src="/js/mineaid-scripts.js"></script>
 </body>

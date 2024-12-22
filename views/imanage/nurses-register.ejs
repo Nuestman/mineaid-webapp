@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurses Register</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="nurses-register full-height">
+    <header><%- include('../partials/_nav') %></header>
+    <section class="prim-header table-page-head">
+        <div class="container">
+            <h1>NURSES REGISTER:</h1>
+            <h2 class="accent">All Nurses</h2>
+        </div>
+    </section>
+
+    <main>
+        <div class="container">
+            <div class="alert-parent">
+                <%- include('../partials/_flash-alert') %>
+                <section class="item-cards">
+                    <% nurses.forEach((nurse, index) => { %>
+                    <div class="item-card" title="View Nurse Details">
+                        <div class="item-card-content" onclick="openNurseModal(<%= index %>)">
+                            <img src="../images/nurses/default-nurse.jpg"  alt="<%= nurse.name %>" class="nurse-avatar">
+                            <div class="nurse-text">
+                                <h4 class="accent"><%= nurse.name %></h4>
+                                <p><strong>Grade:</strong> <%= nurse.rank %></p>
+                                <!-- <p><strong>Email:</strong> <%= nurse.email %></p>
+                                <p><strong>Phone:</strong> <%= nurse.phone %></p> -->
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+                </section>
+
+                <!-- Modal Section -->
+                <dialog id="item-modal">
+                    <div class="modal-content">
+                        <button id="prev-button" onclick="showPrevNurse()"><i class="fas fa-chevron-left fa-2x"></i></button>
+                        <div class="item-details">
+                            <img id="modal-avatar" src="../images/nurses/default-nurse.jpg" alt="Nurse Avatar" class="nurse-avatar">
+                            <h2 class="accent" id="modal-name"></h2>
+                            <p><strong>Staff ID:</strong> <span id="modal-staff_id"><%=  %></span></p>
+                            <p><strong>Grade:</strong> <span id="modal-grade"><%=  %></span></p>
+                            <p><strong>Department:</strong> <span id="modal-department"><%=  %></span></p>
+                            <p><strong>Employment Date:</strong> <span id="modal-emp_date"></span></p>
+                            <p><strong>Email:</strong> <span id="modal-email"><%=  %></span></p>
+                            <p><strong>Phone:</strong> <span id="modal-phone"><%=  %></span></p>
+                        </div>
+                        <button id="next-button" onclick="showNextNurse()"><i class="fas fa-chevron-right fa-2x"></i></button>
+                    </div>
+                    <button class="modal-close" onclick="closeNurseModal()"><i class="fas fa-close fa-2x"></i></button>
+                </dialog>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const modal = document.getElementById('item-modal');
+        const nurses = <%- JSON.stringify(nurses) %>; // Pass nurses data from server
+        let currentIndex = 0;
+    
+        // Open modal and populate nurse details
+        function openNurseModal(index) {
+            currentIndex = index;
+            populateNurseModal();
+            modal.showModal();
+            disableBackgroundScrolling(true);  // Disable scrolling when modal is open
+        }
+    
+        function closeNurseModal() {
+            modal.close();
+            disableBackgroundScrolling(false);  // Enable scrolling when modal is closed
+        }
+    
+        // Populate the modal with current nurse's data
+        function populateNurseModal() {
+            const nurse = nurses[currentIndex];
+            document.getElementById('modal-name').textContent = nurse.name;
+            document.getElementById('modal-grade').textContent = nurse.grade;
+            document.getElementById('modal-email').textContent = nurse.email;
+            document.getElementById('modal-phone').textContent = nurse.phone;
+        }
+    
+        // Navigate between nurses in the modal
+        function showNextNurse() {
+            currentIndex = (currentIndex + 1) % nurses.length;
+            populateNurseModal();
+        }
+    
+        function showPrevNurse() {
+            currentIndex = (currentIndex - 1 + nurses.length) % nurses.length;
+            populateNurseModal();
+        }
+    
+        // Close the modal if clicked outside of the modal content
+        window.onclick = function (event) {
+            if (event.target === modal) {
+                closeNurseModal();
+            }
+        };
+    
+        // Disable background scrolling when modal is open
+        function disableBackgroundScrolling(disable) {
+            if (disable) {
+                document.body.style.overflow = 'hidden'; // Disable scrolling
+            } else {
+                document.body.style.overflow = ''; // Enable scrolling
+            }
+        }
+    </script>
+    
+
+    <%- include('../partials/_footer') %>
+    <script src="/js/mineaid-scripts.js"></script>
+</body>
+</html>

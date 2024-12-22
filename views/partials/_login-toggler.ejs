@@ -5,7 +5,7 @@
         <div class="logo">
             <a href="/iaid"><img src="/images/first-aid-kit.png" alt=""></a>
         </div>
-        <% if (current_post !== 'AGAHF-ED' && current_post !== 'AGAHF-Sup') { %>
+        <% if (current_post !== 'AGAHF-ED' && current_post !== 'AGAHF-Sup' && current_post !== 'AGAHF-Sup' && current_post !== 'Nurse-Manager') { %>
         <nav class="toggler">
             <ul>
                 <li class="nav-item hidden">Hub
@@ -46,7 +46,7 @@
         <nav class="toggler" id="navbar">
             <!-- Existing nav structure -->
             <ul>
-                <% if (current_post !== 'AGAHF-ED' && current_post !== 'AGAHF-Sup') { %>
+                <% if (current_post !== 'AGAHF-ED' && current_post !== 'AGAHF-Sup' && current_post !== 'Nurse-Manager') { %>
                 <li class="nav-item">Actions
                     <ul class="nav-links">
                         <li><a href="/triage">Triage</a></li>
@@ -66,7 +66,23 @@
                     </ul>
                 </li>
                 <% } %>
-                <% if (current_post === 'AGAHF-Sup') { %>
+                <% if (current_post === 'Nurse-Manager') { %> <!-- Nurse Manager -->
+                    <li><a href="/imanage-dashboard"><i class="fas fa-home"></i> Manager's Dashboard</a></li>
+                    <li class="nav-item">Reports
+                        <ul class="nav-links">
+                            <li><a href="/imanage/rosters"><i class="fas fa-calendar-alt"></i> View Duty Rosters</a></li>
+                            <li><a href="/imanage/statistics"><i class="fas fa-chart-line"></i> View Unit Statistics</a></li>
+                            <li><a href="/imanage/forms/report-form"><i class="fas fa-file-alt"></i> Submit Management Report</a></li>
+                            <li><a href="/imanage/reports"><i class="fas fa-clipboard-list"></i> View Reports</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/dashboard">Manage FAPs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/imanage/nurses">Manage Nurses</a>
+                    </li>
+                    <% } else if (current_post === 'AGAHF-Sup') { %>
                     <li class="nav-item">Supervisor
                         <ul class="nav-links">
                             <li><a href="/isoup-dashboard">iSoup Dashboard</a></li>
