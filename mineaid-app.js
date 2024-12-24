@@ -823,6 +823,32 @@ app.post('/register', (req, res) => {
                         req.flash('error_msg', 'Registration failed. Please try again.');
                         return res.redirect('/register');
                     }
+
+                    
+                    // Send notification email to MineAid
+                    const mailOptions = {
+                        from: process.env.SMTP_USER,
+                        to: 'mineaid.notifications@gmail.com, nuestman17@gmail.com', // Change to your notification email
+                        subject: 'New User Registration Awaiting Approval',
+                        html: `
+                            <h1>A new user has registered on MineAid and is awaiting approval:</h1>
+                            <ul>
+                                <li><strong>First Name:</strong> ${firstname}</li>
+                                <li><strong>Last Name:</strong> ${surname}</li>
+                                <li><strong>Email:</strong> ${email}</li>
+                                <li><strong>Username:</strong> ${username}</li>
+                            </ul>
+                        `,
+                    };
+
+                    transporter.sendMail(mailOptions, (error, info) => {
+                        if (error) {
+                            console.error('Error sending email:', error.message);
+                        } else {
+                            console.log('Notification email sent:', info.response);
+                        }
+                    });
+
                     req.flash('success_msg', 'You are registered and can log in');
                     res.redirect('/login');
                 });
@@ -1057,7 +1083,9 @@ app.get('/admin/approve/:id', ensureAuthenticated, ensureAdmin, ensureSuperuser,
                 from: 'nuestman17@gmail.com',
                 to: user.email, // Email of the approved user
                 subject: 'Account Approved',
-                text: `Hello ${user.firstname}, your account has been approved.`
+                text: `Hello ${user.firstname}, your account has been approved. 
+                Reminder: To ensure you don’t miss any future notifications, please add "MineAid Obuasi Notifications" to your address book. 
+                You can add us directly by clicking this link: https://drive.google.com/file/d/14qWlIPpg6SCvb9HarFQ23NX8X4ocJq_b/view?usp=sharing`
             };
 
             console.log('Preparing to send email...');
@@ -1523,10 +1551,12 @@ app.post('/reset-request', (req, res) => {
                 from: `"MineAid Obuasi Notifications" <${process.env.SMTP_USER}>`, // Custom display name
                 to: email,
                 subject: 'Password Reset Request',
-                text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
+                text: `Hi! ${user.firstname},You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
                 Please click on the following link, or paste this into your browser to complete the process:\n\n 
                 ${resetLink}
-                If you did not request this, please ignore this email and your password will remain unchanged.`
+                If you did not request this, please ignore this email and your password will remain unchanged.\n\n
+                Reminder: To ensure you don’t miss any future notifications, please add "MineAid Obuasi Notifications" to your address book. 
+                You can add us directly by clicking this link: https://drive.google.com/file/d/14qWlIPpg6SCvb9HarFQ23NX8X4ocJq_b/view?usp=sharing`
             };
 
             transporter.sendMail(mailOptions, (error, info) => {
@@ -1720,8 +1750,8 @@ app.post('/contact', (req, res) => {
             to: 'mineaid.notifications@gmail.com, nuestman17@gmail.com',
             subject: 'New MineAid Contact Form Message',
             text: `Message from: ${name} (${email})\n\nMessage:\n${message}\n\n
-        Reminder: To ensure you don’t miss any future notifications, please add "MineAid Obuasi Notifications" to your address book. 
-        You can add us directly by clicking this link: https://drive.google.com/file/d/14qWlIPpg6SCvb9HarFQ23NX8X4ocJq_b/view?usp=sharing`
+            Reminder: To ensure you don’t miss any future notifications, please add "MineAid Obuasi Notifications" to your address book. 
+            You can add us directly by clicking this link: https://drive.google.com/file/d/14qWlIPpg6SCvb9HarFQ23NX8X4ocJq_b/view?usp=sharing`
         };
 
         // Send the email
