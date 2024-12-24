@@ -33,6 +33,11 @@
 /* Define reusable variables */
 :root {
   /* Colors */
+  --agahf-green: #3CB64C;
+  --agahf-dark-green: #037103;
+  --agahf-text-green: #001B00;
+  --agahf-gold: #DE9803;
+  --agahf-green-gradient: linear-gradient(to bottom,#3c9a4cf2 26%,#037103 );
   --primary-color: #69b1ff;
   --primary-color-hover: #0072ec;
   --primary-color-light: #69b1ff;
@@ -317,24 +322,31 @@ title {
   top: 0;
   overflow: hidden;
   width: 300px;
-  background-color: #203764;
-  color: white;
+  color: var(--dark-color);
+  background-image: url(../images/12151159_4880206.jpg);
+  background-position: center center;
+  background-size: cover;
   padding: 15px;
+  border-radius: 5px;
+  box-shadow: var(--box-shadow-medium);
   height: 100vh;
 }
+.sidebar h2 {
+  text-align: left;
+}
 .sidebar a {
-  color: white;
+  color: var(--dark-color);
   text-decoration: none;
   display: block;
   margin-bottom: 10px;
   padding: 10px;
-  background-color: #304266;
   border: 1px solid transparent;
   border-radius: 5px;
 }
 .sidebar a:hover {
-  background-color: #203764;
-  border: 1px solid #304266;
+  border: 1px solid var(--dark-color-light);
+  padding-left: 1.5em;
+  font-weight: 700;
 }
 
 /* Quick Links Specific Styles */

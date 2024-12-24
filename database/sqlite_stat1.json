@@ -1,0 +1,77 @@
+[
+    {
+        "idx": "sqlite_autoindex_triagebook_1",
+        "stat": "12 1",
+        "tbl": "triagebook"
+    },
+    {
+        "idx": "sqlite_autoindex_incident_book_1",
+        "stat": "16 1",
+        "tbl": "incident_book"
+    },
+    {
+        "idx": "sqlite_autoindex_fap_reports_1",
+        "stat": "22 1",
+        "tbl": "fap_reports"
+    },
+    {
+        "idx": "sqlite_autoindex_nurses_1",
+        "stat": "26 1",
+        "tbl": "nurses"
+    },
+    {
+        "idx": "sqlite_autoindex_medications_2",
+        "stat": "11 1",
+        "tbl": "medications"
+    },
+    {
+        "idx": "sqlite_autoindex_medications_1",
+        "stat": "11 1",
+        "tbl": "medications"
+    },
+    {
+        "idx": "sqlite_autoindex_consumables_1",
+        "stat": "19 1",
+        "tbl": "consumables"
+    },
+    {
+        "idx": "sqlite_autoindex_equipment_1",
+        "stat": "13 1",
+        "tbl": "equipment"
+    },
+    {
+        "idx": "sqlite_autoindex_items_register_history_1",
+        "stat": "3 1",
+        "tbl": "items_register_history"
+    },
+    {
+        "idx": "sqlite_autoindex_inventory_categories_1",
+        "stat": "4 1",
+        "tbl": "inventory_categories"
+    },
+    {
+        "idx": "sqlite_autoindex_items_register_1",
+        "stat": "19 1",
+        "tbl": "items_register"
+    },
+    {
+        "idx": "sqlite_autoindex_post_locations_1",
+        "stat": "5 1",
+        "tbl": "post_locations"
+    },
+    {
+        "idx": "sqlite_autoindex_users_3",
+        "stat": "17 1",
+        "tbl": "users"
+    },
+    {
+        "idx": "sqlite_autoindex_users_2",
+        "stat": "17 1",
+        "tbl": "users"
+    },
+    {
+        "idx": "sqlite_autoindex_users_1",
+        "stat": "17 1",
+        "tbl": "users"
+    }
+]

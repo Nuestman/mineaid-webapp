@@ -13,20 +13,22 @@
 <body class="landing-page-body">
   <div class="landing-page">
     <!-- Fun question prompt -->
-    <section>
+    <section class="hidden">
         <p class="head">SouthSide FirstAid Portal</p>
         <h1 class="hub-prompt">Choose your location:</h1>
     </section>
     
     <main class="post-selection">
-        <div class="container alert-parent">
+        <div class="form-container alert-parent">
             <%- include('partials/_flash-alert') %>
-            <h1>Where are you working today?</h1>
+            <h1 class="hidden">Where are you working today?</h1>
             <form action="/post-selection" method="POST" class="form">
                 <div class="input-grp">
-                    <label for="post">Work Post</label>
+                    <label class="hidden" for="post">Work Post</label>
+                    <label for="post">
+                        <h1>Where are you working today?</h1></label>
                     <select name="selected_post" id="post" required>
-                        <option value="" disabled selected>Where are you working today?</option>
+                        <option value="" disabled selected>Select work location</option>
                         <option value="ODD">ODD</option>
                         <option value="STP">STP</option>
                         <option value="KMS">KMS</option>

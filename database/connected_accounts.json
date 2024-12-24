@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "linkedAt": "2024-11-02 10:56:58",
+        "platform": "GitHub",
+        "url": "https://github.com/Nuestman",
+        "user_id": 7
+    },
+    {
+        "id": 2,
+        "linkedAt": "2024-11-02 10:56:58",
+        "platform": "LinkedIn",
+        "url": "https://www.linkedin.com/in/numan-usman/",
+        "user_id": 7
+    },
+    {
+        "id": 3,
+        "linkedAt": "2024-11-20 17:20:22",
+        "platform": "LinkedIn",
+        "url": "https://www.linkedin.com/in/numan-usman/",
+        "user_id": "AF215007"
+    },
+    {
+        "id": 4,
+        "linkedAt": "2024-11-20 17:20:22",
+        "platform": "GitHub",
+        "url": "https://github.com/Nuestman",
+        "user_id": "AF215007"
+    }
+]

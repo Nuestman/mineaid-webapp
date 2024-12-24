@@ -1,0 +1,94 @@
+[
+    {
+        "name": "contact_messages",
+        "seq": 17
+    },
+    {
+        "name": "user_feedback",
+        "seq": 4
+    },
+    {
+        "name": "replenishment_requests",
+        "seq": 0
+    },
+    {
+        "name": "connected_accounts",
+        "seq": 4
+    },
+    {
+        "name": "users",
+        "seq": 20
+    },
+    {
+        "name": "inventory_categories",
+        "seq": 8
+    },
+    {
+        "name": "notifications",
+        "seq": 0
+    },
+    {
+        "name": "items_register_history",
+        "seq": 19
+    },
+    {
+        "name": "inventory_monthly_summaries",
+        "seq": 0
+    },
+    {
+        "name": "inventory_audit_trail",
+        "seq": 0
+    },
+    {
+        "name": "equipment",
+        "seq": 14
+    },
+    {
+        "name": "daily_checklist_data",
+        "seq": 6
+    },
+    {
+        "name": "recent_activities",
+        "seq": 14162
+    },
+    {
+        "name": "items_register",
+        "seq": 23
+    },
+    {
+        "name": "inventory_items",
+        "seq": 17
+    },
+    {
+        "name": "user_activity_logs",
+        "seq": 48
+    },
+    {
+        "name": "incident_book",
+        "seq": 28
+    },
+    {
+        "name": "incident_book_history",
+        "seq": 21
+    },
+    {
+        "name": "triagebook",
+        "seq": 14
+    },
+    {
+        "name": "fap_reports",
+        "seq": 22
+    },
+    {
+        "name": "isoup_stats",
+        "seq": 4427
+    },
+    {
+        "name": "isoup_reports",
+        "seq": 23
+    },
+    {
+        "name": "nurses",
+        "seq": 26
+    }
+]

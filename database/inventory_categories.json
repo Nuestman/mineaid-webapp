@@ -1,0 +1,26 @@
+[
+    {
+        "created_at": "2024-11-16 23:33:27",
+        "description": "For all medications",
+        "id": 1,
+        "name": "Medication"
+    },
+    {
+        "created_at": "2024-11-16 23:33:27",
+        "description": "For all other consumables",
+        "id": 2,
+        "name": "Consumable"
+    },
+    {
+        "created_at": "2024-11-16 23:33:27",
+        "description": "For all equipment",
+        "id": 3,
+        "name": "Equipment"
+    },
+    {
+        "created_at": "2024-12-03 09:57:24",
+        "description": "All other stuff that fall under the main 3 categories.",
+        "id": 8,
+        "name": "Other"
+    }
+]

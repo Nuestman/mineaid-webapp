@@ -1,0 +1,37 @@
+[
+    {
+        "created_at": "2024-11-21 15:53:57",
+        "in_charge": "Numan Usman",
+        "name": "ODD",
+        "status": "Active",
+        "updated_at": "2024-11-21 15:53:57"
+    },
+    {
+        "created_at": "2024-11-21 15:56:37",
+        "in_charge": "Numan Usman",
+        "name": "STP",
+        "status": "Active",
+        "updated_at": "2024-11-21 15:56:37"
+    },
+    {
+        "created_at": "2024-11-21 15:56:37",
+        "in_charge": "Numan Usman",
+        "name": "KMS",
+        "status": "Active",
+        "updated_at": "2024-11-21 15:56:37"
+    },
+    {
+        "created_at": "2024-11-21 15:56:37",
+        "in_charge": "Numan Usman",
+        "name": "GCS",
+        "status": "Active",
+        "updated_at": "2024-11-21 15:56:37"
+    },
+    {
+        "created_at": "2024-11-21 15:56:37",
+        "in_charge": "Numan Usman",
+        "name": "EMS - Central",
+        "status": "Active",
+        "updated_at": "2024-11-21 15:56:37"
+    }
+]

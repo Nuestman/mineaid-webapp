@@ -66,7 +66,7 @@
                     </ul>
                 </li>
                 <% } %>
-                <% if (current_post === 'Nurse-Manager') { %> <!-- Nurse Manager -->
+                <% if (current_post === 'Nurse-Manager') { %>
                     <li><a href="/imanage-dashboard"><i class="fas fa-home"></i> Manager's Dashboard</a></li>
                     <li class="nav-item">Reports
                         <ul class="nav-links">
@@ -79,8 +79,12 @@
                     <li class="nav-item">
                         <a href="/dashboard">Manage FAPs</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="/imanage/nurses">Manage Nurses</a>
+                    <li class="nav-item">Manage Nurses
+                        <ul class="nav-links">
+                            <li><a href="/imanage/nurses">Nurses Register</a></li>
+                            <li><a href="/imanage/nurses/add-nurse">Add a Nurse</a></li>
+                            <li><a href="/imanage/nurses/accommodation">Nurse Accommodation</a></li>
+                        </ul>
                     </li>
                     <% } else if (current_post === 'AGAHF-Sup') { %>
                     <li class="nav-item">Supervisor
@@ -93,12 +97,18 @@
                         </ul>
                     </li>
                     <% } else if (current_post === 'AGAHF-ED') { %> 
-                        <li class="nav-item">Emergency Department
+                        <li><a href="/iemerge/dashboard"><i class="fas fa-home"></i> ED Home</a></li>
+                        <li class="nav-item">ED Inventory
                             <ul class="nav-links">
-                                <li><a href="/iemerge/dashboard"><i class="fas fa-home"></i> Emergency Inventory</a></li>
-                                <li><a href="/inventory/add-new-item" ><i class="fas fa-plus"></i> Add New ED Equipment </a></li>
-                                <li><a href="/inventory/items-register" ><i class="fas fa-cogs"></i> ED Equipment Register</a></li>
-                                <li><a href="/coming-soon" ><i class="fas fa-cogs"></i> Manage ED Equipment</a></li>
+                                <li><a href="/inventory/add-new-item" ><i class="fas fa-plus"></i> Add New Equipment </a></li>
+                                <li><a href="/inventory/items-register" ><i class="fas fa-cogs"></i> Equipment Register</a></li>
+                                <li><a href="/coming-soon" ><i class="fas fa-cogs"></i> Track ED Equipment</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"> ED Research
+                            <ul class="nav-links">
+                                <li><a href="/coming-soon"><i class="fas fa-plus"></i> Submit Feedback</a></li>
+                                <li><a href="/coming-soon" ><i class="fas fa-file"></i> Client Feedback </a></li>
                             </ul>
                         </li>
                     <% } 

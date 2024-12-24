@@ -2348,6 +2348,80 @@ app.get('/imanage/nurses', (req, res) => {
         res.render('imanage/nurses-register', { nurses });
     });
 });
+// GET route to render the add nurse form
+app.get('/imanage/nurses/add-nurse', (req, res) => {
+    res.render('imanage/add-nurse'); // Ensure this file exists in the 'views/imanage' folder
+});
+
+// POST route to handle nurse addition
+app.post('/imanage/nurses/add-nurse', upload.single('picture'), (req, res) => {
+    const {
+        staff_id,
+        name,
+        gender,
+        grade,
+        emp_date,
+        rank,
+        department,
+        email,
+        phone,
+        service_status,
+        accommodation_status,
+    } = req.body;
+
+    const picture = req.file
+        ? `/uploads/nurses/${req.file.filename}`
+        : '/images/default-profile.png'; // Default image if no file uploaded
+
+    const query = `
+        INSERT INTO nurses (
+            staff_id, name, gender, grade, emp_date, rank, department, 
+            email, phone, service_status, accommodation_status, picture
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const params = [
+        staff_id,
+        name,
+        gender,
+        grade,
+        emp_date,
+        rank,
+        department,
+        email,
+        phone,
+        service_status,
+        accommodation_status,
+        picture,
+    ];
+
+    db.run(query, params, function (err) {
+        if (err) {
+            console.error('Error adding nurse:', err.message);
+            req.flash('error_msg', 'Failed to add nurse. Please try again.');
+            return res.redirect('/imanage/nurses/add-nurse');
+        }
+        req.flash('success_msg', 'Nurse added successfully!');
+        res.redirect('/imanage/nurses');
+    });
+});
+// GET route to view nurse accommodations
+app.get('/imanage/nurses/accommo', (req, res) => {
+    const query = `
+        SELECT name, accommodation_status 
+        FROM nurses
+        ORDER BY accommodation_status ASC, name ASC
+    `;
+
+    db.all(query, [], (err, nurses) => {
+        if (err) {
+            console.error('Error retrieving nurse accommodations:', err.message);
+            req.flash('error_msg', 'Unable to retrieve nurse accommodations.');
+            return res.redirect('/imanage/nurses');
+        }
+        res.render('imanage/nurse-accommodation', { nurses }); // Create a nurse-accommodation.ejs view
+    });
+});
 
 
 

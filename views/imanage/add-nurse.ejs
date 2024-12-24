@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurses Register</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="nurses-register full-height">
+    <header><%- include('../partials/_nav') %></header>
+    <section class="prim-header table-page-head">
+        <div class="container">
+            <h1>NURSES REGISTER:</h1>
+            <h2 class="accent">Add a Nurse to the Register</h2>
+        </div>
+    </section>
+
+    <!-- Add Nurse Form (views/imanage/add-nurse.ejs) -->
+<main>
+    <div class="form-container">
+        <h1>Add a New Nurse</h1>
+        <form action="/imanage/nurses/add-nurse" method="POST" enctype="multipart/form-data">
+            <div class="input-grp">
+                <label for="staff_id">Staff ID</label>
+                <input type="text" id="staff_id" name="staff_id" placeholder="AFxxxxxx" required>
+            </div>
+            <div class="input-grp">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter firstname first" required>
+            </div>
+            <div class="input-grp">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="input-grp">
+                <label for="grade">Grade</label>
+                <input type="text" id="grade" name="grade" placeholder="e.g. Senior Staff" required>
+            </div>
+            <div class="input-grp">
+                <label for="emp_date">Employment Date</label>
+                <input type="date" id="emp_date" name="emp_date" required>
+            </div>
+            <div class="input-grp">
+                <label for="rank">Rank</label>
+                <input type="text" id="rank" name="rank" placeholder="e.g. Emergency Nursing Officer" required>
+            </div>
+            <div class="input-grp">
+                <label for="department">Department</label>
+                <select name="department" id="department" required>
+                    <option value="Where do you work?" selected>Where do you work?</option>
+                    <option value="Emergency Department">Emergency Department</option>
+                    <option value="Male Ward">Male Ward</option>
+                    <option value="Female Ward">Female Ward</option>
+                    <option value="Paediatric Ward">Paediatric Ward</option>
+                    <option value="Intensive Care Unit">Intensive Care Unit</option>
+                    <option value="Neonatal Intensive Care Unit">Neonatal Intensive Care Unit</option>
+                    <option value="Maternity Ward">Maternity Ward</option>
+                    <option value="Lying-In Ward">Lying-In Ward</option>
+                    <option value="Theatre">Theatre</option>
+                    <option value="Recovery">Recovery</option>
+                    <option value="Out-Patient Department">Out-Patient Department</option>
+                    <option value="RCH Department">RCH Department</option>
+                </select>
+            </div>
+            <div class="input-grp">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="input-grp">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            <div class="input-grp">
+                <label for="service_status">Service Status</label>
+                <select id="service_status" name="service_status" required>
+                    <option value="Active">Active</option>
+                    <option value="On Annual leave">On Annual Leave</option>
+                    <option value="On Study leave">On Study Leave</option>
+                    <option value="On Probation">On Probation</option>
+                    <option value="On Suspension">On Suspension</option>
+                </select>
+            </div>
+            <div class="input-grp">
+                <label for="accommodation_status">Accommodation Status</label>
+                <select id="accommodation_status" name="accommodation_status" required>
+                    <option value="Non-residential">Non-Residential</option>
+                    <option value="Residential">Residential</option>
+                </select>
+            </div>
+            <div class="input-grp">
+                <label for="home_location">Home Location</label>
+                <select id="home_location" name="home_location" required>
+                    <option value="Moinsi Valley Estate">Moinsi Valley Estate</option>
+                    <option value="Biney Estate">Biney Estate</option>
+                    <option value="Engineers Hill">Engineers Hill</option>
+                </select>
+            </div>
+            <div class="input-grp">
+                <label for="picture">Upload Your Picture</label>
+                <input type="file" id="picture" name="picture" accept="image/*">
+            </div>
+            <button class="btn" type="submit">Add Nurse</button>
+        </form>
+    </div>
+</main>
+
+
+    <%- include('../partials/_footer') %>
+    <script src="/js/mineaid-scripts.js"></script>
+</body>
+</html>

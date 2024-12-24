@@ -21,22 +21,23 @@
         <div class="container">
             <div class="alert-parent">
                 <%- include('../partials/_flash-alert') %>
+                <!-- <section >
+                    <a class="btn " href="/imanage/nurses/add-nurse">Add a Nurse</a>
+                </section> -->
                 <section class="item-cards">
                     <% nurses.forEach((nurse, index) => { %>
                     <div class="item-card" title="View Nurse Details">
                         <div class="item-card-content" onclick="openNurseModal(<%= index %>)">
-                            <img src="../images/nurses/default-nurse.jpg"  alt="<%= nurse.name %>" class="nurse-avatar">
+                            <img src="<%= nurse.picture || '../images/nurses/default-nurse.jpg' %>" alt="<%= nurse.name %>" class="nurse-avatar">
                             <div class="nurse-text">
                                 <h4 class="accent"><%= nurse.name %></h4>
-                                <p><strong>Grade:</strong> <%= nurse.rank %></p>
-                                <!-- <p><strong>Email:</strong> <%= nurse.email %></p>
-                                <p><strong>Phone:</strong> <%= nurse.phone %></p> -->
+                                <p><strong>Rank:</strong> <%= nurse.rank %></p>
                             </div>
                         </div>
                     </div>
                     <% }); %>
                 </section>
-
+    
                 <!-- Modal Section -->
                 <dialog id="item-modal">
                     <div class="modal-content">
@@ -44,20 +45,145 @@
                         <div class="item-details">
                             <img id="modal-avatar" src="../images/nurses/default-nurse.jpg" alt="Nurse Avatar" class="nurse-avatar">
                             <h2 class="accent" id="modal-name"></h2>
-                            <p><strong>Staff ID:</strong> <span id="modal-staff_id"><%=  %></span></p>
-                            <p><strong>Grade:</strong> <span id="modal-grade"><%=  %></span></p>
-                            <p><strong>Department:</strong> <span id="modal-department"><%=  %></span></p>
+                            <p><strong>Staff ID:</strong> <span id="modal-staff_id"></span></p>
+                            <p><strong>Grade:</strong> <span id="modal-grade"></span></p>
+                            <p><strong>Rank:</strong> <span id="modal-rank"></span></p>
+                            <p><strong>Email:</strong> <span id="modal-email"></span></p>
+                            <p><strong>Phone:</strong> <span id="modal-phone"></span></p>
+                            <p><strong>Gender:</strong> <span id="modal-gender"></span></p>
                             <p><strong>Employment Date:</strong> <span id="modal-emp_date"></span></p>
-                            <p><strong>Email:</strong> <span id="modal-email"><%=  %></span></p>
-                            <p><strong>Phone:</strong> <span id="modal-phone"><%=  %></span></p>
+                            <p><strong>Service Status:</strong> <span id="modal-service_status"></span></p>
+                            <p><strong>Accommodation:</strong> <span id="modal-accommodation_status"></span></p>
+                            <section class="h-flex">
+                                <button id="edit-button" class="reg-action success" onclick="toggleEditForm()">
+                                    <i class="fas fa-edit"></i> Edit Data
+                                </button>
+                                <form id="delete-nurse-form" action="/imanage/nurses/delete/:id?confirm=yes" method="POST">
+                                    <button class="reg-action danger" onclick="return confirm('Are you sure you want to delete this nurse?');">
+                                        <i class="fas fa-trash"></i> Delete Nurse
+                                    </button>
+                                </form>
+                            </section>
+
+                            
+                            <!-- Collapsible Edit Section -->
+                            <div id="edit-section" class="hidden">
+                                <form id="edit-nurse-form" method="POST" action="">
+                                    <h3>Edit Nurse Data</h3>
+                                    <div class="input-grp">
+                                        <label for="staff_id">Staff ID</label>
+                                        <input type="text" id="edit-staff_id" name="staff_id" placeholder="AFxxxxxx" required>
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="name">Name</label>
+                                        <input type="text" id="edit-name" name="name" placeholder="Enter firstname first" required>
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="edit-gender">Gender</label>
+                                        <select id="edit-gender" name="edit-gender" required>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="grade">Grade</label>
+                                        <input type="text" id="edit-grade" name="grade" placeholder="e.g. Senior Staff" required>
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="emp_date">Employment Date</label>
+                                        <input type="date" id="edit-emp_date" name="emp_date" required>
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="rank">Rank</label>
+                                        <input type="text" id="edit-rank" name="rank" placeholder="e.g. Emergency Nursing Officer" required>
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="edit-department">Department</label>
+                                        <select name="edit-department" id="edit-department" required>
+                                            <option value="Where do you work?" >Where do you work?</option>
+                                            <option value="Emergency Department">Emergency Department</option>
+                                            <option value="Male Ward">Male Ward</option>
+                                            <option value="Female Ward">Female Ward</option>
+                                            <option value="Paediatric Ward">Paediatric Ward</option>
+                                            <option value="Intensive Care Unit">Intensive Care Unit</option>
+                                            <option value="Neonatal Intensive Care Unit">Neonatal Intensive Care Unit</option>
+                                            <option value="Maternity Ward">Maternity Ward</option>
+                                            <option value="Lying-In Ward">Lying-In Ward</option>
+                                            <option value="Theatre">Theatre</option>
+                                            <option value="Recovery">Recovery</option>
+                                            <option value="Out-Patient Department">Out-Patient Department</option>
+                                            <option value="RCH Department">RCH Department</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="email">Email</label>
+                                        <input type="email" id="edit-email" name="email" required>
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="phone">Phone</label>
+                                        <input type="tel" id="edit-phone" name="phone" required>
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="edit-service_status">Service Status</label>
+                                        <select id="edit-service_status" name="edit-service_status" required>
+                                            <option value="Active">Active</option>
+                                            <option value="On Annual leave">On Annual Leave</option>
+                                            <option value="On Study leave">On Study Leave</option>
+                                            <option value="On Probation">On Probation</option>
+                                            <option value="On Suspension">On Suspension</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="edit-accommodation_status">Accommodation Status</label>
+                                        <select id="edit-accommodation_status" name="edit-accommodation_status" required>
+                                            <option value="Non-residential">Non-Residential</option>
+                                            <option value="Residential">Residential</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-grp">
+                                        <label for="edit-home_location">Home Location</label>
+                                        <select id="edit-home_location" name="edit-home_location" required>
+                                            <option value="Moinsi Valley Estate">Moinsi Valley Estate</option>
+                                            <option value="Biney Estate">Biney Estate</option>
+                                            <option value="Engineers Hill">Engineers Hill</option>
+                                            <option value="Town">Town</option>
+                                        </select>
+                                    </div>
+                                    <section class="h-flex">
+                                        <button type="submit" class="reg-action success">Save Changes</button>
+                                        <button type="button" class="reg-action danger" onclick="toggleEditForm()">Cancel</button>
+                                    </section>
+                                </form>
+                            </div>
                         </div>
                         <button id="next-button" onclick="showNextNurse()"><i class="fas fa-chevron-right fa-2x"></i></button>
                     </div>
                     <button class="modal-close" onclick="closeNurseModal()"><i class="fas fa-close fa-2x"></i></button>
                 </dialog>
+
+                
             </div>
         </div>
+
+        <section class="modify-register">
+            <ul>
+                <li class="mod-reg-item top-gap"><span class="mod-reg-link"><i class="fas fa-edit fa-2x"></i></span>
+                    <ul class="mod-reg-items">
+                        <li class="" title="Add a Nurse to Register">
+                            <a href="/imanage/nurses/add-nurse" class="mod-reg-link"><i class="fas fa-plus fa-2x"></i></a>
+                        </li>
+                        <li class="" title="Import Nurses Data">
+                            <a href="/inventory/import" class="mod-reg-link"><i class="fas fa-file-import fa-2x"></i></a>
+                        </li>
+                        <li class="" title="Export Nurses Data">
+                            <a href="/inventory/export" class="mod-reg-link"><i class="fas fa-file-export fa-2x"></i></a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
     </main>
+    
 
     <script>
         const modal = document.getElementById('item-modal');
@@ -69,21 +195,28 @@
             currentIndex = index;
             populateNurseModal();
             modal.showModal();
-            disableBackgroundScrolling(true);  // Disable scrolling when modal is open
+            disableBackgroundScrolling(true); // Disable scrolling when modal is open
         }
     
         function closeNurseModal() {
             modal.close();
-            disableBackgroundScrolling(false);  // Enable scrolling when modal is closed
+            disableBackgroundScrolling(false); // Enable scrolling when modal is closed
         }
     
         // Populate the modal with current nurse's data
         function populateNurseModal() {
             const nurse = nurses[currentIndex];
+            document.getElementById('modal-avatar').src = nurse.picture || '../images/nurses/default-nurse.jpg';
             document.getElementById('modal-name').textContent = nurse.name;
+            document.getElementById('modal-staff_id').textContent = nurse.staff_id;
+            document.getElementById('modal-rank').textContent = nurse.rank;
             document.getElementById('modal-grade').textContent = nurse.grade;
-            document.getElementById('modal-email').textContent = nurse.email;
-            document.getElementById('modal-phone').textContent = nurse.phone;
+            document.getElementById('modal-email').textContent = nurse.email || 'N/A';
+            document.getElementById('modal-phone').textContent = nurse.phone || 'N/A';
+            document.getElementById('modal-gender').textContent = nurse.gender;
+            document.getElementById('modal-emp_date').textContent = nurse.emp_date;
+            document.getElementById('modal-service_status').textContent = nurse.service_status || 'N/A';
+            document.getElementById('modal-accommodation_status').textContent = nurse.accommodation_status || 'N/A';
         }
     
         // Navigate between nurses in the modal
@@ -112,7 +245,52 @@
                 document.body.style.overflow = ''; // Enable scrolling
             }
         }
+
+        // Toggle visibility of the edit form
+        function toggleEditForm() {
+            const editSection = document.getElementById('edit-section');
+            const editButton = document.getElementById('edit-button');
+            const isHidden = editSection.classList.toggle('hidden'); // Toggle visibility
+
+            // Update button text/icon
+            editButton.innerHTML = isHidden 
+                ? '<i class="fas fa-edit"></i> Edit Data' 
+                : '<i class="fas fa-times"></i> Close Edit';
+
+            if (!isHidden) {
+                populateEditForm(); // Populate the edit form when opened
+            }
+        }
+
+        // Populate the edit form with current item's data
+        function populateEditForm() {
+            const nurse = nurses[currentIndex];
+            document.getElementById('edit-name').value = nurse.name;
+            document.getElementById('edit-staff_id').value = nurse.staff_id;
+            document.getElementById('edit-grade').value = nurse.grade;
+            document.getElementById('edit-rank').value = nurse.rank;
+            document.getElementById('edit-email').value = nurse.email || 'N/A';
+            document.getElementById('edit-phone').value = nurse.phone || 'N/A';
+            document.getElementById('edit-gender').value = nurse.gender;
+            document.getElementById('edit-emp_date').value = nurse.emp_date;
+            document.getElementById('edit-service_status').value = nurse.service_status || 'N/A';
+            document.getElementById('edit-accommodation_status').value = nurse.accommodation_status || 'N/A';
+
+            console.log('Current nurse data:', nurse);
+
+            // Update the form's action attribute
+            const editForm = document.getElementById('edit-nurse-form');
+            editForm.action = `/imanage/nurses/edit/${nurse.staff_id}`;
+        }
+
+        // Ensure the edit form is closed when opening a new item
+        function closeEditForm() {
+            const editSection = document.getElementById('edit-section');
+            editSection.classList.add('hidden'); // Always hide the edit section
+            document.getElementById('edit-button').innerHTML = '<i class="fas fa-edit"></i> Edit Item';
+        }
     </script>
+    
     
 
     <%- include('../partials/_footer') %>

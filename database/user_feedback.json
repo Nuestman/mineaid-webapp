@@ -1,0 +1,58 @@
+[
+    {
+        "design_feedback": "5",
+        "ease_of_use": 5,
+        "fap_relevance": "5",
+        "feature_request": "5",
+        "feature_usefulness": 5,
+        "forms_ease": 5,
+        "id": 1,
+        "onboarding_rating": 5,
+        "overall_experience": "5",
+        "performance_rating": 5,
+        "security_confidence": 5,
+        "timestamp": "2024-11-04 12:51:18"
+    },
+    {
+        "design_feedback": "Not so good",
+        "ease_of_use": 5,
+        "fap_relevance": "Nada",
+        "feature_request": "Could be better",
+        "feature_usefulness": 5,
+        "forms_ease": 5,
+        "id": 2,
+        "onboarding_rating": 5,
+        "overall_experience": "Nothing added",
+        "performance_rating": 5,
+        "security_confidence": 5,
+        "timestamp": "2024-11-04 12:52:04"
+    },
+    {
+        "design_feedback": "Not so good",
+        "ease_of_use": 5,
+        "fap_relevance": "Nada",
+        "feature_request": "Could be better",
+        "feature_usefulness": 5,
+        "forms_ease": 5,
+        "id": 3,
+        "onboarding_rating": 5,
+        "overall_experience": "Nothing added",
+        "performance_rating": 5,
+        "security_confidence": 5,
+        "timestamp": "2024-11-04 12:55:39"
+    },
+    {
+        "design_feedback": "Could do better. Clean it up more.",
+        "ease_of_use": "[object Object]",
+        "fap_relevance": "Yes",
+        "feature_request": "Will get back later.",
+        "feature_usefulness": 5,
+        "forms_ease": 5,
+        "id": 4,
+        "onboarding_rating": 5,
+        "overall_experience": "None",
+        "performance_rating": 4,
+        "security_confidence": 5,
+        "timestamp": "2024-12-14 05:52:18"
+    }
+]
