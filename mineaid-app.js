@@ -833,6 +833,7 @@ app.post('/register', (req, res) => {
                         html: `
                             <h1>A new user has registered on MineAid and is awaiting approval:</h1>
                             <ul>
+                                <li><strong>Staff ID:</strong> ${user_id}</li>
                                 <li><strong>First Name:</strong> ${firstname}</li>
                                 <li><strong>Last Name:</strong> ${surname}</li>
                                 <li><strong>Email:</strong> ${email}</li>
