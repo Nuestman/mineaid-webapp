@@ -48,16 +48,25 @@
                                     <td><%= user.surname %></td>
                                     <td><%= user.email %></td>
                                     <td><%= user.username %></td>
-                                    <td><%= user.role %></td>
+                                    <td><%= user.role %>
+                                        <% if (user.role.trim() === 'User') { %>
+                                            <br><a href="/admin/make-admin/<%= user.id %>" data-user-id="<%= user.id %>" class="reg-action success btn-approve make-admin">makeAdmin</a>
+                                            <% } else if (user.role === 'Admin') { %>
+                                            <br><a href="/admin/make-super-user/<%= user.id %>" data-user-id="<%= user.id %>" class="reg-action success btn-approve make-admin">makeSuperUser</a>
+                                            <% } else { %>
+                                                <br><a href="/admin/make-user/<%= user.id %>" data-user-id="<%= user.id %>" class="reg-action success btn-approve make-admin">makeUser</a>
+                                            <% }
+                                        %>
+                                    </td>
                                     <td><%= user.status.trim() %></td>  <!-- Use trim() to clean up the status -->
                                     <td class="admin-user-action-container">
                                         <% if (user.status.trim() === 'Pending') { %>
-                                            <a class="reg-action success btn-approve" data-user-id="<%= user.user_id %>" href="/admin/approve/<%= user.user_id %>">Approve</a>
+                                            <a class="reg-action success btn-approve" data-user-id="<%= user.id %>" href="/admin/approve/<%= user.id %>">Approve</a>
                                         <% } %>
                                         <% if (user.status.trim() !== 'Blocked') { %>
-                                            <a class="reg-action danger btn-block" href="/admin/block/<%= user.user_id %>" data-user-id="<%= user.user_id %>">Block</a>
+                                            <a class="reg-action danger btn-block" href="/admin/block/<%= user.id %>" data-user-id="<%= user.id %>">Block</a>
                                         <% } else { %>
-                                            <a class="reg-action success btn-unblock" href="/admin/unblock/<%= user.user_id %>" data-user-id="<%= user.user_id %>">Unblock</a>
+                                            <a class="reg-action success btn-unblock" href="/admin/unblock/<%= user.id %>" data-user-id="<%= user.id %>">Unblock</a>
                                         <% } %>
                                     </td>
                                     <td><%= user.created_at %></td>

@@ -133,7 +133,7 @@ function ensureAdmin(req, res, next) {
         return next();
     }
     req.flash('error_msg', 'Admin access required. Contact admin.');
-    res.redirect('/contact');
+    res.redirect('/error/403');
 }
 // Middleware to ensure the user is a Superuser
 function ensureSuperuser(req, res, next) {
@@ -142,7 +142,7 @@ function ensureSuperuser(req, res, next) {
     }
     console.log('Superuser access denied: User role is', req.user ? req.user.role : 'undefined');
     req.flash('error_msg', 'You are not authorized to view this page. Contact admin..');
-    res.redirect('/contact');
+    res.redirect('/error/403');
 }
 
 // Middleware: Ensure Post is Selected & Filter Queries
@@ -1082,7 +1082,7 @@ app.get('/admin/approve/:id', ensureAuthenticated, ensureAdmin, ensureSuperuser,
             // Send an approval email
             const mailOptions = {
                 from: 'nuestman17@gmail.com',
-                to: user.email, // Email of the approved user
+                to: `${user.email}`, // Email of the approved user
                 subject: 'Account Approved',
                 text: `Hello ${user.firstname}, your account has been approved. 
                 Reminder: To ensure you don’t miss any future notifications, please add "MineAid Obuasi Notifications" to your address book. 
@@ -1113,6 +1113,32 @@ app.get('/admin/make-admin/:id', ensureAuthenticated, ensureSuperuser, (req, res
             return res.redirect('/admin/users');
         }
         req.flash('success_msg', 'User has been made an admin successfully');
+        res.redirect('/admin/users');
+    });
+});
+// Route to make a user a SuperUser
+app.get('/admin/make-super-user/:id', ensureAuthenticated, ensureSuperuser, (req, res) => {
+    const userId = req.params.id;
+    db.run('UPDATE users SET role = ? WHERE id = ?', ['SuperUser'.trim(), userId], (err) => {
+        if (err) {
+            console.log('Error approving superuser role.')
+            req.flash('error_msg', 'Error approving superuser role.');
+            return res.redirect('/admin/users');
+        }
+        req.flash('success_msg', 'User has been made an superuser successfully');
+        res.redirect('/admin/users');
+    });
+});
+// Route to make a user a User
+app.get('/admin/make-user/:id', ensureAuthenticated, ensureSuperuser, (req, res) => {
+    const userId = req.params.id;
+    db.run('UPDATE users SET role = ? WHERE id = ?', ['User'.trim(), userId], (err) => {
+        if (err) {
+            console.log('Error approving user role.')
+            req.flash('error_msg', 'Error approving user role.');
+            return res.redirect('/admin/users');
+        }
+        req.flash('success_msg', 'User has been made a user successfully');
         res.redirect('/admin/users');
     });
 });
@@ -1693,7 +1719,7 @@ app.get('/export', ensureAuthenticated, attachPostFilter, (req, res) => {
 /* ROUTE TO DOWNLOAD LIVE DATABASE FILE FROM RENDER */
 
 // Temporary download endpoint for SQLite backup
-app.get('/download-sqlite-backup', ensureSuperuser, attachPostFilter, (req, res) => {
+app.get('/download-db', ensureSuperuser, attachPostFilter, (req, res) => {
     const dbPath = path.join(__dirname, 'database', 'mineaid.db'); // Update the path if needed
 
     // // Set up a basic check to restrict access (change as needed)
@@ -1750,9 +1776,7 @@ app.post('/contact', (req, res) => {
             replyTo: email, // User's email from the form
             to: 'mineaid.notifications@gmail.com, nuestman17@gmail.com',
             subject: 'New MineAid Contact Form Message',
-            text: `Message from: ${name} (${email})\n\nMessage:\n${message}\n\n
-            Reminder: To ensure you don’t miss any future notifications, please add "MineAid Obuasi Notifications" to your address book. 
-            You can add us directly by clicking this link: https://drive.google.com/file/d/14qWlIPpg6SCvb9HarFQ23NX8X4ocJq_b/view?usp=sharing`
+            text: `Message from: ${name} (${email})\n\nMessage:\n${message}`
         };
 
         // Send the email

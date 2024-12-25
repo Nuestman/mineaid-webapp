@@ -23,21 +23,12 @@
             <div class="user-table-container wide-table">
                 <div class="alert-parent">
                     <!-- Display flash messages if there are any -->
-                <% if (success_msg) { %>
-                    <div class="alert alert-success"><%= success_msg %></div>
-                <% } %>
-                
-                <% if (error_msg) { %>
-                    <div class="alert alert-danger"><%= error_msg %></div>
-                <% } %>
-                
-                <% if (error) { %>
-                    <div class="alert alert-danger"><%= error %></div>
-                <% } %>
+                     <%- include('../partials/_flash-alert') %>
                     <table>
                         <thead>
                             <tr>
                                 <th>Id</th>
+                                <th>Staff ID</th>
                                 <th>Firstname</th>
                                 <th>Surname</th>
                                 <th>Email</th>
@@ -52,6 +43,7 @@
                             <% users.forEach(user => { %>
                                 <tr>
                                     <td><%= user.id %></td>
+                                    <td><%= user.user_id %></td>
                                     <td><%= user.firstname %></td>
                                     <td><%= user.surname %></td>
                                     <td><%= user.email %></td>
@@ -59,7 +51,12 @@
                                     <td><%= user.role %>
                                         <% if (user.role.trim() === 'User') { %>
                                             <br><a href="/admin/make-admin/<%= user.id %>" data-user-id="<%= user.id %>" class="reg-action success btn-approve make-admin">makeAdmin</a>
-                                        <% } %>
+                                            <% } else if (user.role === 'Admin') { %>
+                                            <br><a href="/admin/make-super-user/<%= user.id %>" data-user-id="<%= user.id %>" class="reg-action success btn-approve make-admin">makeSuperUser</a>
+                                            <% } else { %>
+                                                <br><a href="/admin/make-user/<%= user.id %>" data-user-id="<%= user.id %>" class="reg-action success btn-approve make-admin">makeUser</a>
+                                            <% }
+                                        %>
                                     </td>
                                     <td><%= user.status.trim() %></td>  <!-- Use trim() to clean up the status -->
                                     <td class="admin-user-action-container">

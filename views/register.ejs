@@ -29,17 +29,7 @@
                 <div class="form-itself alert-parent">
     
                     <!-- Display flash messages if there are any -->
-                    <% if (success_msg) { %>
-                        <div class="alert alert-success"><%= success_msg %></div>
-                    <% } %>
-                    
-                    <% if (error_msg) { %>
-                        <div class="alert alert-danger"><%= error_msg %></div>
-                    <% } %>
-                    
-                    <% if (error) { %>
-                        <div class="alert alert-danger"><%= error %></div>
-                    <% } %>
+                     <%- include('partials/_flash-alert') %>
                     
                     <form action="/register" method="POST">
                         <div class="input-grp">
