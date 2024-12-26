@@ -1611,6 +1611,9 @@ th, td {
   .form-container {
     padding: var(--padding-medium);
   }
+  .form-content {
+    overflow-y: scroll;
+  }
   .inventory-table-container {
     flex-grow: 1;
   }
@@ -1711,6 +1714,7 @@ th, td {
 /* NURSING-HUB */
 /* Landing Page */
 .landing-page-body {
+  margin-top: 2rem;
   padding: 3rem 2rem;
   display: flex;
   justify-content: center;
@@ -1721,6 +1725,10 @@ th, td {
   text-align: center;
   max-width: 800px;
   padding: 2rem;
+  margin-top: 3rem;
+}
+.landing-page label {
+  margin-bottom: 1rem;
 }
 
 .hub-prompt {
@@ -1850,6 +1858,9 @@ th, td {
 @media (max-width: 600px) {
   .options {
     flex-direction: column;
+  }
+  .landing-page {
+    padding: 0;
   }
   .option-card {
     width: 80%; /* Full-width on smaller screens */

@@ -34,7 +34,7 @@
             <section class="prim-header">
                     <h1>Supervisor Dashboard</h1>
             </section>
-                <h1 class="danger">ACTUAL CONTENT COMING SOON</h1>
+                <h1 class="danger hidden">ACTUAL CONTENT COMING SOON</h1>
                 <section class="welcome-card card-container">
                     <div class="">
                         <h2>Welcome, <span class="accent"><%= user.firstname || 'Firstname'%>!</span></h2>
@@ -45,9 +45,9 @@
                 <section class="quick-links card-container">
                     <h3>Quick Links</h3>
                     <div class="grid-container">
-                        <div class="card"><a href="/isoup/forms/report-form">Submit Report</a></div>
-                        <div class="card"><a href="/isoup/forms/stats-form">Submit Stats/Ward State</a></div>
-                        <div class="card"><a href="/isoup/reports/all">Supervisor Reports</a></div>
+                        <a href="/isoup/forms/report-form"><div class="card">Submit Report</div></a>
+                        <a href="/isoup/forms/stats-form"><div class="card">Submit Stats/Ward State</div></a>
+                        <a href="/isoup/reports/all"><div class="card">Supervisor Reports</div></a>
                     </div>
                 </section>
                 <!-- Unit Reports -->

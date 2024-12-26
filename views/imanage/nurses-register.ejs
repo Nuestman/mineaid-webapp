@@ -30,7 +30,7 @@
                         <div class="item-card-content" onclick="openNurseModal(<%= index %>)">
                             <img src="<%= nurse.picture || '../images/nurses/default-nurse.jpg' %>" alt="<%= nurse.name %>" class="nurse-avatar">
                             <div class="nurse-text">
-                                <h4 class="accent"><%= nurse.name %></h4>
+                                <h5 class="accent"><%= nurse.name %></h5>
                                 <p><strong>Rank:</strong> <%= nurse.rank %></p>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
                             <img id="modal-avatar" src="../images/nurses/default-nurse.jpg" alt="Nurse Avatar" class="nurse-avatar">
                             <h2 class="accent" id="modal-name"></h2>
                             <p><strong>Staff ID:</strong> <span id="modal-staff_id"></span></p>
-                            <p><strong>Grade:</strong> <span id="modal-grade"></span></p>
+                            <p><strong>Grade:</strong> <span id="modal-grade"></span> <span class="reg-action success btn-approve hidden"><a href="#">Make Senior Staff</a></span></p>
                             <p><strong>Rank:</strong> <span id="modal-rank"></span></p>
                             <p><strong>Email:</strong> <span id="modal-email"></span></p>
                             <p><strong>Phone:</strong> <span id="modal-phone"></span></p>
