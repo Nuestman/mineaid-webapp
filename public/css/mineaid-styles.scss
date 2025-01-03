@@ -1227,6 +1227,48 @@ th, td {
     border: 1px solid var(--success-border-color);
 }
 
+/* Overlay for session alert */
+.session-overlay {
+    display: block; /* Displayed dynamically */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    z-index: 999; /* Behind the .session-alert */
+}
+.session-alert {
+    background-color: var(--error-bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--error-border-color);
+    box-shadow: var(--box-shadow-medium);
+    position: fixed;
+    inset: 50%;
+    translate: -50% -50%;
+    padding: 1.5rem;
+    width: 30%;
+    height: fit-content;
+    border-radius: 5px;
+    z-index: 1000;
+    .warn {
+        color: var(--danger-color);
+        font-weight: bold;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .countdown {
+        background-color: var(--white-color);
+        font-weight: 700;
+        padding: .3rem .5rem;
+    }
+    .session-btn {
+        margin-top: 1.5rem;
+        display: flex;
+        gap: 10px;
+    }
+}
+
 /* Common Bordered Element */
 .bordered-element {
     border: 1px solid var(--border-color, #ddd); /* Set a default, but use a variable */
@@ -1550,6 +1592,10 @@ gap: 15px;
     }
 }
 
+// Toggle visibility
+.shown {
+    display: block;
+}
 /* Hide menu by default */
 .hidden {
     display: none;
@@ -1636,7 +1682,10 @@ gap: 15px;
         grid-template-columns: 1fr; // Stack sidebar on smaller screens
     }
 
-
+// Logins
+    #login-main .login-main div:not(.alert) {
+        height: unset;
+    }
     .login-container {
         flex-direction: column;
         flex-grow: unset;
@@ -1653,9 +1702,9 @@ gap: 15px;
     .form-container {
         padding: var(--padding-medium);
     }
-    .form-content {
-        overflow-y: scroll;
-    }
+    // .form-content {
+    //     overflow-y: scroll;
+    // }
     
     .inventory-table-container {
         flex-grow: 1;
@@ -1728,6 +1777,11 @@ gap: 15px;
         margin: 0 0 1rem 0;
         line-height: 1.2;
         }
+    }
+
+    // Session alert
+    .session-alert { 
+        width: 80%;
     }
 
     /* Index page styling */
@@ -1845,9 +1899,9 @@ gap: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
+}
   
-  .landing-page {
+.landing-page {
     text-align: center;
     max-width: 800px;
     padding: 2rem;
@@ -1855,27 +1909,35 @@ gap: 15px;
     label {
         margin-bottom: 1rem;
     }
-  }
+}
   
-  .hub-prompt {
+.hub-prompt {
     max-width: 800px;
     margin-inline: auto;
     margin-bottom: 3rem;
     font-size: var(--font-size-large);
     color: var(--text-color);
-  }
+}
+
+.onboard-new {
+    display: none;
+}
+.shown {
+    display: block;
+}
   
   /* Options container */
-  .options {
+.options {
     display: flex;
     justify-content: center;
     gap: 2em;
     flex-wrap: wrap;
     max-width: 600px;
-  }
+    margin-inline: auto;
+}
   
   /* Card styling for options */
-  .option-card {
+.option-card {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1918,7 +1980,7 @@ gap: 15px;
       font-size: var(--font-size-medium);
       font-weight: 500;
     }
-  }
+}
 /* Initial placement outside the viewport */
 .iAid, .iSoup, .iManage, .iEmerge {
     opacity: 0; /* Start fully transparent */
@@ -2035,6 +2097,25 @@ gap: 15px;
         margin-top: 2rem;
     }
 }
+
+/* iManage*/ 
+// Switch views
+.switch-btn {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #009879;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.switch-btn:hover {
+    background-color: #007861;
+}
+
 
 /* Database Management */
 .db-management {

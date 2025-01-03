@@ -1,0 +1,14 @@
+id,equipment_id,equipment_owner,equipment_location,equipment_name,category,equipment_status,created_at,unit,reorder_level,service_date,manufacturer,description,created_at
+1,eq-001,Emergency,At Post,Defibrillator,Equipment,Functional,11/17/2024 15:59,Unit,0,6/13/2026,MedEquip Co.,Device used to deliver a shock to the heart to restore normal rhythm during cardiac arrest.,11/17/2024 15:59
+2,eq-002,Emergency,At Post,Oxygen Cylinder,Equipment,Functional,11/17/2024 15:59,Cylinder,20,12/15/2025,OxyTech,Portable oxygen supply for patients with respiratory distress or low oxygen levels.,11/17/2024 15:59
+3,eq-003,Emergency,At Post,Ambulance Stretcher,Equipment,Functional,11/17/2024 15:59,Unit,3,7/1/2025,RescueGear,Stretcher used to transport injured or ill patients safely in ambulances.,11/17/2024 15:59
+4,eq-004,Emergency,At Post,Trauma Kit,Equipment,Functional,11/17/2024 15:59,Kit,10,4/5/2026,FirstAid Supplies,"Comprehensive first-aid kit containing bandages, antiseptics, splints, and other supplies for trauma treatment.",11/17/2024 15:59
+5,eq-005,Emergency,At Post,Blood Pressure Monitor,Equipment,Functional,11/17/2024 15:59,Unit,15,8/25/2025,HealthTech,Device used to measure blood pressure in emergency and clinical settings.,11/17/2024 15:59
+6,eq-006,Emergency,At Post,Pulse Oximeter,Equipment,Functional,11/17/2024 15:59,Unit,30,1/18/2026,MedSupply,Device used to measure oxygen saturation levels in the blood.,11/17/2024 15:59
+7,eq-007,Emergency,At Post,Surgical Scissors,Equipment,Functional,11/17/2024 15:59,Pair,50,11/2/2025,SurgicalTools,"Scissors used for surgical procedures to cut tissues, sutures, and bandages.",11/17/2024 15:59
+8,eq-008,Emergency,At Post,Cervical Collar,Equipment,Functional,11/17/2024 15:59,Unit,25,9/14/2025,SpineCare,Neck support used to immobilize the cervical spine in the event of a neck injury.,11/17/2024 15:59
+9,eq-009,Emergency,At Post,Inhaler,Equipment,Functional,11/17/2024 15:59,Unit,40,3/21/2026,AirMed,"Portable device used for delivering medication directly to the lungs, typically for asthma or COPD.",11/17/2024 15:59
+10,eq-010,Emergency,At Post,Surgical Gloves,Equipment,Functional,11/17/2024 15:59,Box,100,12/1/2025,SafeHands,Sterile gloves used in medical procedures to prevent contamination and infection.,11/17/2024 15:59
+11,equip-11,Emergency,At Post,Suction Apparatus,Equipment,Functional,11/18/2024 22:17,1,0,12/7/2025,SomeMenu,To suction secretions,11/18/2024 22:17
+13,equip-13,Emergency,At Post,CB Radio,Equipment,Functional,11/21/2024 15:47,Pieces,0,4/21/2025,Motorola,2-way radio for comms.,11/21/2024 15:47
+14,equip-14,Emergency,At Post,Machine ,Equipment,Functional,11/27/2024 10:21,4,0,3/22/2025,Myself,Description,11/27/2024 10:21

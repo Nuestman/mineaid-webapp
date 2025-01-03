@@ -437,6 +437,21 @@ app.use((req, res, next) => {
 });
 
 
+//Session checker endpoint
+// app.get('/check-session', (req, res) => {
+//     console.log('Check session called. Authenticated:', req.isAuthenticated());
+//     if (req.isAuthenticated()) {
+//         res.json({ active: true });
+//     } else {
+//         res.json({ active: false, message: 'Session expired due to inactivity.' });
+//     }
+// });
+
+
+
+
+
+
 
 // Route: Home (index)
 app.get('/', (req, res) => {
@@ -757,6 +772,19 @@ app.post('/post-selection', ensureAuthenticated, (req, res) => {
 });
 
 
+// /* Switch Post */
+// app.post('/switch-post', (req, res) => {
+//     const { newPost } = req.body; // Expecting the new post from the frontend
+//     if (!newPost) {
+//         return res.status(400).json({ error: 'Invalid post selection' });
+//     }
+
+//     // Update the user's current_post in session or database
+//     req.session.current_post = newPost; // Or update in the database if stored there
+
+//     res.json({ success: true, currentPost: newPost });
+// });
+
 
 
 /* ------------------END OF POST MGT */
@@ -893,12 +921,23 @@ app.get('/users/user-profile', (req, res) => {
 });
 
 // Route: Logout (GET)
+// app.get('/logout', (req, res) => {
+//     req.logout(() => {
+//         req.flash('success_msg', 'You have logged out.');
+//         res.redirect('login'); // Redirect to home or any other page
+//     });
+// });
 app.get('/logout', (req, res) => {
-    req.logout(() => {
-        req.flash('success_msg', 'You have logged out.');
-        res.redirect('login'); // Redirect to home or any other page
+    req.logout((err) => {
+        if (err) {
+            console.error(err);
+            return res.redirect('error/500'); // Redirect to home on error
+        }
+        global.loggedIn = false; // Reset global value if needed
+        res.redirect('/'); // Redirect to the login page or homepage
     });
 });
+
 
 
 
@@ -2089,10 +2128,75 @@ app.get('/isoup-dashboard', ensureAuthenticated, (req, res) => {
 app.get('/isoup/forms/report-form', (req, res) => {
     res.render('isoup-reports-form'); // landing-page.ejs
 });
+
 // Route: View iSoup Ward State Form (GET)
 app.get('/isoup/forms/ward-state-form', (req, res) => {
     res.render('isoup-ward-state-form'); // landing-page.ejs
 });
+
+// Route: Submit iSoup Ward State (POST)
+app.post('/isoup/forms/submit-ward-state', async (req, res) => {
+    const {
+        report_date, ward, prev, beds, cots, pats, adm, disch, deaths, 
+        workers, dep, priv, tin, tout, report
+    } = req.body;
+
+    // SQL query to insert data
+    const sql = `
+        INSERT INTO isoup_ward_state 
+        (report_date, ward, prev, beds, cots, pts, adm, disch, tin, tout, deaths, workers, dep, priv, report)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    // Parameters for the query
+    const params = [
+        report_date, ward, prev, beds, cots, pats, adm, disch, tin, tout, deaths, workers, dep, priv, report
+    ];
+
+    try {
+        // Execute the SQL query
+        await new Promise((resolve, reject) => {
+            db.run(sql, params, function (err) {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
+
+        // Flash success message and redirect
+        req.flash('success_msg', 'Ward state submitted successfully!');
+        res.redirect('/isoup/reports/ward-state');
+    } catch (err) {
+        console.error('Error saving ward state:', err.message);
+
+        // Flash error message and redirect
+        req.flash('error', 'Error saving ward state. Please try again.');
+        res.redirect('/isoup/forms/ward-state-form');
+    }
+});
+
+// Route: View iSoup Unit Ward States (GET)
+app.get('/isoup/reports/ward-state', async (req, res) => {
+    const sql = `SELECT * FROM isoup_ward_state ORDER BY id DESC`;
+
+    try {
+        const wardStates = await new Promise((resolve, reject) => {
+            db.all(sql, [], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+
+        // Render the view with the retrieved data
+        res.render('isoup-ward-state', { wardStates });
+    } catch (err) {
+        console.error('Error fetching ward states:', err.message);
+
+        req.flash('error', 'Error retrieving ward state reports. Please try again.');
+        res.redirect('/isoup-dashboard');
+    }
+});
+
+
 // Route: View iSoup Statistics Form (GET)
 app.get('/isoup/forms/stats-form', (req, res) => {
     res.render('isoup-stats-form'); // landing-page.ejs
@@ -2342,26 +2446,43 @@ app.get('/isoup/reports/all', (req, res) => {
 
 
 // Route: View One Specific Day's iSoup Report (GET)
+// Route: View One Specific Day's iSoup Report (GET)
 app.get('/isoup/report', (req, res) => {
     const { report_date } = req.query; // Extract report_date from query params
 
     if (!report_date || !/^\d{4}-\d{2}-\d{2}$/.test(report_date)) {
         req.flash('error', 'Invalid or missing report date.');
-        return res.render('isoup-report', { reports: [] });
+        return res.render('isoup-report', { reports: [], statistics: [] });
     }
 
-    const sql = `SELECT * FROM isoup_reports WHERE report_date = ?`;
+    // Query to fetch the report data
+    const reportSql = `SELECT * FROM isoup_reports WHERE report_date = ?`;
 
-    db.all(sql, [report_date], (err, rows) => {
-        if (err) {
-            console.error(err.message);
-            req.flash('error', 'Error fetching the report.');
-            return res.render('isoup-report', { reports: [] });
-        }
+    // Query to fetch ward state statistics for the same report date
+    const statsSql = `SELECT * FROM isoup_ward_state WHERE report_date = ?`;
 
-        res.render('isoup-report', { reports: rows });
+    db.serialize(() => {
+        db.all(reportSql, [report_date], (reportErr, reports) => {
+            if (reportErr) {
+                console.error(reportErr.message);
+                req.flash('error', 'Error fetching the report.');
+                return res.render('isoup-report', { reports: [], statistics: [] });
+            }
+
+            db.all(statsSql, [report_date], (statsErr, statistics) => {
+                if (statsErr) {
+                    console.error(statsErr.message);
+                    req.flash('error', 'Error fetching ward statistics.');
+                    return res.render('isoup-report', { reports, statistics: [] });
+                }
+
+                // Pass both `reports` and `statistics` to the view
+                res.render('isoup-report', { reports, statistics });
+            });
+        });
     });
 });
+
 
 
 
@@ -2493,7 +2614,202 @@ app.get('/iemerge/dashboard', (req, res) => {
 // Route: iEmerge Inventory (GET)
 app.get('/iemerge/inventory/equipment', (req, res) => {
     res.render('../inventory/equipment-inventory'); // landing-page.ejs
+});// POST Route to Add New Equipment
+app.post('/inventory/add-equipment', attachPostFilter, (req, res) => {
+    const {
+        equipment_location, 
+        equipment_name,
+        unit,
+        reorder_level,
+        service_date,
+        manufacturer,
+        description
+    } = req.body;
+
+    const userId = req.user.user_id; // Assuming req.user contains the logged-in user's details
+
+    const insertEquipmentQuery = `
+        INSERT INTO equipment (equipment_id, equipment_location, equipment_name, unit, reorder_level, service_date, manufacturer, description)
+        VALUES ((SELECT 'equip-' || IFNULL(MAX(rowid) + 1, 0) FROM equipment), ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    db.run(
+        insertEquipmentQuery,
+        [equipment_location, equipment_name, unit, reorder_level, service_date, manufacturer, description],
+        function (err) {
+            if (err) {
+                console.error('Error inserting equipment:', err.message);
+                req.flash('error_msg', 'Error inserting equipment.');
+                return res.redirect('/inventory/equipment-inventory');
+            }
+
+            // Log user activity
+            const logActivityQuery = `
+                INSERT INTO user_activity_logs (user_id, action, table_name, record_id)
+                VALUES (?, ?, ?, ?)
+            `;
+            db.run(
+                logActivityQuery,
+                [userId, 'Add', 'equipment', this.lastID],
+                (logErr) => {
+                    if (logErr) {
+                        console.error('Error logging activity:', logErr.message);
+                        // Proceed without interrupting user flow
+                    }
+                }
+            );
+
+            req.flash('success_msg', `Equipment added successfully.`);
+            res.redirect('/inventory/equipment-inventory');
+        }
+    );
 });
+
+// Route to view the Equipment Inventory with Search/Filter
+app.get('/inventory/agahf/equipment-inventory', attachPostFilter, (req, res) => {
+    const { search } = req.query; // Extract the search parameter
+
+    let query = 'SELECT * FROM agahf_equipment';
+    const params = [];
+
+    // Add WHERE clause if search query exists
+    if (search) {
+        query += ' WHERE equipment_name LIKE ?';
+        params.push(`%${search}%`);
+    }
+
+    db.all(query, params, (err, rows) => {
+        if (err) {
+            console.error('Error fetching equipment:', err.message);
+            req.flash('error_msg', 'Error fetching equipment.');
+            return res.redirect('/errors/error');
+        }
+        res.render('iemerge/equipment-inventory-agahf', { equipment: rows });
+    });
+});
+
+// Route to view the and Track Equipment with Search/Filter
+app.get('/inventory/agahf/equipment-inventory:track', attachPostFilter, (req, res) => {
+    const { search } = req.query; // Extract the search parameter
+
+    let query = 'SELECT * FROM agahf_equipment';
+    const params = [];
+
+    // Add WHERE clause if search query exists
+    if (search) {
+        query += ' WHERE equipment_name LIKE ?';
+        params.push(`%${search}%`);
+    }
+
+    db.all(query, params, (err, rows) => {
+        if (err) {
+            console.error('Error fetching equipment:', err.message);
+            req.flash('error_msg', 'Error fetching equipment.');
+            return res.redirect('/errors/error');
+        }
+        res.render('iemerge/track-equipment', { equipment: rows });
+    });
+});
+
+// Route to update equipment
+app.post('/inventory/agahf/equipment-location:edit', attachPostFilter, (req, res) => {
+    const {
+        equipment_id,
+        equipment_name,
+        equipment_owner, 
+        equipment_location,
+        equipment_status
+    } = req.body;
+
+    const query = `
+        UPDATE agahf_equipment SET 
+            equipment_name = ?,
+            equipment_owner = ?, 
+            equipment_location = ?, 
+            equipment_status = ?
+        WHERE equipment_id = ?
+    `;
+
+    db.run(query, [equipment_name, equipment_owner, equipment_location, equipment_status, equipment_id], function(err) {
+        if (err) {
+            console.error('Failed to update equipment:', err.message);
+            req.flash('error_msg', 'Failed to update equipment.');
+            return res.redirect('/inventory/agahf/equipment-inventory:track');
+        }
+
+        req.flash('success_msg', 'Equipment updated successfully.');
+        res.redirect('/inventory/agahf/equipment-inventory:track');
+    });
+});
+
+
+/* ED Research Setup and Routes */
+// Route: ED Research Landing Page (GET)
+app.get('/research', (req, res) => {
+    res.render('research/research'); // landing-page.ejs
+})
+// Route: ED Research Survey Form
+app.get('/research/forms/cs-survey-ed', (req, res) => {
+    res.render('research/cs-survey-ed'); // survey-form.ejs
+})
+// Route: FAP Research Survey Form
+app.get('/research/forms/cs-survey-fap', (req, res) => {
+    res.render('research/cs-survey-fap'); // survey-form.ejs
+})
+// Route: Handle ED and FAP Survey Form Submissions
+app.post('/research/forms/:type', async (req, res) => {
+    try {
+        const { post_location, q1, q2, q3, q4, q5, overall_rating, q6, comments } = req.body;
+
+        // Validation
+        if (!post_location || !q1 || !q2 || !q3 || !q4 || !overall_rating) {
+            req.flash('error', 'All required fields must be filled out.');
+            return res.redirect('back');
+        }
+
+        // Insert data into the research_data table
+        await db.all(
+            `INSERT INTO research_data (post_location, q1, q2, q3, q4, q5, overall_rating, q6, comments) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [post_location, q1, q2, q3, q4, q5 || null, overall_rating, q6 || null, comments || null]
+        );
+
+        req.flash('success_msg', 'Thank you for your feedback!');
+        res.redirect('/success');
+    } catch (error) {
+        console.error(error);
+        req.flash('error', 'An error occurred while submitting your feedback. Please try again.');
+        res.redirect('back');
+    }
+});
+
+// Route: View Research Data
+app.get('/research/data', async (req, res) => {
+    const fetchResearchData = () => {
+        return new Promise((resolve, reject) => {
+            db.all('SELECT * FROM research_data ORDER BY created_at DESC', (err, rows) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(rows);
+            });
+        });
+    };
+
+    try {
+        const researchData = await fetchResearchData();
+        console.log('Fetched research data:', researchData); // Debug log
+
+        res.render('research/research-data-view', { researchData });
+    } catch (error) {
+        console.error('Error fetching research data:', error);
+        req.flash('error', 'Unable to fetch research data.');
+        res.redirect('/research');
+    }
+});
+
+
+
 
 
 

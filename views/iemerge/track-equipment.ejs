@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment Tracker</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    width: 50%;
+    border-radius: 8px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    </style>
+</head>
+<body class="inventory-table-body full-height">
+    <header><%- include('../partials/_nav') %></header>
+
+    <main class="">
+        
+        <div class="inventory-table-container wide-table">
+            <div class="alert-parent">
+                <h1>Where are my equipment?</h1>
+                <p class="subhead">Verify equipment location. Scan the list or search by name.</p>
+                <%- include('../partials/_flash-alert') %>
+                <!-- Equipment Search and Filter -->
+                <div class="filter-container search-container">
+                    <form action="/inventory/equipment-inventory" method="GET">
+                        <div class="input-grp filter-grp">
+                            <input type="text" name="search" placeholder="Search by name..." class="form-control">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- Equipment List -->
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Equipment ID</th>
+                            <th>Name</th>
+                            <th>Equipment Owner</th>
+                            <th>Equipment Location</th>
+                            <th>Status</th>
+                            <th>Borrowed By</th>
+                            <th>Manufacturer</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% equipment.forEach(item => { %>
+                            <tr>
+                                <td><%= item.equipment_id %></td>
+                                <td><%= item.equipment_name %></td>
+                                <td><%= item.equipment_owner %></td>
+                                <td><%= item.equipment_location %></td>
+                                <td><%= item.equipment_status %></td>
+                                <td><%= item.borrowed_by || 'N/A' %></td>
+                                <td><%= item.manufacturer %></td>
+                                <td>
+                                    <button 
+                                        type="button" 
+                                        class="reg-action success" 
+                                        onclick='openModal(<%= JSON.stringify(item) %>)'>Change</button>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Add Equipment Form (Optional) -->
+            <!-- <h2>Add New Equipment</h2>
+            <form action="/inventory/equipment-checklist" method="POST">
+                <div class="input-grp">
+                    <label for="equipment_name">Equipment Name</label>
+                    <input type="text" id="equipment_name" name="equipment_name" required class="form-control">
+                </div>
+                <div class="input-grp">
+                    <label for="unit">Unit</label>
+                    <input type="text" id="unit" name="unit" required class="form-control">
+                </div>
+                <div class="input-grp">
+                    <label for="reorder_level">Reorder Level</label>
+                    <input type="number" id="reorder_level" name="reorder_level" required class="form-control">
+                </div>
+                <div class="input-grp">
+                    <label for="service_date">Service Date</label>
+                    <input type="date" id="service_date" name="service_date" required class="form-control">
+                </div>
+                <div class="input-grp">
+                    <label for="manufacturer">Manufacturer</label>
+                    <input type="text" id="manufacturer" name="manufacturer" class="form-control">
+                </div>
+                <div class="input-grp">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" class="form-control"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Equipment</button>
+            </form> -->
+        </div>
+
+        <!-- Edit Equipment Modal -->
+        <div id="editInventoryItemModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Borrow or Return Equipment</h2>
+                <form id="editInventoryItemForm" action="/inventory/agahf/equipment-location:edit" method="POST">
+                    <input type="hidden" id="equipment_id" name="equipment_id">
+                    <div class="input-grp">
+                        <label for="equipment_name">Equipment Name</label>
+                        <input type="text" id="equipment_name" name="equipment_name" required>
+                    </div>
+                    <div class="input-grp">
+                        <label for="equipment_owner">Equipment Owner</label>
+                        <select name="equipment_owner" id="equipment_owner">
+                            <option value="Emergency">Emergency</option>
+                            <option value="ICU">ICU</option>
+                            <option value="CDU">CDU</option>
+                        </select>
+                    </div>
+                    <div class="input-grp">
+                        <label for="equipment_location">Change Equipment Location to</label>
+                        <select name="equipment_location" id="equipment_location">
+                            <option value="Emergency">Emergency</option>
+                            <option value="ICU">ICU</option>
+                            <option value="CDU">CDU</option>
+                        </select>
+                    </div>
+                    <div class="input-grp">
+                        <label for="equipment_status">Device Status</label>
+                        <select name="equipment_status" id="equipment_status" required>
+                            <option value="Functional">Functional</option>
+                            <option value="Faulty">Faulty</option>
+                            <option value="Missing Parts">Missing Parts</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <footer><%- include('../partials/_footer') %></footer>
+    <script src="/js/mineaid-scripts.js"></script>
+</body>
+</html>

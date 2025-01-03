@@ -53,6 +53,14 @@
                                 <input type="number" name="prev" id="prev">
                             </div>
                             <div class="input-grp">
+                                <label for="beds">Total Beds</label>
+                                <input type="number" name="beds" id="beds">
+                            </div>
+                            <div class="input-grp">
+                                <label for="cots">Total Cots</label>
+                                <input type="number" name="cots" id="cots">
+                            </div>
+                            <div class="input-grp">
                                 <label for="pats">Total Patients</label>
                                 <input type="number" name="pats" id="pats">
                             </div>
@@ -69,12 +77,12 @@
                                 <input type="number" name="deaths" id="deaths">
                             </div>
                             <div class="input-grp">
-                                <label for="t-in">Trans-In</label>
-                                <input type="number" name="t-in" id="t-in">
+                                <label for="tin">Trans-In</label>
+                                <input type="number" name="tin" id="tin">
                             </div>
                             <div class="input-grp">
-                                <label for="t-out">Trans-Out</label>
-                                <input type="number" name="t-out" id="t-out">
+                                <label for="tout">Trans-Out</label>
+                                <input type="number" name="tout" id="tout">
                             </div>
                             <div class="input-grp">
                                 <label for="workers">Workers</label>
@@ -85,12 +93,16 @@
                                 <input type="number" name="dep" id="dep">
                             </div>
                             <div class="input-grp">
-                                <label for="private">Private Patients</label>
-                                <input type="number" name="private" id="private">
+                                <label for="priv">Private Patients</label>
+                                <input type="number" name="priv" id="priv">
                             </div>
                         </div>
-                        <button class="btn" type="submit">Submit</button>
                         <div class="input-grp">
+                            <label for="report">Unit Report</label>
+                            <textarea name="report" id="report" placeholder="How was the unit at midnight/EOD?" required></textarea>
+                        </div>
+                        <button class="btn" type="submit">Submit</button>
+                        <div class="hidden input-grp">
                             <label for="emergency-report">Emergency Unit</label>
                             <div class="h-flex">
                                 <ul class="flex-wrap">
@@ -104,7 +116,6 @@
                                     <li class="reg-action alert-success">Priv: 15</li>
                                 </ul>
                             </div>
-                            <textarea name="emergency-report" id="emergency-report" placeholder="How was the unit at midnight/EOD?" required></textarea>
                         </div>
                     </section>
                 </form>

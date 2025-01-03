@@ -5,9 +5,17 @@
         <div class="logo">
             <a href="/iaid"><img src="/images/first-aid-kit.png" alt=""></a>
         </div>
-        <% if (current_post !== 'AGAHF-ED' && current_post !== 'AGAHF-Sup' && current_post !== 'AGAHF-Sup' && current_post !== 'Nurse-Manager') { %>
+        
         <nav class="toggler">
             <ul>
+                <% if (user.role === 'Superuser') { %>
+                <li class="nav-item">Switch Portal
+                    <ul class="nav-links">
+                        <li><a href="/post-selection"><i class="fas fa-recycle"></i> Select Post</a></li>
+                    </ul>
+                </li>
+                <% } %>
+                <% if (current_post !== 'AGAHF-ED' && current_post !== 'AGAHF-Sup' && current_post !== 'AGAHF-Sup' && current_post !== 'Nurse-Manager') { %>
                 <li class="nav-item hidden">Hub
                     <ul class="nav-links">
                         <li><a href="/landing-page"><i class="fas fa"></i>Hub</a></li>
@@ -18,24 +26,24 @@
                         <li><a href="/database"><i class="fas fa-database"></i> Database</a></li>
                     </ul>
                 </li>
-                    <li class="nav-item">Inventory
-                        <ul class="nav-links">
-                            <li><a href="/inventory"><i class="fas fa-home"></i> Inventory Home</a></li>
-                            <li><a href="/inventory/add-new-item" ><i class="fas fa-plus"></i> Add New Items to Register </a></li>
-                            <li><a href="/inventory/items-register" ><i class="fas fa-cogs"></i> Items Register</a></li>
-                            <li><a href="/inventory/user-activity-logs" ><i class="fas fa-file"></i> User Activity Logs</a></li>
-                            <li><a href="/inventory/inventory-items-all" ><i class="fas fa-cogs"></i> Inventory Items</a></li>
-                            <li class="hidden"><a href="/inventory/inventory-log" ><i class="fas fa-list"></i> Inventory Log</a></li>
-                            <li class="hidden"><a href="/inventory/add-inventory-category" ><i class="fas fa-plus"></i> Add Inventory Cat</a></li>
-                            <li><a href="/inventory/daily-checklist" ><i class="fas fa-list"></i> Daily Checklist</a></li>
-                            <li><a href="/inventory/daily-checklist-data" ><i class="fas fa-list"></i> Daily Checklist Data</a></li>
-                            <li class="hidden"><a href="/inventory/export" ><i class="fas fa-file-export"></i> Export Data</a></li>
-                            <li class="hidden"><a href="/inventory/import" ><i class="fas fa-file-import"></i> Import Data</a></li>
-                        </ul>
-                    </li>
+                <li class="nav-item">Inventory
+                    <ul class="nav-links">
+                        <li><a href="/inventory"><i class="fas fa-home"></i> Inventory Home</a></li>
+                        <li><a href="/inventory/add-new-item" ><i class="fas fa-plus"></i> Add New Items to Register </a></li>
+                        <li><a href="/inventory/items-register" ><i class="fas fa-cogs"></i> Items Register</a></li>
+                        <li><a href="/inventory/user-activity-logs" ><i class="fas fa-file"></i> User Activity Logs</a></li>
+                        <li><a href="/inventory/inventory-items-all" ><i class="fas fa-cogs"></i> Inventory Items</a></li>
+                        <li class="hidden"><a href="/inventory/inventory-log" ><i class="fas fa-list"></i> Inventory Log</a></li>
+                        <li class="hidden"><a href="/inventory/add-inventory-category" ><i class="fas fa-plus"></i> Add Inventory Cat</a></li>
+                        <li><a href="/inventory/daily-checklist" ><i class="fas fa-list"></i> Daily Checklist</a></li>
+                        <li><a href="/inventory/daily-checklist-data" ><i class="fas fa-list"></i> Daily Checklist Data</a></li>
+                        <li class="hidden"><a href="/inventory/export" ><i class="fas fa-file-export"></i> Export Data</a></li>
+                        <li class="hidden"><a href="/inventory/import" ><i class="fas fa-file-import"></i> Import Data</a></li>
+                    </ul>
+                </li>
+                <% } %>
             </ul>
         </nav>
-        <% } %>
 
         <!-- Hamburger icon for smaller screens -->
         <div class="hamburger-menu" id="menu-toggle">
@@ -101,14 +109,18 @@
                         <li class="nav-item">ED Inventory
                             <ul class="nav-links">
                                 <li><a href="/inventory/add-new-item" ><i class="fas fa-plus"></i> Add New Equipment </a></li>
+                                <li><a href="/inventory/agahf/equipment-checks" ><i class="fas fa-cogs"></i> Check Equipment</a></li>
+                                <li><a href="/inventory/agahf/equipment-inventory" ><i class="fas fa-cogs"></i> Equipment Inventory</a></li>
                                 <li><a href="/inventory/items-register" ><i class="fas fa-cogs"></i> Equipment Register</a></li>
-                                <li><a href="/coming-soon" ><i class="fas fa-cogs"></i> Track ED Equipment</a></li>
+                                <li><a href="/inventory/agahf/equipment-inventory:track" ><i class="fas fa-cogs"></i> Track ED Equipment</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item"> ED Research
+                        <li class="nav-item"> Research
                             <ul class="nav-links">
-                                <li><a href="/coming-soon"><i class="fas fa-plus"></i> Submit Feedback</a></li>
-                                <li><a href="/coming-soon" ><i class="fas fa-file"></i> Client Feedback </a></li>
+                                <li><a href="/research/forms/cs-survey-ed"><i class="fas fa-plus"></i> Submit ED Feedback</a></li>
+                                <li><a href="/research/forms/cs-survey-fap"><i class="fas fa-plus"></i> Submit FAP Feedback</a></li>
+                                <li><a href="/research/data" ><i class="fas fa-file"></i> Client Feedback Data </a></li>
+                                <li><a href="/research" ><i class="fas fa-file"></i> Research Dashboard </a></li>
                             </ul>
                         </li>
                     <% } 
@@ -141,7 +153,7 @@
                             </ul>
                         </li>
                     <% }
-                %>        
+                %>
             </ul>
         </nav>
     </div>

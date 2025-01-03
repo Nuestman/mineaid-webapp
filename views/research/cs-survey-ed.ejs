@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ED Customer Satisfaction Form</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <%- include('../partials/_nav') %>
+    </header>
+    <main class="alert-parent">
+        <%- include('../partials/_flash-alert') %>
+            <div class="">
+                <div class="main-content">
+                    <div class="form-container">
+                        <h1>Emergency Department Client Satisfaction Survey</h1>
+                        <p class="subhead">
+                            <strong>Rationale:</strong> <span class="accent">Thank you for visiting AGAHF ED.</span> Your feedback helps us improve the quality of care in the
+                            Emergency Department.
+                            This survey will take approximately <strong>3–5 minutes</strong> to complete. All responses
+                            are anonymous.
+                        </p>
+                        <!-- Explanation of Ratings -->
+                        <p class="ratings-explanation">
+                            <strong>Rating Scale:</strong> 
+                            1 = Very Poor, 2 = Poor, 3 = Average, 4 = Good, 5 = Excellent
+                        </p>
+
+                        <form action="/research/forms/ed-cs-survey" method="POST" class="survey-form">
+                            <div class="input-grp">
+                                <label for="post_location">Where were you attended to?</label>
+                                <select name="post_location" id="post_location" required>
+                                    <option value="ED" selected>Emergency Department</option>
+                                </select>
+                            </div>
+                            <div class="input-grp">
+                                <label for="q1">1. How would you rate the promptness of service upon your
+                                    arrival?</label>
+                                <div class="options">
+                                    <% for (let i=1; i <=5; i++) { %>
+                                        <label>
+                                            <input type="radio" name="q1" value="<%= i %>" required>
+                                            <%= i %>
+                                        </label>
+                                        <% } %>
+                                </div>
+                            </div>
+
+                            <div class="input-grp">
+                                <label for="q2">2. How satisfied were you with the care provided by the medical
+                                    staff?</label>
+                                <div class="options">
+                                    <% for (let i=1; i <=5; i++) { %>
+                                        <label>
+                                            <input type="radio" name="q2" value="<%= i %>" required>
+                                            <%= i %>
+                                        </label>
+                                        <% } %>
+                                </div>
+                            </div>
+
+                            <div class="input-grp">
+                                <label for="q3">3. Did you feel adequately informed about your treatment plan and
+                                    care?</label>
+                                <div class="options">
+                                    <% for (let i=1; i <=5; i++) { %>
+                                        <label>
+                                            <input type="radio" name="q3" value="<%= i %>" required>
+                                            <%= i %>
+                                        </label>
+                                        <% } %>
+                                </div>
+                            </div>
+
+                            <div class="input-grp">
+                                <label for="q4">4. How would you rate the cleanliness of the ED environment?</label>
+                                <div class="options">
+                                    <% for (let i=1; i <=5; i++) { %>
+                                        <label>
+                                            <input type="radio" name="q4" value="<%= i %>" required>
+                                            <%= i %>
+                                        </label>
+                                        <% } %>
+                                </div>
+                            </div>
+
+                            <div class="input-grp">
+                                <label for="q5">5. Were the staff courteous and professional during your visit?</label>
+                                <div class="options">
+                                    <% for (let i=1; i <=5; i++) { %>
+                                        <label>
+                                            <input type="radio" name="q5" value="<%= i %>" required>
+                                            <%= i %>
+                                        </label>
+                                        <% } %>
+                                </div>
+                            </div>
+
+                            <div class="input-grp">
+                                <label for="overall_rating">6. How satisfied are you with the overall experience in the
+                                    ED?</label>
+                                <div class="options">
+                                    <% for (let i=1; i <=5; i++) { %>
+                                        <label>
+                                            <input type="radio" name="overall_rating" value="<%= i %>" required>
+                                            <%= i %>
+                                        </label>
+                                        <% } %>
+                                </div>
+                            </div>
+
+                            <div class="input-grp">
+                                <label for="q6">7. Would you recommend the AGAHF ED to other people?</label>
+                                <div class="options">
+                                    <% for (let i=1; i <=5; i++) { %>
+                                        <label>
+                                            <input type="radio" name="q6" value="<%= i %>" required>
+                                            <%= i %>
+                                        </label>
+                                        <% } %>
+                                </div>
+                            </div>
+
+                            <div class="input-grp">
+                                <label for="comments">8. Do you have any suggestions for improving the ED
+                                    experience?</label>
+                                <textarea name="comments" id="comments" rows="4"
+                                    placeholder="Enter your feedback here..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+    </main>
+
+    <%- include('../partials/_footer') %>
+
+        <script src="/js/mineaid-scripts.js"></script>
+
+</body>
+
+</html>

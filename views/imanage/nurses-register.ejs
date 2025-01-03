@@ -8,7 +8,7 @@
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="nurses-register full-height">
+<body id="records_page" class="nurses-register full-height">
     <header><%- include('../partials/_nav') %></header>
     <section class="prim-header table-page-head">
         <div class="container">
@@ -16,14 +16,75 @@
             <h2 class="accent">All Nurses</h2>
         </div>
     </section>
-
+    <section class="switch-view">
+        <button id="switch-to-table" class="switch-btn">Table View</button>
+        <button id="switch-to-cards" class="switch-btn" style="display: none;">Card View</button>
+    </section>
     <main>
-        <div class="container">
+        <div id="nurse-table" class="table-page-container">
+            <div class="wide-table">
+                <!-- Table format -->
+                <section class="alert-parent">
+                    <%- include('../partials/_flash-alert') %>
+                    <table class="">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Staff ID</th>
+                                <th>Name</th>
+                                <th>Gender</th>
+                                <th>Grade</th>
+                                <th>Rank</th>
+                                <th>Department</th>
+                                <th>Service Status</th>
+                                <th>Accommodation Status</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>PIN</th>
+                                <th>Qualification</th>
+                                <th>Certification Reg. No.</th>
+                                <th>Year Completed</th>
+                                <th>Employment Date</th>
+                                <th>Exit Date</th>
+                                <th>Exit Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% nurses.forEach((nurse, index) => { %>
+                            <tr>
+                                <td><%= index + 1 %></td>
+                                <td><%= nurse.staff_id %></td>
+                                <td><%= nurse.name %></td>
+                                <td><%= nurse.gender %></td>
+                                <td><%= nurse.grade %></td>
+                                <td><%= nurse.rank %></td>
+                                <td><%= nurse.department %></td>
+                                <td><%= nurse.service_status %></td>
+                                <td><%= nurse.accommodation_status %></td>
+                                <td><%= nurse.email %></td>
+                                <td><%= nurse.phone %></td>
+                                <td><%= nurse.PIN || 'N/A' %></td>
+                                <td><%= nurse.qualification || 'N/A' %></td>
+                                <td><%= nurse.cert_reg_number || 'N/A' %></td>
+                                <td><%= nurse.year_completed || 'N/A' %></td>
+                                <td><%= nurse.emp_date %></td>
+                                <td><%= nurse.exit_date || 'N/A' %></td>
+                                <td><%= nurse.exit_reason || 'N/A' %></td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </div>
+        <div id="nurse-cards" class="container">
             <div class="alert-parent">
                 <%- include('../partials/_flash-alert') %>
                 <!-- <section >
                     <a class="btn " href="/imanage/nurses/add-nurse">Add a Nurse</a>
                 </section> -->
+
+                 <!-- Card Format -->
                 <section class="item-cards">
                     <% nurses.forEach((nurse, index) => { %>
                     <div class="item-card" title="View Nurse Details">
@@ -183,7 +244,6 @@
             </ul>
         </section>
     </main>
-    
 
     <script>
         const modal = document.getElementById('item-modal');
@@ -290,10 +350,8 @@
             document.getElementById('edit-button').innerHTML = '<i class="fas fa-edit"></i> Edit Item';
         }
     </script>
-    
-    
 
     <%- include('../partials/_footer') %>
-    <script src="/js/mineaid-scripts.js"></script>
+    <script src="../js/mineaid-scripts.js"></script>
 </body>
 </html>

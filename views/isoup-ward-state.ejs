@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iSoup - Ward State Reports</title>
+    <link rel="stylesheet" href="/css/mineaid-styles.css">
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+</head>
+
+<body>
+
+    <header>
+        <%- include('partials/_nav') %>
+    </header>
+
+    <section class="prim-header table-page-head">
+        <div class="container">
+            <h2>Ward State Reports</h2>
+            <p class="subhead">Below is a detailed record of the ward state reports submitted. These reports provide insights into patient admissions, discharges, bed occupancy, and other critical metrics for each ward.</p>
+        </div>
+    </section>
+
+    <main>
+        <div class="container">
+            <div class="input-grp">
+                <% if (wardStates.length > 0) { %>
+                    <% wardStates.forEach(wardState => { %>
+                        <div class="v-flex">
+                            <label for="emergency-report"><%= wardState.ward %></label>
+                            <ul class="flex-wrap">
+                                <li class="reg-action alert-success">Prev: <%= wardState.prev %></li>
+                                <li class="reg-action alert-success">Pt: <%= wardState.pts %></li>
+                                <li class="reg-action alert-success">Adm: <%= wardState.adm %></li>
+                                <li class="reg-action alert-success">Dis: <%= wardState.disch %></li>
+                                <li class="reg-action alert-success">Death: <%= wardState.deaths %></li>
+                                <li class="reg-action alert-success">Dep: <%= wardState.dep %></li>
+                                <li class="reg-action alert-success">Wrk: <%= wardState.workers %></li>
+                                <li class="reg-action alert-success">Priv: <%= wardState.priv %></li>
+                                <li class="reg-action alert-success">Trans-In: <%= wardState.tin %></li>
+                                <li class="reg-action alert-success">Trans-Out: <%= wardState.tout %></li>
+                            </ul>
+                            <div>
+                                <strong>Report:</strong> <%= wardState.report %>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p>No ward state reports available at the moment.</p>
+                <% } %>
+            </div>
+        </div>
+    </main>
+    
+
+    <main class="alert-parent">
+        <%- include('partials/_flash-alert') %>
+        <div class="table-page-container">
+            <div class="wide-table">
+                <% if (wardStates.length > 0) { %>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Ward</th>
+                                <th>Prev Patients</th>
+                                <th>Beds</th>
+                                <th>Cots</th>
+                                <th>Total Patients</th>
+                                <th>Admissions</th>
+                                <th>Discharges</th>
+                                <th>Trans-In</th>
+                                <th>Trans-Out</th>
+                                <th>Deaths</th>
+                                <th>Workers</th>
+                                <th>Dependents</th>
+                                <th>Private</th>
+                                <th>Report</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% wardStates.forEach(wardState => { %>
+                                <tr>
+                                    <td><%= wardState.id %></td>
+                                    <td><%= wardState.date %></td>
+                                    <td><%= wardState.ward %></td>
+                                    <td><%= wardState.prev %></td>
+                                    <td><%= wardState.beds %></td>
+                                    <td><%= wardState.cots %></td>
+                                    <td><%= wardState.pts %></td>
+                                    <td><%= wardState.adm %></td>
+                                    <td><%= wardState.disch %></td>
+                                    <td><%= wardState.tin %></td>
+                                    <td><%= wardState.tout %></td>
+                                    <td><%= wardState.deaths %></td>
+                                    <td><%= wardState.workers %></td>
+                                    <td><%= wardState.dep %></td>
+                                    <td><%= wardState.priv %></td>
+                                    <td><%= wardState.report %></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <p>No ward state reports available at the moment.</p>
+                <% } %>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/_footer') %>
+    <script src="/js/mineaid-scripts.js"></script>
+</body>
+
+</html>

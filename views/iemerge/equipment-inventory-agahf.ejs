@@ -52,7 +52,7 @@
         
         <div class="inventory-table-container wide-table">
             <div class="alert-parent">
-                <h2>Manage Equipment</h2>
+                <h2>Manage Emergency Equipment</h2>
                 <%- include('../partials/_flash-alert') %>
                 <!-- Equipment Search and Filter -->
                 <div class="filter-container search-container">
@@ -67,12 +67,14 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
+                            <th>Equipment Owner</th>
                             <th>Equipment Location</th>
                             <th>Equipment ID</th>
                             <th>Name</th>
                             <th>Unit</th>
                             <th>Reorder Level</th>
                             <th>Status</th>
+                            <th>Checked At</th>
                             <th>Service Date</th>
                             <th>Manufacturer</th>
                             <th>Description</th>
@@ -82,12 +84,14 @@
                     <tbody>
                         <% equipment.forEach(item => { %>
                             <tr>
+                                <td><%= item.equipment_owner %></td>
                                 <td><%= item.equipment_location %></td>
                                 <td><%= item.equipment_id %></td>
                                 <td><%= item.equipment_name %></td>
                                 <td><%= item.unit %></td>
                                 <td><%= item.reorder_level %></td>
                                 <td><%= item.equipment_status %></td>
+                                <td><%= item.checked_at %></td>
                                 <td><%= item.service_date %></td>
                                 <td><%= item.manufacturer %></td>
                                 <td><%= item.description %></td>

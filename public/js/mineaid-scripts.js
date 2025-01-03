@@ -100,79 +100,96 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-/* FRONTEND IDLE WARNING PROMPT */
-// Example: Display a warning prompt when the user is idle for a certain period
-let idleTime = 0;
+/* FRONTEND IDLE WARNING PROMPT WITH COUNTDOWN TIMER */
+let idleTime = 0; // Tracks idle time in minutes
+const warningTimeout = 25; // Time (in minutes) to display the warning
+const logoutTimeout = 30; // Time (in minutes) to auto-logout after the warning
+let countdownInterval; // Reference to the countdown interval
 
-const resetIdleTimer = () => { idleTime = 0; };
+const resetIdleTimer = () => {
+    idleTime = 0;
+    clearInterval(countdownInterval); // Clear the countdown timer if active
+};
+
+// Function to format time in mm:ss
+const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+};
 
 // Increment idle time every minute
 setInterval(() => {
     idleTime++;
-    if (idleTime > 25) { // Show warning at 25 minutes
-        if (confirm("You will be logged out soon due to inactivity. Continue session?")) {
-            fetch('/keep-session-alive'); // Optional endpoint to keep session alive
-            resetIdleTimer();
-        }
+    if (idleTime === warningTimeout) { // Show warning at 1 minute (for demo purposes)
+        let remainingTime = (logoutTimeout - warningTimeout) * 60; // Convert to seconds (e.g., 5 minutes = 300 seconds)
+
+        // Create and append the overlay dynamically
+        const overlayElement = document.createElement("div");
+        overlayElement.classList.add("session-overlay");
+        document.body.appendChild(overlayElement);
+
+        // Create session alert
+        const countdownElement = document.createElement("div");
+        countdownElement.classList = "session-alert";
+        countdownElement.innerHTML = `
+            <p class="warn">Inactivity detected!</p>
+            <p>You will be logged out in <span class="countdown" id="countdown-seconds">${formatTime(remainingTime)}</span> to keep your account/session secure.</p>
+            <p>You've been inactive for >25mins. Do you want to stay or leave?</p>
+            <div class="session-btn">
+                <button class="reg-action btn-approve" id="extend-session">Continue Session</button>
+                <a class="reg-action btn-block" href="/logout">End Session</a>
+            </div>
+        `;
+
+        // Show overlay and alert
+        document.body.appendChild(countdownElement);
+
+        // Update the countdown every second
+        countdownInterval = setInterval(() => {
+            remainingTime--;
+            document.getElementById("countdown-seconds").textContent = formatTime(remainingTime);
+
+            if (remainingTime <= 0) {
+                clearInterval(countdownInterval); // Stop the countdown
+                alert("You have been logged out due to inactivity.");
+                document.body.removeChild(countdownElement); // Remove the alert
+                document.body.removeChild(overlayElement); // Remove the overlay
+                window.location.href = "/logout"; // Redirect to logout route
+            }
+        }, 1000); // Update every second
+
+        // Add event listener for "Continue Session" button
+        document.getElementById("extend-session").addEventListener("click", () => {
+            fetch("/keep-session-alive"); // Optional endpoint to keep session alive
+            resetIdleTimer(); // Reset idle timer
+            alert("Your session has been extended!");
+            clearInterval(countdownInterval); // Clear the countdown
+            document.body.removeChild(countdownElement); // Remove the alert
+            document.body.removeChild(overlayElement); // Remove the overlay
+        });
     }
 }, 60000); // 1-minute intervals
 
 // Reset idle time on activity
 window.onload = resetIdleTimer;
 window.onmousemove = resetIdleTimer;
+window.onkeydown = resetIdleTimer; // Reset on keyboard activity
 
-/* USING MODALS */
-// let idleTime = 0;
-// let idleWarningTime = 25 * 60 * 1000; // 25 minutes
-// let logoutTime = 30 * 60 * 1000; // 30 minutes
-// let idleModal = document.getElementById("idleModal");
 
-// // Show the idle modal after warning time
-// const showIdleModal = () => {
-//     idleModal.style.display = "flex";
-// };
 
-// // Hide the modal and reset idle timer
-// const resetIdleTimer = () => {
-//     idleTime = 0;
-//     idleModal.style.display = "none";
-// };
 
-// // Log out and refresh the page
-// const logoutUser = () => {
-//     window.location.href = "/logout"; // Adjust this to your logout route
-//     location.reload(); // Clears the session and any sensitive data from the page
-// };
-
-// // Reset idle time on user activity
-// const resetUserActivity = () => {
-//     resetIdleTimer();
-//     fetch('/keep-session-alive'); // Optional: Endpoint to refresh session on backend
-// };
-
-// // Event listeners to detect user activity
-// ['mousemove', 'keydown', 'click'].forEach(event => {
-//     window.addEventListener(event, resetUserActivity);
-// });
-
-// // Check for idle state every second
-// setInterval(() => {
-//     idleTime += 1000;
-
-//     if (idleTime >= idleWarningTime && idleModal.style.display === "none") {
-//         showIdleModal(); // Show warning modal after 25 minutes
+//Polling with JS
+// setInterval(async () => {
+//     console.log('Polling /check-session...');
+//     const response = await fetch('/check-session');
+//     const data = await response.json();
+//     console.log('Session active:', data.active);
+//     if (!data.active) {
+//         alert(data.message || 'You have been logged out due to inactivity.');
+//         window.location.href = '/login';
 //     }
-
-//     if (idleTime >= logoutTime) {
-//         logoutUser(); // Log out after 30 minutes
-//     }
-// }, 1000);
-
-// // Continue session button
-// document.getElementById("continueSessionBtn").addEventListener("click", () => {
-//     resetUserActivity();
-//     resetIdleTimer();
-// });
+// }, 20000); // Poll every 1 minute
 
 
 
@@ -297,3 +314,49 @@ window.onclick = function (event) {
         closeModal();
     }
 };
+
+/* Easily Switch Between Portals */
+// function switchPost(newPost) {
+//     fetch('/switch-post', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ newPost }),
+//     })
+//         .then(response => response.json())
+//         .then(data => {
+//             if (data.success) {
+//                 alert(`Switched to ${data.currentPost} successfully.`);
+//                 // Optionally reload the page or update the UI dynamically
+//                 location.reload();
+//             } else {
+//                 alert('Error switching post.');
+//             }
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//             alert('Failed to switch post.');
+//         });
+// }
+
+
+/* Switch Views */
+const switchToTable = document.getElementById('switch-to-table');
+const switchToCards = document.getElementById('switch-to-cards');
+const nurseTable = document.getElementById('nurse-table');
+const nurseCards = document.getElementById('nurse-cards');
+
+switchToTable.addEventListener('click', () => {
+    nurseTable.style.display = 'block';
+    nurseCards.style.display = 'none';
+    switchToTable.style.display = 'none';
+    switchToCards.style.display = 'inline-block';
+});
+
+switchToCards.addEventListener('click', () => {
+    nurseTable.style.display = 'none';
+    nurseCards.style.display = 'block';
+    switchToCards.style.display = 'none';
+    switchToTable.style.display = 'inline-block';
+});

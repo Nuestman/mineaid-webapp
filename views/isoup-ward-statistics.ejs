@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iSoup - Daily Report</title>
+    <title>iSoup - Daily Statistics</title>
     <link rel="stylesheet" href="/css/mineaid-styles.css">
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
 </head>
@@ -239,62 +239,42 @@
 
                             <!-- Statistics Section -->
                             
-                <!-- Statistics Section -->
-                <section class="gen-sect">
-                    <h4>Ward Statistics</h4>
-                    <table border="1">
-                        <thead>
-                            <tr>
-                                <th>Ward Name</th>
-                                <th>Prev</th>
-                                <th>Beds</th>
-                                <th>Cots</th>
-                                <th>Pts</th>
-                                <th>Adm</th>
-                                <th>Disch</th>
-                                <th>T-In</th>
-                                <th>T-Out</th>
-                                <th>Deaths</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% if (statistics && statistics.length > 0) { %>
-                                <% statistics.forEach(stat => { %>
-                                    <tr>
-                                        <td><%= stat.ward %></td>
-                                        <td><%= stat.prev %></td>
-                                        <td><%= stat.beds %></td>
-                                        <td><%= stat.cots %></td>
-                                        <td><%= stat.pts %></td>
-                                        <td><%= stat.adm %></td>
-                                        <td><%= stat.disch %></td>
-                                        <td><%= stat.tin %></td>
-                                        <td><%= stat.tout %></td>
-                                        <td><%= stat.deaths %></td>
-                                    </tr>
-                                <% }) %>
-                                <!-- Subtotal Row -->
-                                <tr>
-                                    <td>Sub-Total</td>
-                                    <td><%= statistics.reduce((sum, s) => sum + s.prev, 0) %></td>
-                                    <td><%= statistics.reduce((sum, s) => sum + s.beds, 0) %></td>
-                                    <td><%= statistics.reduce((sum, s) => sum + s.cots, 0) %></td>
-                                    <td><%= statistics.reduce((sum, s) => sum + s.pts, 0) %></td>
-                                    <td><%= statistics.reduce((sum, s) => sum + s.adm, 0) %></td>
-                                    <td><%= statistics.reduce((sum, s) => sum + s.disch, 0) %></td>
-                                    <td><%= statistics.reduce((sum, s) => sum + s.tin, 0) %></td>
-                                    <td><%= statistics.reduce((sum, s) => sum + s.tout, 0) %></td>
-                                    <td><%= statistics.reduce((sum, s) => sum + s.deaths, 0) %></td>
-                                </tr>
-                                <tr><%=  %></tr>
-                            <% } else { %>
-                                <tr>
-                                    <td colspan="10">No statistics available for this date.</td>
-                                </tr>
-                            <% } %>
-                        </tbody>
-                    </table>
-                </section>
+                            <section class="gen-sect">
+                                <h4>Ward Statistics</h4>
+                                <table border="1">
+                                    <thead>
+                                        <tr>
+                                            <th>Wards</th>
+                                            <th>Prev</th>
+                                            <th>Beds</th>
+                                            <th>Cots</th>
+                                            <th>Pts</th>
+                                            <th>Adm</th>
+                                            <th>Disch</th>
+                                            <th>T-In</th>
+                                            <th>T-Out</th>
+                                            <th>Deaths</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% ward_stats.forEach(stat => { %>
+                                            <tr>
+                                                <td><%= stat.ward %></td>
+                                                <td><%= stat.prev %></td>
+                                                <td><%= stat.beds %></td>
+                                                <td><%= stat.cots %></td>
+                                                <td><%= stat.pts %></td>
+                                                <td><%= stat.adm %></td>
+                                                <td><%= stat.disch %></td>
+                                                <td><%= stat.tin %></td>
+                                                <td><%= stat.tout %></td>
+                                                <td><%= stat.deaths %></td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                    
+                                </table>
+                            </section>
 
                             <!-- Systems -->
                             <section class="card-container gen-sect">
